@@ -1,0 +1,78 @@
+generated: '2026-09-04'
+method: searched
+source: https://docs.workspot.com/docs/using-the-workspot-control-api
+versioning:
+  scheme: uri-path
+  current_path_version: v1.0
+  product_version: '3.3'
+  next_version: '3.4'
+  docs: https://docs.workspot.com/docs/using-the-workspot-control-api
+  note: Two tracks. The URI segment has remained /v1.0 across every release while the Control API product
+    version has advanced to 3.3 (3.4 scheduled). New operations ship under the same /v1.0 prefix, so the
+    path version carries no compatibility information.
+release_cadence:
+  note: Releases are staged by region, US first then EU, typically a few days apart. Control API 3.4 is
+    scheduled for August 22 2026 in the US and August 25 2026 in the EU; Control API 2.9 shipped July
+    26 2025 in the US and July 29 2025 in the EU.
+deprecation:
+  policy_url: null
+  sunset_header: false
+  deprecation_header: false
+  deprecated_operations: []
+  note: NO deprecation policy is published. Workspot documents no sunset schedule, no RFC 8594 Sunset
+    or Deprecation headers, and no notice period. The published Swagger marks zero of its 105 operations
+    deprecated. Release notes announce additions and fixes but have not announced a removal, so consumers
+    have no published signal for a breaking change.
+sla:
+  url: https://www.workspot.com/legal/cloudslac/
+  title: Workspot Cloud Service Level Availability Commitment
+  last_updated: '2025-06-18'
+  uptime_target: 99.9%
+  measurement: Monthly Uptime Percentage = 100% minus Monthly Downtime Percentage, where downtime is minutes
+    the Workspot Control Service is Unavailable divided by total minutes in the calendar month.
+  scope: Workspot Control Service — access and availability for Administrative Users and End Users.
+  remedy: Service Credit calculated as (Annual Subscription Fee / 12) x a Service Credit Percentage banded
+    by the shortfall. Credit requires the customer to give written notice; it is not automatic.
+  exclusions: An Availability Exclusions section applies.
+  governed_by: https://www.workspot.com/legal/workspot-enterprise-subscription-agreement/
+  note: Workspot markets 99.99% uptime for its Global Desktops capability. The CONTRACTUAL commitment
+    for the Workspot Control Service is 99.9% — one nine lower. Do not conflate the marketing figure with
+    the SLA.
+status_page: https://status.workspot.com/
+status_page_platform: Atlassian Statuspage
+status_alerts_docs: https://docs.workspot.com/docs/sign-up-for-workspot-status-alerts
+supported_releases_docs: https://docs.workspot.com/docs/current-and-supported-workspot-product-releases
+release_notes:
+  control: https://docs.workspot.com/docs/workspot-control-release-notes
+  history: https://docs.workspot.com/docs/release-history
+  windows_client: https://docs.workspot.com/docs/workspot-windows-client-release-notes
+  mac_client: https://docs.workspot.com/docs/workspot-mac-client-release-notes-1
+known_limitations:
+- The gateway reboot command is currently synchronous but Workspot states it will become asynchronous.
+- redeploy, screenshotDesktop, moveDesktop and cancelMoveDesktop are not available on GCP.
+- moveDesktop and cancelMoveDesktop are Azure-only and persistent-desktop-only.
+ephemeral_artifacts:
+- artifact: Desktop screenshot
+  operation: screenshotDesktopUsingPOST
+  expiry: 15 minutes
+- artifact: Remote assistance .msrincident file
+  operation: remoteAssistUserUsingPOST
+  expiry: 1 hour
+terms:
+  subscription_agreement: https://www.workspot.com/legal/workspot-enterprise-subscription-agreement/
+  eula: https://www.workspot.com/legal/end-user-license-agreement/
+  acceptable_use: https://www.workspot.com/legal/aup/
+  support_services: https://www.workspot.com/legal/supportservices/
+  legal_index: https://www.workspot.com/legal/
+stale_pointer_finding:
+  field: info.termsOfService in the published Swagger
+  url: https://www.workspot.com/legal/desktop-service-daas-subscription-agreement/
+  observed_status: 200
+  verdict: soft-404 — resolves but renders the legal INDEX, byte-identical to https://www.workspot.com/legal/,
+    not the agreement
+  current_document: https://www.workspot.com/legal/workspot-enterprise-subscription-agreement/
+  note: Workspot's own machine-readable contract points termsOfService at a document URL that no longer
+    serves that document. The agreement appears to have been renamed from 'Desktop Service DaaS Subscription
+    Agreement' to 'Workspot Enterprise Subscription Agreement' without the spec being updated. A consumer
+    following the spec lands on an index page. Reported here rather than silently corrected in the harvested
+    spec, which is preserved verbatim.

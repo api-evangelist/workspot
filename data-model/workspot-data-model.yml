@@ -1,0 +1,360 @@
+generated: '2026-09-04'
+method: derived
+source: openapi/workspot-control-openapi.json
+summary:
+  definitions: 120
+  definitions_with_relationships: 50
+  relationship_edges: 57
+  paths: 85
+  operations: 105
+notes: Entities are derived from the Workspot Control Swagger 2.0 definitions and path structure. Workspot addresses
+  several entities by NAME rather than by opaque id (templateName, clusterName, gatewayName, poolName) and addresses
+  users by EMAIL — an unusual choice worth noting for agents building URLs.
+entities:
+- name: Desktop Pool
+  collection: /v1.0/pools
+  identifier: poolId
+  description: A group of desktops sharing a template, VM class, cloud region and policy. The central provisioning
+    unit.
+- name: Desktop
+  collection: /v1.0/pools/{poolId}/desktops
+  identifier: desktopId
+  description: An individual Cloud PC VM inside a pool, assignable to a user; supports pause/resume/reboot/redeploy/move/upgrade.
+- name: User
+  collection: /v1.0/users/{email}
+  identifier: email
+  description: An end user, addressed by email address rather than an opaque id, holding desktop and global-desktop
+    assignments and a cost center.
+- name: Group
+  collection: /v1.0/groups
+  identifier: groupId
+  description: A directory group used to assign application bundles and global desktops in bulk.
+- name: Application Bundle
+  collection: /v1.0/bundles
+  identifier: bundleId
+  description: A named collection of applications assignable to a user group.
+- name: Cloud App Pool
+  collection: /v1.0/cloudAppPools
+  identifier: cloudAppPoolId
+  description: A pool of application servers hosting published applications.
+- name: Application
+  collection: /v1.0/cloudAppPools/applications
+  identifier: appId
+  description: A published application served from an app server pool, with an optional custom icon.
+- name: App Server
+  collection: /v1.0/cloudAppPools/{cloudAppPoolId}/appServers
+  identifier: appServerId
+  description: An individual application server VM inside a cloud app pool.
+- name: Template
+  collection: /v1.0/clouds/{subscriptionName}/templates
+  identifier: templateName
+  description: A golden image, addressed by name, supporting build/register/clone/draft/preview/publish.
+- name: Cloud Subscription
+  collection: /v1.0/clouds
+  identifier: subscriptionName
+  description: A connected Azure/GCP/AWS subscription, the parent of regions, zones, networks, security groups and
+    templates.
+- name: Gateway Cluster
+  collection: /v1.0/rdgateways/clusters
+  identifier: clusterId
+  description: A managed RD gateway cluster spanning regions, containing gateway hosts.
+- name: Gateway
+  collection: /v1.0/rdgateways/clusters/{clusterName}/gateways
+  identifier: gatewayId
+  description: An individual RD gateway host within a cluster, with connection and performance telemetry.
+- name: Global Desktop
+  collection: /v1.0/globalDesktops
+  identifier: globalDesktopId
+  description: A multi-region desktop application backed by several pools for failover.
+- name: Operation
+  collection: /v1.0/operation/{operationId}
+  identifier: operationId
+  description: The asynchronous job record every long-running command returns via StatusURL.
+- name: License
+  collection: /v1.0/licenses
+  identifier: '-'
+  description: Purchased license counts per VM type.
+- name: Stale Device
+  collection: /v1.0/staleDevices
+  identifier: deviceId
+  description: A device record no longer active, listable by date range and deletable in bulk.
+- name: Policy
+  collection: /v1.0/policies
+  identifier: '-'
+  description: A Control policy applied to pools and users.
+id_reference_fields:
+- field: poolId
+  appears_in_definitions: 14
+- field: desktopId
+  appears_in_definitions: 8
+- field: securityGroupId
+  appears_in_definitions: 4
+- field: gatewayClusterId
+  appears_in_definitions: 3
+- field: globalDesktopId
+  appears_in_definitions: 3
+- field: networkId
+  appears_in_definitions: 2
+- field: vpcId
+  appears_in_definitions: 2
+- field: snapshotId
+  appears_in_definitions: 2
+- field: clusterRegionId
+  appears_in_definitions: 2
+- field: targetPoolId
+  appears_in_definitions: 2
+- field: bundleId
+  appears_in_definitions: 1
+- field: subscriptionId
+  appears_in_definitions: 1
+- field: appIds
+  appears_in_definitions: 1
+- field: desktopPoolId
+  appears_in_definitions: 1
+- field: deviceIds
+  appears_in_definitions: 1
+- field: clusterId
+  appears_in_definitions: 1
+- field: virtualNetworkId
+  appears_in_definitions: 1
+- field: appId
+  appears_in_definitions: 1
+- field: deviceId
+  appears_in_definitions: 1
+- field: entraDeviceId
+  appears_in_definitions: 1
+- field: entraObjectId
+  appears_in_definitions: 1
+- field: intuneDeviceId
+  appears_in_definitions: 1
+- field: userId
+  appears_in_definitions: 1
+relationships:
+- from: APIGetTemplatesResponseBO
+  to: APIMasterTemplateBO
+  kind: has_many
+  via: templates
+- from: ApiBuildTemplateRequest
+  to: GWDomainToJoinBO
+  kind: has_one
+  via: domainToJoin
+- from: ApiCloudNetworksListResponse
+  to: ApiCloudNetworksResponseBO
+  kind: has_many
+  via: cloudNetworks
+- from: ApiCloudNetworksResponseBO
+  to: ApiCloudRegionBO
+  kind: has_one
+  via: cloudRegion
+- from: ApiCreateBundleResponse
+  to: BundleDetails
+  kind: has_one
+  via: details
+- from: ApiCreateCloudAppPoolResponse
+  to: CloudAppPoolDetails
+  kind: has_one
+  via: details
+- from: ApiCreateCloudAppResponse
+  to: ApplicationDetails
+  kind: has_one
+  via: details
+- from: ApiCustomDesktopCreateResponse
+  to: CustomDesktopDTO
+  kind: has_one
+  via: details
+- from: ApiStatusResponse
+  to: ErrorInfo
+  kind: has_one
+  via: errorInfo
+- from: Applications
+  to: ApplicationDetails
+  kind: has_many
+  via: applications
+- from: AssignedPoolDesktopDetailsBO
+  to: AssignedDesktopBO
+  kind: has_one
+  via: assignedDesktop
+- from: BundleDetails
+  to: KeyValuePairBO
+  kind: has_many
+  via: apps
+- from: BundleDetails
+  to: KeyValuePairBO
+  kind: has_many
+  via: groups
+- from: BundlesDTO
+  to: BundleDetails
+  kind: has_many
+  via: bundlesList
+- from: CloudAppPool
+  to: CloudAppPoolDetails
+  kind: has_many
+  via: cloudAppPools
+- from: CloudAppServers
+  to: CloudAppServerDetails
+  kind: has_many
+  via: cloudAppServers
+- from: CloudConfigSubscriptions
+  to: CloudDetails
+  kind: has_many
+  via: publicClouds
+- from: CloudImages
+  to: Images
+  kind: has_many
+  via: images
+- from: Clusters
+  to: GWClusterDetails
+  kind: has_many
+  via: clusters
+- from: CreateDesktopPoolResponse
+  to: ErrorInfo
+  kind: has_one
+  via: errorInfo
+- from: CustomImageResponse
+  to: TemplateCustomImageBO
+  kind: has_many
+  via: images
+- from: Desktop
+  to: Tag
+  kind: has_many
+  via: tags
+- from: DesktopList
+  to: Desktop
+  kind: has_many
+  via: desktops
+- from: GWAddGwHost
+  to: GWDomainToJoin
+  kind: has_one
+  via: domainToJoin
+- from: GWAddGwHost
+  to: GWHostLocalAdmin
+  kind: has_one
+  via: localAdmin
+- from: GWClusterActionResponse
+  to: ErrorInfo
+  kind: has_one
+  via: errorInfo
+- from: GWClusterDetails
+  to: GWRegionalClusterDetails
+  kind: has_many
+  via: regionalClusters
+- from: GWClusterHostConnectionDetails
+  to: GWClusterHostSessionDetails
+  kind: has_many
+  via: connections
+- from: GWClusterHostPerformanceDetails
+  to: GWClusterHostPerformanceSample
+  kind: has_many
+  via: cpu
+- from: GWClusterHostPerformanceDetails
+  to: GWClusterHostPerformanceSample
+  kind: has_many
+  via: memory
+- from: GWCreateCluster
+  to: GWDomainToJoin
+  kind: has_one
+  via: domainToJoin
+- from: GWCreateCluster
+  to: GWHostLocalAdmin
+  kind: has_one
+  via: localAdmin
+- from: GWCreateCluster
+  to: NpsServerBO
+  kind: has_many
+  via: npsServers
+- from: GWRegionalClusterDetails
+  to: GWPool
+  kind: has_many
+  via: pools
+- from: GWUpdateCluster
+  to: NpsServerBO
+  kind: has_many
+  via: npsServers
+- from: GWUpdateClusterResponse
+  to: ErrorInfo
+  kind: has_one
+  via: errorInfo
+- from: GetLoginOptionsResponse
+  to: NameResponse
+  kind: has_many
+  via: loginOptions
+- from: GetPoliciesResponse
+  to: NameResponse
+  kind: has_many
+  via: policies
+- from: GlobalDesktopBO
+  to: GlobalDesktopPool
+  kind: has_many
+  via: assignedPools
+- from: GlobalDesktopBO
+  to: GroupDetailBO
+  kind: has_many
+  via: groupsAssigned
+- from: GlobalDesktopListBO
+  to: GlobalDesktopDetailsBO
+  kind: has_many
+  via: globalDesktopDetails
+- from: GlobalDesktopPoolsList
+  to: GlobalDesktopPool
+  kind: has_many
+  via: assignedPools
+- from: GlobalDesktopsList
+  to: GlobalDesktopPoolsList
+  kind: has_many
+  via: globalDesktops
+- from: GroupsList
+  to: GroupDetailBO
+  kind: has_many
+  via: groups
+- from: Hosts
+  to: GWClusterHostDetails
+  kind: has_many
+  via: rdGateways
+- from: License
+  to: LicenseDetails
+  kind: has_many
+  via: licenses
+- from: OpResponse
+  to: ErrorInfo
+  kind: has_one
+  via: errorInfo
+- from: Pool
+  to: DesktopPoolDetails
+  kind: has_many
+  via: desktopPools
+- from: SecurityGroups
+  to: SecurityGroup
+  kind: has_many
+  via: securityGroups
+- from: StaleDevices
+  to: StaleDevice
+  kind: has_many
+  via: devices
+- from: TagDesktopRequest
+  to: Tag
+  kind: has_many
+  via: tags
+- from: TemplateVmClasses
+  to: TemplateVMClass
+  kind: has_many
+  via: vmClasses
+- from: User
+  to: UserDesktop
+  kind: has_many
+  via: assignedDesktops
+- from: User
+  to: UserPool
+  kind: has_many
+  via: assignedPools
+- from: UserGlobalDesktopPoolDetailsBO
+  to: AssignedPoolDesktopDetailsBO
+  kind: has_many
+  via: assignedPools
+- from: VDIPoolDetails
+  to: PoolPrecedenceDetails
+  kind: has_many
+  via: poolPrecedence
+- from: VmClasses
+  to: VMClass
+  kind: has_many
+  via: vmClasses

@@ -64,5 +64,52 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Workspot is a company surfaced via the API Evangelist harvest backlog (source: secondary-market) and added to the network as a stub for full-pipeline profiling.
-- https://www.nasdaqprivatemarket.com/
+# Workspot
+
+Workspot is a cloud-native virtual desktop infrastructure (VDI) and Cloud PC provider delivering
+Desktop-as-a-Service through its Workspot Control SaaS management plane and the Workspot Desktop
+Control Fabric, a globally distributed architecture that provisions and manages Windows desktops
+and published applications across Microsoft Azure, Google Cloud and Amazon WorkSpaces Core.
+
+- Website: https://www.workspot.com/
+- Documentation: https://docs.workspot.com/
+- API reference: https://api.workspot.com/swagger-ui.html
+- Status: https://status.workspot.com/
+
+## APIs profiled
+
+| API | Contract | Auth | Base |
+|---|---|---|---|
+| Workspot Control REST API | Swagger 2.0, 85 paths / 105 operations / 120 definitions | OAuth 2.0 password grant, or Entra ID token | `https://api.us.workspot.com`, `https://api.eu.workspot.com`, `https://api.workspot.com` |
+| Workspot SIEM (Splunk) Events API | documented only (no published spec) | HMAC-SHA256, `Authorization: WSEvents` | same host family |
+
+## What this profile found
+
+- **A real, anonymously-served contract.** The Workspot Control Swagger 2.0 document is live at
+  `https://api.workspot.com/v2/api-docs` and served identically from all three regional hosts.
+  Saved verbatim to `openapi/workspot-control-openapi-original.json`.
+- **The published document is not valid JSON.** Two `example` arrays serialize bare unquoted
+  tokens, so a strict parser rejects Workspot's contract as served.
+  `openapi/workspot-control-openapi.json` is the same document with only those tokens quoted;
+  nothing else was changed. Recorded in `overlays/`.
+- **The contract omits its own security model.** Zero `securityDefinitions` across 105 operations,
+  yet every operation declares 401 and 403. The real auth model exists only in prose.
+- **No 429, 404 or 5xx is declared** anywhere in the spec, even though the docs document
+  per-customer throttling that returns 429.
+- **No idempotency**, across 63 mutating operations.
+- **Pagination on exactly one operation** of 105 (`staleDevicesUsingGET`).
+- **A remote MCP server** is advertised via RFC 8414 and RFC 9728 discovery documents on
+  `www.workspot.com` — but it is the WordPress adapter on the marketing site, scope `mcp`,
+  unrelated to the Control API. `tools/list` is OAuth-gated. See `mcp/`.
+- **A real event surface** — the checkpointed SIEM/Splunk pull feed — but no AsyncAPI and no
+  webhooks anywhere in 580 documentation pages. See `asyncapi/`.
+- **No SDKs, no CLI, no GitHub organization, no Postman collection, no public pricing.**
+- **No vulnerability disclosure channel**: no `security.txt`, no `/security/` page, no bug bounty.
+- **A stale pointer in Workspot's own spec**: `info.termsOfService` resolves to the legal index,
+  not the agreement it names. Recorded in `lifecycle/`.
+
+## Provenance
+
+Every artifact carries `generated`, `method` and `source` frontmatter. Every `operationId`
+referenced in `skills/` and `conventions/` was verified to exist verbatim in the harvested
+specification. Absences recorded here are measured, not assumed.

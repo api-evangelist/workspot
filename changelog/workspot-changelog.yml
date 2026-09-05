@@ -1,0 +1,46 @@
+generated: '2026-09-04'
+method: searched
+source: https://docs.workspot.com/docs/using-the-workspot-control-api
+docs: https://docs.workspot.com/docs/workspot-control-release-notes
+scheme: major.minor product version, decoupled from the /v1.0 URI path version
+current_version: '3.3'
+note: >-
+  Workspot maintains a "Recent and Upcoming Release" section inside the Control API guide
+  that is the API-specific changelog, plus separate dated release-notes pages for Workspot
+  Control and each client. Entries below are the API track only, captured verbatim from the
+  API guide. Releases are staged US-then-EU.
+entries:
+- version: '3.4'
+  date: '2026-08-22'
+  status: scheduled
+  regions:
+  - {region: US, date: '2026-08-22'}
+  - {region: EU, date: '2026-08-25'}
+  breaking: false
+  additions:
+  - POST /v1.0/cloudAppPools/applications/{appId}/icon can now specify a custom application icon.
+  - GET /v1.0/cloudAppPools/applications/{appId} now returns command-line parameters, if any, for application server apps.
+- version: '3.3'
+  date: '2026-06-06'
+  status: released
+  breaking: false
+  additions:
+  - Support for attachSnapShot, which attaches an Amazon AWS snapshot image to a desktop and registers the desktop with Control via the Agent.
+- version: '3.2'
+  date: '2026-03-07'
+  status: released
+  breaking: false
+  additions: []
+  highlights: [Bug fixes.]
+- version: '2.9'
+  date: '2025-07-26'
+  status: released
+  regions:
+  - {region: US, date: '2025-07-26'}
+  - {region: EU, date: '2025-07-29'}
+  breaking: false
+  additions:
+  - Connection throttling introduced (20 read/min, 15 write/min, HTTP 429 with X-Retry-After-Secs).
+  - 'Template management: list, clone, publish, unpublish, register and delete templates.'
+  - 'Gateway management: create and manage Gateways and Gateway Clusters.'
+  - 'Clouds: list Clouds and the regions, zones and networks in each Cloud.'

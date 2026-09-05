@@ -1,0 +1,70 @@
+generated: '2026-09-04'
+method: searched
+source: https://docs.workspot.com/docs/using-the-workspot-control-api
+docs: https://docs.workspot.com/docs/using-the-workspot-control-api
+limit_count: 2
+enforcement: >-
+  Per-customer connection throttling. Throttled calls are neither executed nor queued —
+  they are rejected outright. Introduced in Control API 2.9 (July 2025).
+exhaustion_status: 429
+response_headers:
+  note: >-
+    Workspot does NOT return standard X-RateLimit-* or RateLimit-* response headers. The
+    retry hint is delivered as a FIELD IN THE JSON RESPONSE BODY, not as a header, despite
+    being named like one. An agent that reads only headers will find no rate-limit signal.
+  body_fields:
+  - name: X-Retry-After-Secs
+    location: response body (JSON)
+    type: integer
+    description: Recommended number of seconds to wait before retrying.
+  - name: error
+    location: response body (JSON)
+    example: TooManyRequests
+  - name: description
+    location: response body (JSON)
+    example: RateLimitExceeded
+  example_body: '{ "X-Retry-After-Secs": 12, "description": "RateLimitExceeded", "error": "TooManyRequests" }'
+  retry_after_header: false
+rate_limits:
+- scope: per-customer
+  category: read
+  methods: [GET]
+  limit: 20
+  window: 1 minute
+  burst: null
+  description: Lightweight read-only calls.
+- scope: per-customer
+  category: write
+  methods: [POST, DELETE]
+  limit: 15
+  window: 1 minute
+  burst: null
+  description: >-
+    Write calls. Workspot documents three throttling categories (read, heavyweight and very
+    heavyweight) but publishes numeric limits for only read and write.
+concurrency_limits:
+- scope: per-enterprise
+  resource: desktop provisioning
+  description: >-
+    A limited (unpublished) number of desktop provisioning requests may be outstanding at
+    once across all clouds and pools. Exceeding it fails the asynchronous operation with
+    errorInfo.error = maxConcurrentProvisioningError. Desktops are never provisioned in
+    parallel — always one at a time.
+- scope: per-enterprise
+  resource: moveDesktop
+  limit: 10
+  description: >-
+    Workspot's documented best practice caps outstanding create-or-move desktop calls at ten
+    for an entire enterprise, with a delay of 60 seconds or more between moveDesktop calls.
+polling_guidance:
+- surface: Control API asynchronous operations
+  guidance: Poll the returned StatusURL with GET /v1.0/operation/{operationId}; the usage-report example polls every 5 seconds.
+- surface: SIEM events API
+  guidance: >-
+    Poll the request token with HEAD every 30 seconds while data is being prepared. After a
+    204, or after a batch returning fewer than 1000 events (X-Ws-Num-Rec < 1000), wait 15
+    minutes before checking for new data.
+  source: https://docs.workspot.com/docs/workspot-splunksiem-api-user-guide
+gaps:
+- The published Swagger declares no 429 response on any of its 105 operations.
+- No standard rate-limit response headers are emitted; the retry hint is body-only.

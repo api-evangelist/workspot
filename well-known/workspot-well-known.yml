@@ -1,0 +1,141 @@
+generated: '2026-09-04'
+method: probed
+source: live probes of every host in this record, 2026-09-04
+notes: >-
+  Probed the registrable domain, www, the API host family (api.workspot.com and the
+  documented regional aliases api.us / api.eu) and the Document360 docs host. Two real
+  documents were found, both on www.workspot.com: an RFC 8414 OAuth authorization-server
+  metadata document and an RFC 9728 OAuth protected-resource document. Both are served by
+  a WordPress MCP adapter plugin on the marketing site and together advertise a remote MCP
+  server at https://www.workspot.com/wp-json/mcp/mcp-oauth-server (see mcp/workspot-mcp.yml).
+  Every other probed path returned a genuine 404 (workspot.com and docs.workspot.com) or a
+  403 from the API gateway (api.workspot.com rejects all unauthenticated paths, including
+  paths that do not exist, so its 403s are not evidence of a withheld document).
+  docs.workspot.com is a Document360 SPA that answers 200 with an HTML shell for /apis.yml;
+  that is a catch-all, not a document, and is recorded as a miss.
+path_echo_control:
+  status: passed
+  detail: >-
+    /.well-known/workspot-negative-control-7f3ab91c.json returned 404 on workspot.com,
+    www.workspot.com and docs.workspot.com, and 403 on api.workspot.com. No host echoes
+    arbitrary well-known paths, so the two hits above are real documents.
+hit_count: 2
+hosts:
+- host: https://www.workspot.com
+  documents:
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    file: workspot-oauth-authorization-server.json
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    file: workspot-oauth-protected-resource.json
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /apis.yml
+    status: 404
+  - path: /llms.txt
+    status: 404
+- host: https://workspot.com
+  documents:
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    file: workspot-oauth-authorization-server.json
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    file: workspot-oauth-protected-resource.json
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /apis.yml
+    status: 404
+  - path: /llms.txt
+    status: 404
+- host: https://api.workspot.com
+  note: >-
+    Spring Boot API gateway. Returns 403 Forbidden with a JSON error envelope for every
+    unauthenticated path including nonexistent ones, so no /.well-known/ conclusion can be
+    drawn. The host does serve its Swagger 2.0 contract anonymously at /v2/api-docs.
+  documents:
+  - path: /.well-known/security.txt
+    status: 403
+  - path: /.well-known/openid-configuration
+    status: 403
+  - path: /.well-known/oauth-authorization-server
+    status: 403
+  - path: /.well-known/oauth-protected-resource
+    status: 403
+  - path: /.well-known/api-catalog
+    status: 403
+  - path: /.well-known/ai-plugin.json
+    status: 403
+  - path: /.well-known/agent-card.json
+    status: 403
+  - path: /.well-known/agent.json
+    status: 403
+  - path: /.well-known/apis.json
+    status: 403
+  - path: /apis.json
+    status: 403
+  - path: /apis.yml
+    status: 403
+  - path: /llms.txt
+    status: 403
+- host: https://docs.workspot.com
+  note: >-
+    Document360 knowledge base. Serves a real llms.txt at /llms.txt (saved to
+    llms/workspot-llms.txt). /apis.yml returns 200 with a Document360 SPA HTML shell —
+    a catch-all, recorded as a miss, no file saved.
+  documents:
+  - path: /llms.txt
+    status: 200
+    file: ../llms/workspot-llms.txt
+  - path: /apis.yml
+    status: 200
+    note: HTML SPA shell, not an APIs.json document — miss
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404

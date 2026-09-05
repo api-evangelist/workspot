@@ -1,0 +1,38 @@
+generated: '2026-09-04'
+method: searched
+probe: true
+source: https://www.workspot.com/resources/trust-center/
+url: https://www.workspot.com/resources/trust-center/
+alias_url: https://www.workspot.com/trust/
+certifications:
+- SOC 2 Type 2
+- GDPR
+assessment:
+  cadence: annual
+  assessor: external leading audit firm (not named publicly)
+  statement: >-
+    "Workspot's Information security and privacy policies and controls are assessed annually
+    by an external leading audit firm to ensure Workspot meets the requirements of Service
+    Organization Control (SOC) 2 Type 2 and General Data Protection Regulation (GDPR)."
+  penetration_testing: >-
+    Workspot's cloud service is assessed by an external security lab, and customers are given
+    access to the latest assessment and penetration testing reports annually upon request.
+    The reports are not public.
+  security_rating: >-
+    Workspot partners with Bitsight Technologies to continuously monitor its security posture.
+data_protection:
+  dpa: GDPR-compliant Data Processing Addendum
+  scc: Standard Contractual Clauses (SCC) 2021
+  privacy_contact: privacy@workspot.com
+  privacy_policy: https://www.workspot.com/legal/privacy-policy/
+not_claimed:
+  note: >-
+    Recorded because absence is data. The public Trust Center names only SOC 2 Type 2 and
+    GDPR. Despite Workspot marketing to healthcare, financial services and higher education,
+    it does not publicly claim ISO 27001, ISO 27017/27018, PCI DSS, HIPAA or a BAA, FedRAMP,
+    CSA STAR or FIPS 140 on any page reachable without credentials.
+  probed_for: [ISO 27001, ISO 27017, ISO 27018, PCI DSS, HIPAA, FedRAMP, CSA STAR, FIPS 140]
+evidence:
+- source: https://www.workspot.com/resources/trust-center/
+  http_status: 200
+  keywords: [trust center, compliance certifications, soc 2 type 2, gdpr, penetration testing, data processing addendum, standard contractual clauses, bitsight]

@@ -1,0 +1,62 @@
+generated: '2026-09-04'
+method: probed
+status: published
+source: https://www.workspot.com/.well-known/oauth-protected-resource
+deployment:
+  mode: remote
+  endpoint: https://www.workspot.com/wp-json/mcp/mcp-oauth-server
+  auth: oauth
+  verified: probed
+server:
+  name: workspot-wordpress-mcp
+  transport: http
+  url: https://www.workspot.com/wp-json/mcp/mcp-oauth-server
+discovery:
+  protected_resource: https://www.workspot.com/.well-known/oauth-protected-resource
+  authorization_server: https://www.workspot.com/.well-known/oauth-authorization-server
+  registered_routes:
+  - /wp-json/mcp/mcp-oauth-server
+  - /wp-json/mcp/mcp-adapter-default-server
+oauth:
+  issuer: https://www.workspot.com
+  authorization_endpoint: https://www.workspot.com/oauth/authorize
+  token_endpoint: https://www.workspot.com/oauth/token
+  revocation_endpoint: https://www.workspot.com/oauth/revoke
+  grant_types_supported: [authorization_code, refresh_token]
+  code_challenge_methods_supported: [S256]
+  scopes_supported: [mcp]
+  token_endpoint_auth_methods_supported: [none]
+  dynamic_client_registration: client_id_metadata_document_supported
+tools: []
+tools_gated: true
+x-evidence:
+  fetched: '2026-09-04'
+  probes:
+  - url: https://www.workspot.com/wp-json/mcp
+    method: GET
+    http_status: 200
+    result: >-
+      WordPress REST namespace "mcp" registered with routes /mcp,
+      /mcp/mcp-oauth-server (POST,GET,DELETE) and /mcp/mcp-adapter-default-server.
+  - url: https://www.workspot.com/wp-json/mcp/mcp-oauth-server
+    method: POST
+    body: '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+    http_status: 401
+    result: '{"code":"mcp_unauthorized","message":"MCP authentication required."}'
+  - url: https://www.workspot.com/wp-json/mcp/mcp-adapter-default-server
+    method: POST
+    body: '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+    http_status: 401
+    result: '{"code":"rest_forbidden","message":"Sorry, you are not allowed to do that."}'
+notes: >-
+  This is a REAL, provider-served remote MCP endpoint: the route is registered in the
+  WordPress REST namespace and Workspot serves both RFC 8414 and RFC 9728 discovery
+  documents pointing at it. tools/list is OAuth-gated (401 mcp_unauthorized), so the live
+  tool set and its inputSchemas could not be enumerated anonymously and tools[] is left
+  EMPTY rather than guessed.
+  SCOPE CAVEAT, stated plainly: this server is the WordPress MCP adapter plugin running on
+  the workspot.com MARKETING site. Nothing Workspot publishes connects it to the Workspot
+  Control REST API, and its single advertised scope is "mcp". It should not be read as an
+  agent surface over Cloud PC provisioning. No MCP server for the Control API was found, so
+  no tool crosswalk is emitted — a crosswalk between this server and the Control OpenAPI
+  would assert a binding that does not exist.

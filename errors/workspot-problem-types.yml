@@ -1,0 +1,108 @@
+generated: '2026-09-04'
+method: derived
+source: openapi/workspot-control-openapi.json
+format: vendor-json
+envelope:
+  description: Workspot Control returns a JSON error envelope. Synchronous failures carry "error" (a machine
+    token) and "description" (human text). Asynchronous operations return an ApiStatusResponse whose "status"
+    is Succeeded or Failed and whose "errorInfo" object carries the same error/description pair.
+  fields:
+  - error
+  - description
+  async_wrapper:
+    schema: ApiStatusResponse
+    fields:
+    - status
+    - startTime
+    - endTime
+    - details
+    - errorInfo
+    errorInfo_fields:
+    - error
+    - description
+  rfc9457: false
+  content_type: application/json
+problems:
+- status: 400
+  title: Bad Request
+  remediation: The request was rejected as malformed or semantically invalid. Inspect the response body
+    error/description fields for the specific validation failure.
+  occurrences: 103
+  spec_descriptions:
+  - description: Error message with details
+    count: 55
+  - description: Bad request
+    count: 46
+  - description: Error message with details. Returns Bad request for GCP and Azure clouds
+    count: 1
+  - description: Error message with details. Returns Bad request for AWS and Azure clouds
+    count: 1
+  response_schemas: []
+  example_operations:
+  - bundlesUsingGET
+  - createBundleUsingPOST
+  - bundleInfoUsingGET
+  - updateBundleUsingPOST
+  - deleteBundleUsingDELETE
+- status: 401
+  title: Unauthorized
+  remediation: The OAuth 2.0 bearer token (or Entra ID token) is missing, malformed or expired. Control
+    API tokens expire one hour after issue; re-authenticate at /oauth/token and retry.
+  occurrences: 105
+  spec_descriptions:
+  - description: Unauthorized
+    count: 105
+  response_schemas: []
+  example_operations:
+  - bundlesUsingGET
+  - createBundleUsingPOST
+  - bundleInfoUsingGET
+  - updateBundleUsingPOST
+  - deleteBundleUsingDELETE
+- status: 403
+  title: Forbidden
+  remediation: The authenticated Control administrator lacks permission for this operation, or API access
+    is not enabled for the tenant (Setup > API).
+  occurrences: 105
+  spec_descriptions:
+  - description: Forbidden
+    count: 105
+  response_schemas: []
+  example_operations:
+  - bundlesUsingGET
+  - createBundleUsingPOST
+  - bundleInfoUsingGET
+  - updateBundleUsingPOST
+  - deleteBundleUsingDELETE
+- status: 413
+  title: Payload Too Large
+  remediation: The uploaded application icon exceeds the maximum allowed size of 100 KB.
+  occurrences: 1
+  spec_descriptions:
+  - description: The icon exceeds the maximum allowed size (100 KB)
+    count: 1
+  response_schemas: []
+  example_operations:
+  - uploadCloudAppIconUsingPOST
+known_error_tokens:
+- error: RateLimitExceeded
+  http_status: 429
+  description: TooManyRequests — connection throttling rejected the call.
+  extra_fields:
+  - X-Retry-After-Secs
+  source: https://docs.workspot.com/docs/using-the-workspot-control-api
+  note: Documented in the API guide but NOT declared in the published Swagger — the spec declares no 429
+    response on any of its 105 operations.
+- error: maxConcurrentProvisioningError
+  http_status: null
+  description: You have reached the max concurrent provisionings allowed. Please wait for some time and
+    try again.
+  source: https://docs.workspot.com/docs/using-the-workspot-control-api
+  note: Surfaced in the asynchronous ApiStatusResponse errorInfo of desktop-creation operations, not as
+    an HTTP status.
+gaps:
+- No 5xx response is declared on any of the 105 operations.
+- No 404 response is declared, including on the many {id}-addressed GET/DELETE operations.
+- No 429 response is declared even though the API guide documents per-customer throttling that returns
+  429 with an X-Retry-After-Secs body field.
+- Error bodies are not RFC 9457 application/problem+json.

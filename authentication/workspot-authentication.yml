@@ -1,0 +1,71 @@
+generated: '2026-09-04'
+method: searched
+source: https://docs.workspot.com/docs/using-the-workspot-control-api
+docs: https://docs.workspot.com/docs/using-the-workspot-control-api
+also: https://docs.workspot.com/docs/using-entra-id-authentication-with-the-control-api
+summary:
+  types: [oauth2, http, hmac]
+  api_key_in: []
+  oauth2_flows: [password]
+  note: >-
+    The published Swagger 2.0 document declares NO securityDefinitions at all — the
+    mechanical derive pass found zero schemes across 105 operations. Every scheme below is
+    read from Workspot's own documentation, which is why this file is method: searched.
+    That absence is itself a finding: an agent reading only the machine-readable contract
+    cannot discover how to authenticate.
+schemes:
+- name: Control API OAuth 2.0 (resource owner password credentials)
+  api: Workspot Control REST API
+  type: oauth2
+  flow: password
+  token_url: https://api.workspot.com/oauth/token
+  regional_token_urls:
+  - https://api.us.workspot.com/oauth/token
+  - https://api.eu.workspot.com/oauth/token
+  client_authentication: >-
+    HTTP Basic — the string "ClientID:ClientSecret" base64-encoded into the Authorization
+    header. Client ID and Client Secret are issued in Workspot Control under Setup > API and
+    can be regenerated at any time, which immediately invalidates the previous pair.
+  user_credentials: >-
+    grant_type=password with the username and password of a Workspot Control administrator
+    account, posted as form parameters alongside the Basic client header.
+  token_placement: 'Authorization: Bearer <access_token>'
+  token_lifetime: 3600 seconds (one hour); re-run the token call to obtain a new one
+  scopes: []
+  scopes_note: >-
+    Workspot documents no OAuth scope surface for the Control API. Authorization is carried
+    by the Control administrator role, not by scopes, so no scopes/ artifact is emitted.
+  source: https://docs.workspot.com/docs/using-the-workspot-control-api
+- name: Microsoft Entra ID token
+  api: Workspot Control REST API
+  type: oauth2
+  flow: azure-ad-token
+  description: >-
+    Mandatory alternative for tenants configured as Entra-ID-only. The administrator sets
+    Setup > API > Auth Type to "Azure AD Token (Entra ID)", at which point the Control Client
+    ID and Client Secret are no longer used and no Control administrator credentials are
+    sent. The caller obtains an access token from Entra ID for the "Workspot" Enterprise
+    Application registered in the tenant and presents it as a bearer token.
+  requires:
+  - Workspot registered as an Enterprise Application in the Entra ID tenant
+  - the Enterprise Application's Application ID
+  - the Entra ID Tenant ID
+  source: https://docs.workspot.com/docs/using-entra-id-authentication-with-the-control-api
+- name: WSEvents HMAC-SHA256
+  api: Workspot SIEM (Splunk) Events API
+  type: hmac
+  scheme: WSEvents
+  algorithm: HMAC-SHA256
+  header: 'Authorization: WSEvents <keyId>:<base64(HMAC-SHA256(canonical_string, secretKey))>'
+  credentials: >-
+    A Key Id and Secret Key issued in Workspot Control under Setup > Splunk, together with
+    the tenant-specific Control Splunk API URL shown on the same page.
+  description: >-
+    Selected parts of the request are concatenated into a canonical string, a MAC is computed
+    over it with the Secret Key using HMAC-SHA256, base64-encoded, and combined with the key
+    identifier in the Authorization header.
+  source: https://docs.workspot.com/docs/workspot-splunksiem-api-user-guide
+enablement:
+  note: >-
+    API access is enabled by default for new customers; older tenants may need to contact
+    Workspot Support to have it enabled. When enabled, a "Setup > API" tab appears in Control.

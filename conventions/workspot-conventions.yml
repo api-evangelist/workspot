@@ -1,0 +1,218 @@
+generated: '2026-09-04'
+method: searched
+source: https://docs.workspot.com/docs/using-the-workspot-control-api
+derived_from: openapi/workspot-control-openapi.json
+summary: >-
+  Workspot Control is an asynchronous, administrator-scoped control plane. Its dominant
+  convention is submit-then-poll: most mutating commands return immediately with a StatusURL
+  that the caller polls until the operation reaches Succeeded or Failed. There is no
+  idempotency contract, no general pagination, no request-id tracing header and no
+  standard rate-limit headers — an agent must treat every write as non-replayable.
+
+authentication:
+  style: OAuth 2.0 password grant with HTTP Basic client credentials; Entra ID bearer token on Entra-only tenants
+  header: 'Authorization: Bearer <access_token>'
+  token_lifetime: 3600 seconds
+  detail: authentication/workspot-authentication.yml
+
+async_model:
+  pattern: submit-then-poll
+  description: >-
+    Many commands are asynchronous and return a "StatusURL" field naming the URL to poll.
+    Synchronous commands do not return until they have completed. Workspot's own guidance is
+    explicit that success is not guaranteed and the caller must check BOTH the HTTP status
+    code and the response body.
+  poll_operation: statusCheckUsingGET
+  poll_path: /v1.0/operation/{operationId}
+  status_schema: ApiStatusResponse
+  status_values: [InProgress, Succeeded, Failed]
+  status_fields: [status, startTime, endTime, details, errorInfo]
+  recommended_interval: 5 seconds (per Workspot's own PowerShell usage-report example)
+  known_limitation: >-
+    The gateway reboot command
+    (/v1.0/rdgateways/clusters/{clusterName}/gateways/{gatewayName}/reboot) is currently
+    synchronous but Workspot states it will become asynchronous.
+
+idempotency:
+  coverage: none
+  supported: false
+  header: null
+  scope: []
+  retention: null
+  evidence: >-
+    The string "idempot" does not appear anywhere in the 105-operation published Swagger, and
+    Workspot's API guide documents no replay-protection mechanism, no client-supplied request
+    key and no safe-retry contract. There are 63 mutating operations (POST/DELETE) and none
+    accepts an idempotency key.
+  consequence: >-
+    A retried desktop-creation, template-build, gateway-create or user-assign call will
+    execute a SECOND time. Because provisioning is also concurrency-capped, a naive retry can
+    both double-provision and trip maxConcurrentProvisioningError. Agents must dedupe
+    client-side and reconcile via GET before retrying any write.
+
+pagination:
+  style: page-number
+  coverage: partial
+  scope:
+  - staleDevicesUsingGET
+  params: [pageNumber, startDate, endDate]
+  response_fields: []
+  note: >-
+    Pagination exists on exactly ONE of the 105 operations — GET /v1.0/staleDevices, which
+    accepts pageNumber plus a startDate/endDate window. Every other collection endpoint
+    (pools, desktops, users, groups, bundles, templates, gateways) returns an unbounded list
+    with no page, cursor, limit or offset parameter and no total count in the response.
+    Large tenants therefore have no supported way to page a desktop or user inventory.
+
+batch_operations:
+- operation: deleteStaleDevicesUsingDELETE
+  path: /v1.0/staleDevices
+  description: Accepts a deviceIds array and deletes the listed stale devices in one call.
+
+filtering:
+  supported: partial
+  params: [subscriptionName, type, startDate, endDate]
+  note: Only 5 distinct query parameters exist across the entire 105-operation surface.
+
+field_expansion:
+  supported: false
+metadata:
+  supported: partial
+  note: >-
+    Desktops carry free-form tags via POST /v1.0/pools/{poolId}/desktops/{desktopId}/tags
+    (see the Using Desktop Tags in the Workspot Control API guide). No general metadata
+    facility exists on other entities.
+  docs: https://docs.workspot.com/docs/using-desktop-tags-in-the-workspot-control-api
+
+request_tracing:
+  supported: false
+  request_id_header: null
+  note: >-
+    No request-id or correlation header is documented or declared. The asynchronous
+    operationId is the only durable handle on a unit of work, and it exists only for
+    async commands.
+
+versioning:
+  scheme: uri-path
+  current_path_version: v1.0
+  product_version: Control API 3.3
+  note: >-
+    Two version tracks that do not move together. The URI segment has stayed at /v1.0 while
+    the product version advanced to 3.3 (3.4 scheduled for August 2026). New operations are
+    added under the SAME /v1.0 prefix, so the path version is not a compatibility signal.
+  detail: lifecycle/workspot-lifecycle.yml
+
+error_envelope:
+  content_type: application/json
+  rfc9457: false
+  fields: [error, description]
+  async_fields: [status, startTime, endTime, details, errorInfo]
+  detail: errors/workspot-problem-types.yml
+
+rate_limit_signaling:
+  status: 429
+  headers: []
+  body_field: X-Retry-After-Secs
+  note: The retry hint is a JSON body field despite its header-style name; no response headers carry it.
+  detail: rate-limits/workspot-rate-limits.yml
+
+content_negotiation:
+  request_content_type: application/json
+  note: >-
+    The Swagger declares no top-level consumes/produces. Workspot's own examples post
+    application/json and the usage report accepts a format parameter whose only supported
+    value is JSON.
+
+identifier_conventions:
+  note: >-
+    Workspot addresses several resources by NAME rather than opaque id — templateName,
+    clusterName, gatewayName, poolName — and addresses users by EMAIL ADDRESS in the path
+    (/v1.0/users/{email}/...). Agents constructing URLs must URL-encode email addresses and
+    must not assume identifiers are opaque or stable under rename.
+
+regional_routing:
+  note: >-
+    Workspot's preferred base URLs are region-specific — https://api.us.workspot.com for US
+    Control deployments and https://api.eu.workspot.com for EU deployments — with
+    https://api.workspot.com retained as the older address. A tenant is reachable only on the
+    region hosting its Control deployment.
+
+cloud_parity:
+  note: >-
+    The API behaves identically on Azure and GCP EXCEPT that redeploy, screenshotDesktop,
+    moveDesktop and cancelMoveDesktop are not available on GCP. moveDesktop and
+    cancelMoveDesktop are Azure-only and persistent-desktop-only. Agents must branch on the
+    tenant's cloud before offering these actions.
+
+reversibility:
+  grade: documented
+  coverage: partial
+  summary: >-
+    Workspot ships genuine reversal paths for its two most disruptive migration commands and
+    for assignment operations, and it documents recovery procedures in prose. What it does
+    NOT publish is a time window for any of them, which is the difference between a
+    documented and a verified reversibility posture. The one retention period Workspot does
+    state — the snapshot kept after a desktop move — is explicitly NOT self-service.
+  write_surface_operations: 63
+  reversible:
+  - action: Move a persistent desktop to another pool
+    operation: moveDesktopUsingPOST
+    reversal_operation: cancelMoveDesktopUsingPOST
+    window: >-
+      Not stated. Workspot documents that cancelMoveDesktop is the remedy when a move fails
+      after the user's assignment has been transferred, but publishes no time limit within
+      which the cancel remains effective.
+    residual: >-
+      A snapshot of the original desktop is retained after a successful move and can be
+      restored, but ONLY by Workspot Support — there is no API operation for it and no
+      published retention period.
+    constraints: Azure only; persistent desktops only; source and target pools must be in the same Azure region and use consistent SKUs.
+    docs: https://docs.workspot.com/docs/using-the-workspot-control-api
+  - action: Upgrade a persistent desktop to another pool
+    operation: upgradeDesktopUsingPOST
+    reversal_operation: cancelUpgradeDesktopUsingPOST
+    window: Not stated.
+    docs: https://docs.workspot.com/docs/using-the-workspot-control-api
+  - action: Pause a desktop
+    operation: pauseDesktopUsingPOST
+    reversal_operation: resumeDesktopUsingPOST
+    window: >-
+      Not stated as a deadline, but retention on suspension is separately settable per
+      desktop via retainDesktopUsingPOST (POST /v1.0/desktops/{desktopId}/retainDesktop),
+      which sets the retention period for a desktop on suspension. The value is
+      tenant-chosen, not published by Workspot.
+  - action: Assign a desktop to a user
+    operation: assignDesktopUsingPOST
+    reversal_operation: unassignDesktopUsingDELETE
+    window: Immediate and unbounded.
+  - action: Assign a global desktop application to a user or group
+    operation: setGlobalDesktopToGroupUsingPOST
+    reversal_operation: unassignGlobalDesktopToGroupUsingDELETE / unAssignAppToUserUsingDELETE
+    window: Immediate and unbounded.
+  - action: Publish a gateway cluster or template
+    operation: publishGatewayClusterUsingPOST / publishTemplateUsingPOST
+    reversal_operation: null
+    note: Templates support draft and preview before publish, which is a rehearsal path rather than a reversal path.
+  irreversible:
+  - operations: [deleteDesktopUsingDELETE, deleteUserUsingDELETE, deleteBundleUsingDELETE, deletecloudAppUsingDELETE, deletecloudAppPoolUsingDELETE, deletecloudAppServerUsingDELETE, deleteTemplateUsingDELETE, deleteGatewayClusterUsingDELETE, deleteGwHostUsingDELETE, deleteStaleDevicesUsingDELETE]
+    note: >-
+      No undo, restore, trash or soft-delete operation exists anywhere in the 105-operation
+      surface, and no restore window is documented for any deletion. Deleting a desktop
+      destroys the VM. Treat every DELETE as permanent.
+  - operations: [redeployDesktopUsingPOST]
+    note: Redeploy rebuilds the desktop VM from its template; there is no reversal operation.
+  na_reason: null
+
+dry_run_mode:
+  supported: partial
+  note: >-
+    There is no general dry-run or validation-only mode. Templates alone have a rehearsal
+    path — draftTemplateUsingPOST and previewTemplateUsingPOST precede
+    publishTemplateUsingPOST. No desktop, user, pool or gateway mutation can be simulated.
+
+cross_links:
+  errors: errors/workspot-problem-types.yml
+  lifecycle: lifecycle/workspot-lifecycle.yml
+  authentication: authentication/workspot-authentication.yml
+  rate_limits: rate-limits/workspot-rate-limits.yml
+  data_model: data-model/workspot-data-model.yml

@@ -1,0 +1,86 @@
+generated: '2026-09-04'
+method: searched
+source: https://docs.workspot.com/docs/workspot-splunksiem-api-user-guide
+spec_type: none
+spec_published: false
+surface_type: pull-based event feed
+webhooks: false
+note: >-
+  Workspot HAS a real, fully documented event surface, but it is neither an AsyncAPI document
+  nor a webhook. It is a checkpointed PULL feed: the client asks for events since a
+  checkpoint, polls a request token until the batch is prepared, then fetches up to 1000
+  events per response. NO AsyncAPI specification is published and NO webhook or push
+  callback exists anywhere in Workspot's documentation — the word "webhook" appears zero
+  times across all 580 pages indexed in docs.workspot.com/llms.txt. This artifact therefore
+  does NOT carry a Webhooks pointer: Workspot does not advertise webhooks, and claiming one
+  would assert a delivery mechanism the provider does not offer.
+delivery:
+  model: submit / poll / fetch with incremental checkpoint
+  transport: HTTPS REST
+  authentication: HMAC-SHA256 with an Authorization "WSEvents" header (see authentication/workspot-authentication.yml)
+  credentials_location: Workspot Control > Setup > Splunk (URL, Key Id, Secret Key)
+  batch_size: 1000 events per response
+  ordering: checkpoint-ordered; the caller persists the checkpoint between runs
+  initial_checkpoint: '0'
+operations:
+- step: 1
+  name: Validate configuration
+  method: POST
+  path: /services/data/v2/event
+  request_body: '{"version":"3.0","provider":"Splunk","test":"true"}'
+  success: 200
+- step: 2
+  name: Submit request for events data
+  method: POST
+  path: /services/data/v2/event
+  request_body: '{"version":"3.0","provider":"Splunk","checkpoint":"<last checkpoint>"}'
+  success: 202
+  response: '{"poll":"/services/data/v2/request/{requestToken}"}'
+- step: 3
+  name: Poll until data is ready
+  method: HEAD
+  path: /services/data/v2/request/{requestToken}
+  success: [202, 200]
+  semantics: 202 = still preparing, 200 = data ready
+  interval: wait 30 seconds between polls while not ready
+- step: 4
+  name: Fetch events data
+  method: GET
+  path: /services/data/v2/request/{requestToken}
+  success: [200, 204]
+  semantics: 204 = no new data since the last checkpoint
+  response_headers:
+  - {name: X-Ws-Checkpoint, description: The new checkpoint to persist and send on the next request.}
+  - {name: X-Ws-Num-Rec, description: Number of events included in this response (max 1000).}
+  backoff: >-
+    Wait 15 minutes before checking again after a 204, or after any response where
+    X-Ws-Num-Rec is less than 1000 (which indicates the caller has caught up).
+event_schema:
+  envelope: '{"events":[ ... ]}'
+  fields:
+  - {name: username, type: string, example: John Doe}
+  - {name: email, type: string, example: jdoe@acme.com}
+  - {name: description, type: string, description: Human-readable account of the action taken.}
+  - {name: eventType, type: string, observed: [Admin], description: Broad classification of the actor/action.}
+  - {name: eventName, type: string, observed: [General]}
+  - {name: dateTime, type: string, format: MM/DD/YYYY HH:MM:SS.mmm, example: 06/18/2019 08:59:09.875}
+  - {name: location, type: string, example: California}
+  - {name: device, type: string, example: Browser}
+  - {name: severity, type: string, observed: [Info]}
+  schema_note: >-
+    Field list is read from the single sample response Workspot publishes. Workspot does not
+    publish an enumeration of eventType, eventName or severity values, so only the observed
+    values are recorded — the full domains require an authenticated tenant to enumerate.
+  source_note: >-
+    Events cover both end-user and administrator actions and are the same records shown in
+    the Events tab of the Workspot Control console.
+related:
+- {name: Workspot Control Event Logs, url: 'https://docs.workspot.com/docs/workspot-control-event-logs'}
+- {name: Workspot Configuration Guide for Splunk, url: 'https://docs.workspot.com/docs/workspot-configuration-guide-for-splunk'}
+- {name: Splunk app, url: 'https://docs.workspot.com/docs/splunk'}
+tooling:
+  sample_script: EventsTestScript.py (3.06 KB, distributed as a .zip attached to the SIEM API guide)
+gaps:
+- No AsyncAPI document is published for this surface.
+- No webhook or push delivery is offered; consumers must poll.
+- Event type, name and severity value domains are not enumerated in public documentation.

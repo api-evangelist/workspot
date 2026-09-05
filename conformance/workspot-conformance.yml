@@ -1,0 +1,102 @@
+generated: '2026-09-04'
+method: searched
+source: https://docs.workspot.com/docs/using-the-workspot-control-api
+standards:
+- id: oauth2
+  conforms: true
+  evidence: >-
+    Control API authenticates with an OAuth 2.0 resource-owner password-credentials grant at
+    /oauth/token using HTTP Basic client authentication; documented at
+    https://docs.workspot.com/docs/using-the-workspot-control-api
+  note: >-
+    The password grant is deprecated by OAuth 2.0 Security Best Current Practice and removed
+    in OAuth 2.1. It requires the caller to hold a Control administrator's actual password.
+- id: oauth2-authorization-code-pkce
+  conforms: true
+  scope: workspot.com WordPress MCP server only
+  evidence: >-
+    /.well-known/oauth-authorization-server advertises authorization_code + refresh_token
+    grants with S256 code challenge; saved to well-known/workspot-oauth-authorization-server.json
+- id: rfc8414-oauth-authorization-server-metadata
+  conforms: true
+  evidence: 200 at https://www.workspot.com/.well-known/oauth-authorization-server
+- id: rfc9728-oauth-protected-resource-metadata
+  conforms: true
+  evidence: 200 at https://www.workspot.com/.well-known/oauth-protected-resource
+- id: openid-connect
+  conforms: false
+  evidence: /.well-known/openid-configuration returned 404 on every probed host.
+- id: entra-id-federation
+  conforms: true
+  evidence: >-
+    Entra ID (Azure AD) access tokens are an accepted and, on Entra-only tenants, mandatory
+    authentication method; documented at
+    https://docs.workspot.com/docs/using-entra-id-authentication-with-the-control-api
+- id: model-context-protocol
+  conforms: true
+  scope: marketing site only
+  evidence: >-
+    A remote MCP endpoint is registered and advertised at
+    https://www.workspot.com/wp-json/mcp/mcp-oauth-server; tools/list is OAuth-gated.
+    See mcp/workspot-mcp.yml — this is the WordPress site, not the Control API.
+- id: swagger-2.0
+  conforms: true
+  evidence: openapi/workspot-control-openapi-original.json — swagger "2.0", 85 paths, 105 operations, 120 definitions.
+  note: >-
+    Workspot publishes Swagger 2.0, superseded by OpenAPI 3.x in 2017. The document also
+    contains a JSON syntax error (see the openapi/ note) and declares no securityDefinitions.
+- id: openapi-3
+  conforms: false
+  evidence: /v3/api-docs and /openapi.json both return 403; only the Swagger 2.0 /v2/api-docs is served.
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: Errors use a vendor {error, description} envelope as application/json, not application/problem+json.
+- id: rfc8594-sunset-header
+  conforms: false
+  evidence: No Sunset or Deprecation header support and no deprecation policy is published.
+- id: idempotency-key
+  conforms: false
+  evidence: No idempotency key, header or replay-protection contract across 63 mutating operations.
+- id: hmac-request-signing
+  conforms: true
+  scope: SIEM (Splunk) Events API
+  evidence: >-
+    HMAC-SHA256 over a canonical request string, base64-encoded with a key identifier in an
+    Authorization "WSEvents" header; documented at
+    https://docs.workspot.com/docs/workspot-splunksiem-api-user-guide
+- id: llmstxt
+  conforms: true
+  evidence: 200 at https://docs.workspot.com/llms.txt, 580 entries with .md twins for every docs page.
+- id: soc2-type2
+  conforms: true
+  evidence: >-
+    "Workspot's Information security and privacy policies and controls are assessed annually
+    by an external leading audit firm to ensure Workspot meets the requirements of Service
+    Organization Control (SOC) 2 Type 2" — https://www.workspot.com/resources/trust-center/
+- id: gdpr
+  conforms: true
+  evidence: >-
+    Trust Center states GDPR conformance and a GDPR-compliant Data Processing Addendum with
+    Standard Contractual Clauses (SCC) 2021 — https://www.workspot.com/resources/trust-center/
+- id: iso-27001
+  conforms: false
+  evidence: Not claimed on the public Trust Center; only SOC 2 Type 2 and GDPR are named.
+- id: hipaa
+  conforms: false
+  evidence: >-
+    Workspot markets to healthcare but does not name HIPAA compliance or a BAA on its public
+    Trust Center.
+- id: fedramp
+  conforms: false
+  evidence: Not claimed on any public page.
+domain_standards:
+  note: >-
+    Virtual desktop infrastructure has no cross-vendor interoperability contract standard
+    (no equivalent of FHIR, SCIM, OData or OpenRTB) for desktop provisioning or session
+    brokering. Workspot's integration surface is instead cloud-provider-native (Azure, GCP,
+    Amazon WorkSpaces Core) and protocol-native (RDP via managed RD gateways). REWARD-ONLY
+    dimension: no domain standard is asserted because none exists for this market, not
+    because Workspot failed to adopt one.
+  probed:
+  - {id: scim, conforms: false, evidence: 'No urn:ietf:params:scim URN or /scim path in the spec; users are managed by a vendor-specific /v1.0/users surface keyed on email.'}
+  - {id: odata, conforms: false, evidence: No $metadata surface.}

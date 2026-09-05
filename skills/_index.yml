@@ -1,0 +1,44 @@
+generated: '2026-09-04'
+method: generated
+source: >-
+  Grounded in openapi/workspot-control-openapi.json (105 operations) and Workspot's own
+  documentation at docs.workspot.com. Every operationId referenced in every skill was
+  verified to exist verbatim in the harvested specification.
+api: openapi/workspot-control-openapi.json
+skills:
+- file: workspot-authenticate-and-poll.md
+  name: Authenticate to Workspot Control and poll an async operation
+  description: >-
+    Regional host selection, OAuth 2.0 password grant vs Entra ID token, one-hour token
+    expiry, and the submit-then-poll contract every write command uses.
+  api: openapi/workspot-control-openapi.json
+  operations: [statusCheckUsingGET, getLicensesUsingGET]
+  prerequisite_for: all
+- file: workspot-provision-and-assign-desktop.md
+  name: Provision a Cloud PC and assign it to a user
+  description: >-
+    Create a desktop in a pool and assign it, working around the absence of idempotency and
+    the enterprise-wide one-at-a-time provisioning cap.
+  api: openapi/workspot-control-openapi.json
+  operations: [poolsUsingGET, poolInfoUsingGET, getpoolDesktopsUsingGET, createDesktopUsingPOST, statusCheckUsingGET, addUserUsingPOST, userDetailsUsingGET, assignDesktopUsingPOST, assignPoolUsingPOST, unassignDesktopUsingDELETE]
+- file: workspot-desktop-power-and-support.md
+  name: Run day-two desktop operations and assist a user
+  description: >-
+    Pause/resume/reboot/redeploy/tag/screenshot a desktop, log off or message a user, and
+    open a remote assistance session — each labelled by how reversible it is.
+  api: openapi/workspot-control-openapi.json
+  operations: [desktopDetailsUsingGET, pauseDesktopUsingPOST, resumeDesktopUsingPOST, retainDesktopUsingPOST, rebootDesktopUsingPOST, redeployDesktopUsingPOST, screenshotDesktopUsingPOST, tagDesktopUsingPOST, statusCheckUsingGET, logoffUserUsingPOST, sendMessageToUserUsingPOST, remoteAssistUserUsingPOST]
+- file: workspot-migrate-desktop.md
+  name: Move or upgrade a persistent desktop between pools
+  description: >-
+    The Azure-only, persistent-only migration flow, its seven-step sequence, its pacing
+    limits, and the cancel paths that recover a failed move.
+  api: openapi/workspot-control-openapi.json
+  operations: [desktopDetailsUsingGET, poolsUsingGET, moveDesktopUsingPOST, cancelMoveDesktopUsingPOST, upgradeDesktopUsingPOST, cancelUpgradeDesktopUsingPOST, rebootDesktopUsingPOST, statusCheckUsingGET]
+- file: workspot-usage-reporting.md
+  name: Generate a Workspot usage report
+  description: >-
+    The read-only submit-poll-download reporting flow, the 30-day window limit, and how to
+    read costCenter, timeSpent and sessions correctly.
+  api: openapi/workspot-control-openapi.json
+  operations: [usageReportUsingPOST, statusCheckUsingGET, generateAllUsersReportUsingGET, getLicensesUsingGET]

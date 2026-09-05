@@ -1,0 +1,23 @@
+generated: '2026-09-04'
+method: searched
+source: https://go.workspot.com/231025-Request-Product-Pricing
+plan_count: 0
+publishes_pricing: false
+model: enterprise quote / contact sales
+note: >-
+  Workspot publishes NO pricing tiers, list prices, per-desktop rates or usage quotas on any
+  public page. The "Pricing" item in the site navigation links to a lead-capture form titled
+  "Request Product Pricing" at go.workspot.com (HTTP 200), not to a pricing page —
+  https://www.workspot.com/pricing/ returns 404. This is a deliberate enterprise
+  contact-sales posture, consistent with a VDI platform sold per-seat on annual subscription
+  alongside the customer's own Azure/GCP/AWS infrastructure spend, which Workspot does not
+  resell. Licensing is visible only to authenticated customers, and the API exposes it via
+  GET /v1.0/licenses (getLicensesUsingGET), which returns purchased license counts per VM type.
+plans: []
+evidence:
+- url: https://go.workspot.com/231025-Request-Product-Pricing
+  status: 200
+  title: Request Product Pricing
+- url: https://www.workspot.com/pricing/
+  status: 404
+commercial_terms: https://www.workspot.com/legal/desktop-service-daas-subscription-agreement/

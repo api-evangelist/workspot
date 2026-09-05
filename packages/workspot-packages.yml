@@ -1,0 +1,48 @@
+generated: '2026-09-04'
+method: searched
+source: >-
+  Searched npm, PyPI, RubyGems, crates.io, NuGet, Maven Central, pkg.go.dev, Packagist,
+  GitHub and Workspot's own documentation index (docs.workspot.com/llms.txt, 580 pages)
+  on 2026-09-04.
+package_count: 0
+official_sdk_count: 0
+packages: []
+note: >-
+  Workspot publishes NO first-party client libraries in any package registry, and no SDKs
+  pointer is emitted because there is no SDK to point at. Across the 580 documentation pages
+  indexed in docs.workspot.com/llms.txt the strings "SDK", "pip install", "npm install",
+  "NuGet" and "PowerShell module" appear zero times. Workspot's own integration guidance is
+  hand-rolled HTTP: the API guide ships a raw PowerShell script using Invoke-RestMethod, and
+  the SIEM guide ships a sample Python script (EventsTestScript.py) distributed as a .zip
+  attached to the documentation page rather than published to PyPI.
+registries_checked:
+- {registry: npm, query: workspot, result: 'One unrelated package "workspot" 0.0.1, described as "Reserved for the Workplans ecosystem" — NOT first-party Workspot and not a client library. Rejected.'}
+- {registry: pypi, query: workspot, result: 404 — no package}
+- {registry: rubygems, query: workspot, result: no first-party package}
+- {registry: crates.io, query: workspot, result: no first-party package}
+- {registry: nuget, query: workspot, result: no first-party package}
+- {registry: maven-central, query: workspot, result: no first-party package}
+- {registry: pkg.go.dev, query: workspot, result: no first-party package}
+- {registry: packagist, query: workspot, result: no first-party package}
+github_organization:
+  exists: false
+  evidence: 'https://api.github.com/orgs/workspot returns 404. A GitHub code search for "workspot" returns 69 unrelated repositories (coworking-space and job-board projects by other authors); none belong to Workspot Inc.'
+distributed_software:
+  note: >-
+    Workspot does ship substantial client software — Windows, macOS, iOS and Android
+    Workspot Client apps and the Workspot Agent — but these are end-user desktop clients and
+    a VM-side agent, distributed through Workspot Control and the app stores. They are not
+    API client libraries and confer no SDK credit.
+  clients: [Windows Client, Mac Client, iOS Client, Android Client, Workspot Agent, Splunk app]
+postman:
+  published_collection: false
+  note: >-
+    Workspot publishes a guide titled "Using Postman with the Control API" that teaches a
+    reader to construct requests by hand and links only to postman.com's own site. No public
+    Postman collection, workspace or run-in-Postman link is published, so no Postman pointer
+    is emitted.
+  docs: https://docs.workspot.com/docs/using-postman-with-the-control-api
+consequence: >-
+  A developer integrating Workspot Control writes their own HTTP client, their own OAuth
+  token refresh, their own async polling loop and their own 429 back-off reading a body
+  field. That is the practical cost of the missing SDK layer.

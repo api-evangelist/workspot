@@ -1,0 +1,124 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Workspot Control REST API
+  version: 1.0.0
+extends: openapi/workspot-control-openapi.json
+x-generated: '2026-09-04'
+x-method: generated
+x-source: >-
+  Derived from https://api.workspot.com/v2/api-docs plus Workspot's own published
+  documentation at docs.workspot.com. This overlay records API Evangelist observations
+  about the harvested contract; it never mutates the original, which is preserved verbatim
+  at openapi/workspot-control-openapi-original.json.
+actions:
+- target: $.info
+  description: Record catalog provenance and the observed contract shape.
+  update:
+    x-apievangelist-slug: workspot
+    x-apievangelist-harvested: '2026-09-04'
+    x-apievangelist-source-url: https://api.workspot.com/v2/api-docs
+    x-apievangelist-spec-version: swagger-2.0
+    x-apievangelist-operations: 105
+    x-apievangelist-paths: 85
+    x-apievangelist-definitions: 120
+
+- target: $.info
+  description: >-
+    Record the JSON syntax defect in the provider's own published document. The upstream
+    /v2/api-docs response is NOT valid JSON — three "example" arrays contain unquoted bare
+    tokens. A strict parser rejects the whole document, which means most standard toolchains
+    cannot consume Workspot's contract as served.
+  update:
+    x-apievangelist-source-defect:
+      kind: invalid-json
+      detail: >-
+        Two "example" arrays serialize bare unquoted tokens instead of JSON strings —
+        [550e8400-e29b-41d4-a716-446655440003, 550e8400-e29b-41d4-a716-446655440007] in
+        DeleteStaleDeviceRequest.deviceIds, and [rdgw1, rdgw2] in the gateway-name example.
+      impact: json.loads(), and any strict Swagger parser, fails on the document as served.
+      remediation_applied: >-
+        openapi/workspot-control-openapi.json is the byte-for-byte same document with only
+        those bare tokens quoted, so it parses. No path, operation, parameter, response or
+        definition was added, removed or altered.
+      unmodified_original: openapi/workspot-control-openapi-original.json
+
+- target: $.info
+  description: Record that the contract omits its own security model.
+  update:
+    x-apievangelist-contract-gaps:
+      security_schemes_declared: 0
+      note: >-
+        The document declares no securityDefinitions and applies no security to any of its
+        105 operations, yet every operation declares 401 and 403 responses. The real model —
+        OAuth 2.0 password grant with Basic client credentials, or an Entra ID token — exists
+        only in prose at docs.workspot.com. An agent reading only the machine-readable
+        contract cannot discover how to authenticate.
+      declared_5xx_responses: 0
+      declared_404_responses: 0
+      declared_429_responses: 0
+      throttling_documented_but_undeclared: >-
+        The API guide documents 20 GET/min and 15 write/min per-customer throttling returning
+        HTTP 429, but no operation declares a 429 response.
+      captured_in:
+      - authentication/workspot-authentication.yml
+      - errors/workspot-problem-types.yml
+      - rate-limits/workspot-rate-limits.yml
+
+- target: $.info
+  description: Record the servers the document does not name.
+  update:
+    x-apievangelist-servers:
+      declared_host: api.workspot.com
+      declared_schemes: null
+      note: >-
+        The Swagger declares host api.workspot.com and basePath / but no schemes array.
+        Workspot's documentation states the PREFERRED base URLs are regional —
+        https://api.us.workspot.com and https://api.eu.workspot.com — with api.workspot.com
+        retained as the older address. All three serve this same document. A tenant is
+        reachable only in the region hosting its Control deployment.
+      verified_hosts:
+      - {host: 'https://api.workspot.com', api_docs_status: 200}
+      - {host: 'https://api.us.workspot.com', api_docs_status: 200}
+      - {host: 'https://api.eu.workspot.com', api_docs_status: 200}
+
+- target: $.info
+  description: Record the asynchronous execution model, which the contract does not express.
+  update:
+    x-apievangelist-async-model:
+      pattern: submit-then-poll
+      note: >-
+        23 operations declare 202 Accepted and return a StatusURL that must be polled via
+        GET /v1.0/operation/{operationId} until status is Succeeded or Failed. The Swagger
+        expresses this only as a 202 response; the polling contract, the InProgress status
+        value and the errorInfo envelope are documented in prose alone.
+      poll_operation: statusCheckUsingGET
+      captured_in: conventions/workspot-conventions.yml
+
+- target: $.tags
+  description: >-
+    Record that the entire 105-operation surface carries a single tag, "APIs", which makes
+    tag-based navigation and per-resource spec splitting impossible without re-derivation.
+  update:
+    x-apievangelist-tagging:
+      declared_tags: 1
+      declared_tag_names: [APIs]
+      operations_per_tag: 105
+      note: >-
+        Every operation is tagged "APIs". The natural resource groupings — pools, desktops,
+        users, groups, bundles, cloudAppPools, applications, clouds, templates, rdgateways,
+        globalDesktops, licenses, staleDevices, policies, reports, operation — are visible
+        only in the path structure. Recovered in data-model/workspot-data-model.yml.
+
+- target: $.info
+  description: Record the write-safety posture agents most need before acting.
+  update:
+    x-apievangelist-agent-safety:
+      idempotency: none
+      idempotency_note: 63 mutating operations, no idempotency key or replay-protection contract.
+      reversibility: documented
+      reversibility_note: >-
+        cancelMoveDesktopUsingPOST and cancelUpgradeDesktopUsingPOST are real reversal paths,
+        but no time window is published for either, and no DELETE has any undo or restore.
+      dry_run: partial
+      dry_run_note: Templates support draftTemplateUsingPOST and previewTemplateUsingPOST; nothing else can be simulated.
+      captured_in: conventions/workspot-conventions.yml
