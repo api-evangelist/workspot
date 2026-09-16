@@ -15,8 +15,17 @@ x-type: company
 x-source: harvest:secondary-market
 specificationVersion: '0.20'
 created: '2026-09-04'
-modified: '2026-09-04'
+modified: '2026-09-16'
 tags:
+- Virtual Desktop Infrastructure
+- Desktop as a Service
+- Cloud PC
+- End User Computing
+- Cloud Infrastructure
+- Enterprise IT
+- Workspace Management
+- Software-as-a-Service
+tags_raw:
 - Virtual Desktop Infrastructure
 - Desktop as a Service
 - Cloud PC
@@ -26,38 +35,6 @@ tags:
 - Workspace Management
 - SaaS
 apis:
-- aid: workspot:control
-  name: Workspot Control REST API
-  description: REST API for Workspot Control, the SaaS management plane for Workspot Cloud PCs. 105 operations
-    across 85 paths for IT Service Management (ITSM), automation and scripting tools — provisioning and
-    lifecycle of desktop pools and desktops, user and group assignment, template build/clone/publish,
-    cloud application server pools and published applications, RD gateway clusters, cloud/region/zone/network
-    discovery, licenses, stale devices and usage reporting. OAuth 2.0 or Microsoft Entra ID token authentication;
-    many operations are asynchronous and return a StatusURL to poll.
-  humanURL: https://docs.workspot.com/docs/using-the-workspot-control-api
-  baseURL: https://api.workspot.com
-  tags:
-  - Virtual Desktop Infrastructure
-  - Desktop as a Service
-  - Cloud PC
-  - Provisioning
-  - Automation
-  properties:
-  - type: Swagger
-    url: openapi/workspot-control-openapi-original.json
-  - type: OpenAPI
-    url: openapi/workspot-control-openapi.json
-  - type: Documentation
-    url: https://docs.workspot.com/docs/using-the-workspot-control-api
-  - type: APIReference
-    url: https://api.workspot.com/swagger-ui.html
-  - type: Overlay
-    url: overlays/workspot-control-overlay.yaml
-  - type: ErrorCatalog
-    url: errors/workspot-problem-types.yml
-  - type: DataModel
-    url: data-model/workspot-data-model.yml
-  image: https://www.workspot.com/app/uploads/2024/10/cropped-workspot-secondary-logo-blue-192x192.png
 - aid: workspot:siem
   name: Workspot SIEM (Splunk) Events API
   description: 'HMAC-SHA256 authenticated REST API for fetching Workspot Control event data — end-user
@@ -78,6 +55,27 @@ apis:
   - type: Events
     url: asyncapi/workspot-siem-events.yml
   image: https://www.workspot.com/app/uploads/2024/10/cropped-workspot-secondary-logo-blue-192x192.png
+- aid: workspot:workspot-apis-api
+  name: Workspot AP Is API
+  description: Workspot Control REST interface for administrators. See the descriptions below and <a href="https://docs.workspot.com/v1/docs/using-the-workspot-control-api">Using
+    the Workspot Control API </a>for additional information
+  humanURL: https://docs.workspot.com/docs/using-the-workspot-control-api
+  baseURL: https://api.workspot.com
+  tags:
+  - APIs
+  properties:
+  - type: OpenAPI
+    url: openapi/workspot-apis-api-openapi.yml
+  - type: Swagger
+    url: openapi/workspot-control-openapi-original.json
+  - type: Documentation
+    url: https://docs.workspot.com/docs/using-the-workspot-control-api
+  - type: APIReference
+    url: https://api.workspot.com/swagger-ui.html
+  - type: ErrorCatalog
+    url: errors/workspot-problem-types.yml
+  - type: DataModel
+    url: data-model/workspot-data-model.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -149,7 +147,7 @@ common:
 - type: Swagger
   url: openapi/workspot-control-openapi-original.json
 - type: OpenAPI
-  url: openapi/workspot-control-openapi.json
+  url: openapi/_original/workspot-control-openapi.json
 - type: ServiceLevelAgreement
   url: https://www.workspot.com/legal/cloudslac/
 x-enrichment:
