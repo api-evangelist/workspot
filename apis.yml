@@ -37,11 +37,12 @@ tags_raw:
 apis:
 - aid: workspot:siem
   name: Workspot SIEM (Splunk) Events API
-  description: 'HMAC-SHA256 authenticated REST API for fetching Workspot Control event data — end-user
-    and administrator actions — into Splunk or any other SIEM. Uses a submit/poll/fetch flow with checkpoint-based
-    incremental delivery: POST an events request with the last checkpoint, poll the returned request token
-    with HEAD until ready, then GET batches of up to 1000 events with the new checkpoint returned in the
-    X-Ws-Checkpoint response header.'
+  description: >-
+    HMAC-SHA256 authenticated REST API for fetching Workspot Control event data — end-user and administrator
+    actions — into Splunk or any other SIEM. Uses a submit/poll/fetch flow with checkpoint-based incremental
+    delivery: POST an events request with the last checkpoint, poll the returned request token with HEAD
+    until ready, then GET batches of up to 1000 events with the new checkpoint returned in the X-Ws-Checkpoint
+    response header.
   humanURL: https://docs.workspot.com/docs/workspot-splunksiem-api-user-guide
   baseURL: https://api.workspot.com
   tags:
@@ -54,18 +55,20 @@ apis:
     url: https://docs.workspot.com/docs/workspot-splunksiem-api-user-guide
   - type: Events
     url: asyncapi/workspot-siem-events.yml
-  image: https://www.workspot.com/app/uploads/2024/10/cropped-workspot-secondary-logo-blue-192x192.png
-- aid: workspot:workspot-apis-api
+  image: >-
+    https://www.workspot.com/app/uploads/2024/10/cropped-workspot-secondary-logo-blue-192x192.png
+- aid: workspot:workspot-ap-is-api
   name: Workspot AP Is API
-  description: Workspot Control REST interface for administrators. See the descriptions below and <a href="https://docs.workspot.com/v1/docs/using-the-workspot-control-api">Using
-    the Workspot Control API </a>for additional information
-  humanURL: https://docs.workspot.com/docs/using-the-workspot-control-api
+  description: >-
+    Workspot Control REST interface for administrators. See the descriptions below and Using the Workspot
+    Control API for additional information
+  humanURL: https://docs.workspot.com/docs/workspot-splunksiem-api-user-guide
   baseURL: https://api.workspot.com
   tags:
-  - APIs
+  - AP Is
   properties:
   - type: OpenAPI
-    url: openapi/workspot-apis-api-openapi.yml
+    url: openapi/workspot-ap-is-api-openapi.yml
   - type: Swagger
     url: openapi/workspot-control-openapi-original.json
   - type: Documentation
