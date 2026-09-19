@@ -64,13 +64,14 @@ apis:
     the Workspot Control API </a>for additional information
   humanURL: https://docs.workspot.com/docs/workspot-splunksiem-api-user-guide
   baseURL: https://api.workspot.com
-  tags:
+  tags: []
+  tags_raw:
   - APIs
   properties:
   - type: OpenAPI
     url: openapi/workspot-apis-api-openapi.yml
   - type: Swagger
-    url: openapi/workspot-control-openapi-original.json
+    url: openapi/_original/workspot-control-openapi-original.json
   - type: Documentation
     url: https://docs.workspot.com/docs/using-the-workspot-control-api
   - type: APIReference
@@ -148,7 +149,7 @@ common:
 - type: Overlay
   url: overlays/workspot-control-overlay.yaml
 - type: Swagger
-  url: openapi/workspot-control-openapi-original.json
+  url: openapi/_original/workspot-control-openapi-original.json
 - type: OpenAPI
   url: openapi/_original/workspot-control-openapi.json
 - type: ServiceLevelAgreement
