@@ -1,0 +1,25 @@
+{
+  "provider": "workspot",
+  "sources": [
+    "_original/workspot-control-openapi-original.json"
+  ],
+  "outputs": [
+    "workspot-apis-api-openapi.yml"
+  ],
+  "archived": [
+    "deleted 1 superseded output(s) from the previous generation"
+  ],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "1 archived document(s) dropped as subsets of other archived documents",
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "workspot-control-openapi-original.json: upgraded swagger 2.0 -> OpenAPI 3.2.0; renamed 4 component key(s) illegal in 3.x (e.g. Cost Center to Assign)",
+    "superseded outputs removed: workspot-ap-is-api-openapi.yml",
+    "apis.yml register: written (+1 apis, 2 total)"
+  ],
+  "skipped": [
+    "_original/workspot-control-openapi.json: archived document superseded by a larger archived document",
+    "workspot-ap-is-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
+}

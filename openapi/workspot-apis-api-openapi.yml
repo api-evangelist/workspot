@@ -1,0 +1,5755 @@
+openapi: 3.2.0
+info:
+  description: REST APIs for IT Service Management (ITSM), automation or scripting tools
+  version: '1.0'
+  title: Workspot Control REST AP Is API
+  termsOfService: https://www.workspot.com/legal/desktop-service-daas-subscription-agreement/
+  contact:
+    name: support@workspot.com
+servers:
+- url: https://api.workspot.com/
+tags:
+- name: APIs
+  description: Workspot Control REST interface for administrators. See the descriptions below and Using the Workspot Control API for additional information
+paths:
+  /v1.0/bundles:
+    get:
+      tags:
+      - APIs
+      summary: Returns a list of all application bundles
+      description: Returns a list of all application bundles along with their associated apps and groups. This is a synchronous command.
+      operationId: bundlesUsingGET
+      responses:
+        '200':
+          description: List of application bundles
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BundlesDTO'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+    post:
+      tags:
+      - APIs
+      summary: Creates a new application bundle
+      description: Creates a new application bundle with a name and a list of associated applications.
+      operationId: createBundleUsingPOST
+      responses:
+        '200':
+          description: Success. Bundle created Successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCreateBundleResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBundleRequestDTO'
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Bundle information.'
+        required: true
+  /v1.0/bundles/{bundleId}:
+    get:
+      tags:
+      - APIs
+      summary: Returns an application bundle details
+      description: Returns an application bundle along with their associated apps and groups. This is a synchronous command.
+      operationId: bundleInfoUsingGET
+      parameters:
+      - name: bundleId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The ID string of the bundle. This is obtained through the GET /v1.0/bundles command.'
+        required: true
+        x-example: f81eed06-c7a0-46b1-a3bf-50cc8880310b
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Application bundle details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BundleDetails'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+    post:
+      tags:
+      - APIs
+      summary: Updates an existing application bundle
+      description: Updates an existing application bundle, specified by its bundleID, with a new properties and list of associated applications.
+      operationId: updateBundleUsingPOST
+      parameters:
+      - name: bundleId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The ID string for the Bundle. This is obtained through the GET /v1.0/bundles command and others.'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success. Bundle updated Successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCreateBundleResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBundleRequestDTO'
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Bundle information.'
+        required: true
+    delete:
+      tags:
+      - APIs
+      summary: Deletes an application bundle
+      description: Deletes the specified application bundle.
+      operationId: deleteBundleUsingDELETE
+      parameters:
+      - name: bundleId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The ID string for the bundle. This is obtained through the GET /v1.0/getBundles command.'
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No content (success)
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/cloudAppPools:
+    get:
+      tags:
+      - APIs
+      summary: Returns a list of all application server pools
+      description: 'Returns a list of all application server pools, along with information about each pool, including its name, its pool id, and other information. The pool id is used by many commands to specify which pool to use. This is a synchronous command.
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core, Akamai'
+      operationId: cloudAppPoolsUsingGET
+      responses:
+        '200':
+          description: List of cloud app pools
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CloudAppPool'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+    post:
+      tags:
+      - APIs
+      summary: Creates an application server pool
+      description: 'Creates an application server pool.
+
+
+        Supported Clouds: GCP'
+      operationId: createCloudAppPoolUsingPOST
+      responses:
+        '200':
+          description: Creates an application server pool.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCreateCloudAppPoolResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCloudAppPool'
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Cloud app pool information.'
+        required: true
+  /v1.0/cloudAppPools/applications:
+    get:
+      tags:
+      - APIs
+      summary: Returns a list of all application server applications
+      description: 'Returns a list of all applications served by any application server pool (but not other kinds of RD application or Web application). This is a synchronous command.
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core'
+      operationId: applicationsUsingGET
+      responses:
+        '200':
+          description: List of all application server applications
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Applications'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+    post:
+      tags:
+      - APIs
+      summary: Creates an application
+      description: 'Creates an application server application.
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core, Akamai'
+      operationId: createCloudAppUsingPOST
+      responses:
+        '200':
+          description: Application server application created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCreateCloudAppResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCloudAppRequest'
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Cloud app  information.'
+        required: true
+  /v1.0/cloudAppPools/applications/{appId}:
+    get:
+      tags:
+      - APIs
+      summary: Returns application details
+      description: 'Returns details about the specified application (application server applications only). This is a synchronous command.
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core'
+      operationId: appDetailsUsingGET
+      parameters:
+      - name: appId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The ID string for the application. This is obtained through the GET /v1.0/applications command and others.'
+        required: true
+        x-example: f81eed06-c7a0-46b1-a3bf-50cc8880310b
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Application details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationDetails'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+    post:
+      tags:
+      - APIs
+      summary: Updates an application
+      description: 'Updates an application server application.
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core'
+      operationId: updateCloudAppUsingPOST
+      parameters:
+      - name: appId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The ID string of the application. This is obtained through the GET /v1.0//cloudAppPools/applications command.'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Application server application succesfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCreateCloudAppResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCloudAppRequest'
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Application server application information.'
+        required: true
+    delete:
+      tags:
+      - APIs
+      summary: Deletes an application
+      description: 'Deletes the specified application.
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core, Akamai'
+      operationId: deletecloudAppUsingDELETE
+      parameters:
+      - name: appId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The ID string of the application. This is obtained through the GET /v1.0/cloudAppPools/applications command.'
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No content (success)
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/cloudAppPools/applications/{appId}/icon:
+    post:
+      tags:
+      - APIs
+      summary: Updates an application icon
+      description: 'Updates the icon of the specified application. Attach the image as the ''icon'' form field, e.g. curl -F "icon=@C:\path\to\myicon.png".
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core, Akamai'
+      operationId: uploadCloudAppIconUsingPOST
+      parameters:
+      - name: appId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The ID string of the application. Obtained through GET /v1.0/cloudAppPools/applications.'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Application icon updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCreateCloudAppResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '413':
+          description: The icon exceeds the maximum allowed size (100 KB)
+      deprecated: false
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                icon:
+                  type: string
+                  description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The image file to upload as the app icon (max 100 KB).'
+                  format: binary
+              required:
+              - icon
+  /v1.0/cloudAppPools/{cloudAppPoolId}:
+    get:
+      tags:
+      - APIs
+      summary: Returns the details about an application server pool
+      description: 'Return the details about the specified application server pool. This is a synchronous command.
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core, Akamai'
+      operationId: cloudAppPoolInfoUsingGET
+      parameters:
+      - name: cloudAppPoolId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The ID string of the application server. This is obtained through the GET /v1.0/cloudAppPools command and others.'
+        required: true
+        x-example: f81eed06-c7a0-46b1-a3bf-50cc8880310b
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Details about the pool
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CloudAppPoolDetails'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+    delete:
+      tags:
+      - APIs
+      summary: Deletes an application server pool
+      description: 'Deletes the specified application server pool.
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core, Akamai'
+      operationId: deletecloudAppPoolUsingDELETE
+      parameters:
+      - name: cloudAppPoolId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The ID string of application server pool. This is obtained through the GET /v1.0/cloudAppPools command.'
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No content (success)
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/cloudAppPools/{cloudAppPoolId}/appServers:
+    get:
+      tags:
+      - APIs
+      summary: Returns a list of application servers in a pool
+      description: 'Returns information about every application server in the specified applicaton server pool, including the server IDs used for commands that operate on a specified server. This is a synchronous command.
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core, Akamai'
+      operationId: cloudAppServersUsingGET
+      parameters:
+      - name: cloudAppPoolId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The ID string of the application server. This is obtained through the GET /v1.0/cloudAppPools command and others.'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: List of app servers in cloud app pool
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CloudAppServers'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/cloudAppPools/{cloudAppPoolId}/appServers/{appServerId}:
+    get:
+      tags:
+      - APIs
+      summary: Returns details for a single application server
+      description: 'Returns the details for a single application server in a specified application server pool. This is a synchronous command.
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core'
+      operationId: appServerDeatilsUsingGET
+      parameters:
+      - name: appServerId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The ID string for the cloud app server. This is obtained through the GET /v1.0/cloudAppPools/{cloudAppPoolId}/appServers command and others.'
+        required: true
+        schema:
+          type: string
+      - name: cloudAppPoolId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The ID string for the cloud app pool. This is obtained through the GET /v1.0/cloudAppPools command and others.'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Details of the specified application server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CloudAppServerDetails'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+    delete:
+      tags:
+      - APIs
+      summary: Deletes a Cloud app server
+      description: 'Deletes the specified cloud app server
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core, Akamai'
+      operationId: deletecloudAppServerUsingDELETE
+      parameters:
+      - name: appServerId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The ID string for the cloud app server. This is obtained through the GET /v1.0/cloudAppPools/{cloudAppPoolId}/appServers command and others.'
+        required: true
+        schema:
+          type: string
+      - name: cloudAppPoolId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The ID string for the cloud app pool. This is obtained through the GET /v1.0/cloudAppPools command and others.'
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No content (success)
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/cloudAppPools/{poolId}:
+    post:
+      tags:
+      - APIs
+      summary: Updates an application server pool
+      description: 'Updates an application server pool.
+
+
+        Supported Clouds: GCP'
+      operationId: updateCloudAppPoolUsingPOST
+      parameters:
+      - name: poolId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The ID string of the application server. This is obtained through the GET /v1.0/pools command and others.'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Updates the parameters of an application server pool.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCreateCloudAppPoolResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCloudAppPool'
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Application server details to updated.'
+        required: true
+  /v1.0/clouds:
+    get:
+      tags:
+      - APIs
+      summary: Returns information about public clouds
+      description: 'Supported Clouds: Azure, GCP, Amazon WorkSpaces Core, Akamai'
+      operationId: publicCloudsUsingGET
+      responses:
+        '200':
+          description: Returns Cloud subscription details. This is a synchronous command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CloudConfigSubscriptions'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/clouds/rdgateways/images:
+    get:
+      tags:
+      - APIs
+      summary: Returns information Market place images required to create gateway cluster…
+      description: 'Returns information about marketplace images. This is a synchronous command.
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core'
+      operationId: getGatewayImagesUsingGET
+      parameters:
+      - name: subscriptionName
+        in: query
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The subscription name from the GET /v1.0/clouds command'
+        required: true
+        allowEmptyValue: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns details about market place images). This is a synchronous command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CloudImages'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/clouds/rdgateways/vmClasses:
+    get:
+      tags:
+      - APIs
+      summary: Returns information about VM Classes required to create gateway cluster…
+      description: 'Returns information of VM Classes. This is a synchronous command. See Gateway Clusters (Managed Gateways) for more information
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core'
+      operationId: getGatewayVmClassesUsingGET
+      parameters:
+      - name: subscriptionName
+        in: query
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The subscription name from the GET /v1.0/clouds command'
+        required: true
+        allowEmptyValue: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns information of VM Classes. This is a synchronous command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VmClasses'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/clouds/{subscriptionName}/customImages:
+    get:
+      tags:
+      - APIs
+      summary: Returns information about Custom Images
+      description: 'Supported Clouds: GCP, Amazon WorkSpaces Core'
+      operationId: customImagesUsingGET
+      parameters:
+      - name: subscriptionName
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The subscription name from the GET /v1.0/clouds command'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns Custom Image details. This is a synchronous command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomImageResponse'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+    post:
+      tags:
+      - APIs
+      summary: Adds a new Custom Image
+      description: 'Supported Clouds: GCP, Amazon WorkSpaces Core'
+      operationId: createCustomImagesUsingPOST
+      parameters:
+      - name: subscriptionName
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The subscription name from the GET /v1.0/clouds command'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Custom Image added successfully. This is a synchronous command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiStatusResponse'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddCustomImageRequest'
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Custom Image information.'
+        required: true
+  /v1.0/clouds/{subscriptionName}/networks:
+    get:
+      tags:
+      - APIs
+      summary: Returns information about Cloud networks
+      description: 'Returns information of cloud networks. This is a synchronous command.
+
+
+        Supported Clouds: GCP'
+      operationId: getCloudNetworksUsingGET
+      parameters:
+      - name: subscriptionName
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The subscription name from the GET /v1.0/clouds command'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns information about Cloud Networks. This is a synchronous command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCloudNetworksListResponse'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/clouds/{subscriptionName}/regions:
+    get:
+      tags:
+      - APIs
+      summary: Returns list of regions
+      description: 'Returns information about regions. Only applicable for AWS subscriptions. This is a synchronous command.
+
+
+        Supported Clouds: Amazon WorkSpaces Core'
+      operationId: getRegionsUsingGET
+      parameters:
+      - name: subscriptionName
+        in: path
+        description: The subscription name from the GET /v1.0/clouds command
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns list  of regions. This is a synchronous command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Regions'
+        '400':
+          description: Error message with details. Returns Bad request for GCP and Azure clouds
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/clouds/{subscriptionName}/regions/{region}/networks:
+    get:
+      tags:
+      - APIs
+      summary: Returns information about Cloud networks in a region
+      description: 'Returns information of cloud networks in a given region. Only applicable for AWS subscriptions. This is a synchronous command.
+
+
+        Supported Clouds: Amazon WorkSpaces Core'
+      operationId: getCloudNetworksByRegionUsingGET
+      parameters:
+      - name: region
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The region name from the GET /v1.0/clouds/{subscriptionName}/regions command'
+        required: true
+        schema:
+          type: string
+      - name: subscriptionName
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The subscription name from the GET /v1.0/clouds command'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns information of Cloud networks in a region. This is a synchronous command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCloudNetworksListResponse'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/clouds/{subscriptionName}/regions/{region}/securityGroups:
+    get:
+      tags:
+      - APIs
+      summary: Returns information AWS security groups
+      description: 'Returns information AWS security groups. This is a synchronous command.
+
+
+        Supported Clouds: Amazon WorkSpaces Core'
+      operationId: getSecurityGroupsUsingGET
+      parameters:
+      - name: region
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The region name from the GET /v1.0/clouds/{subscriptionName}/regions command'
+        required: true
+        schema:
+          type: string
+      - name: subscriptionName
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The subscription name from the GET /v1.0/clouds command'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns information of Security Groups. This is a synchronous command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecurityGroups'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/clouds/{subscriptionName}/regions/{region}/zones:
+    get:
+      tags:
+      - APIs
+      summary: Returns list of Zones for provided region
+      description: 'Returns information about zones for region. Note: This API is applicable for GCP clouds only. This is a synchronous command.
+
+
+        Supported Clouds: GCP'
+      operationId: getZonesUsingGET
+      parameters:
+      - name: region
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">GCP Region Name'
+        required: true
+        schema:
+          type: string
+      - name: subscriptionName
+        in: path
+        description: The subscription name from the GET /v1.0/clouds command
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns list of zones. This is a synchronous command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Zones'
+        '400':
+          description: Error message with details. Returns Bad request for AWS and Azure clouds
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/clouds/{subscriptionName}/templates:
+    get:
+      tags:
+      - APIs
+      summary: Returns information about templates
+      description: 'Supported Clouds: Azure, GCP, Amazon WorkSpaces Core, Akamai'
+      operationId: getTemplatesUsingGET
+      parameters:
+      - name: subscriptionName
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The subscription name from the GET /v1.0/clouds command'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns list of templates in the given subscription
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIGetTemplatesResponseBO'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/clouds/{subscriptionName}/templates/build:
+    post:
+      tags:
+      - APIs
+      summary: Builds a new template Image
+      description: 'Supported Clouds: GCP, Amazon WorkSpaces Core'
+      operationId: buildTemplateUsingPOST
+      parameters:
+      - name: subscriptionName
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The subscription name from the GET /v1.0/clouds command'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Build template. This is a asynchronous command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncOperationStatus'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiBuildTemplateRequest'
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Template information'
+        required: true
+  /v1.0/clouds/{subscriptionName}/templates/register:
+    post:
+      tags:
+      - APIs
+      summary: Registers a new template Image
+      description: 'Supported Clouds: GCP, Amazon WorkSpaces Core'
+      operationId: registerTemplateUsingPOST
+      parameters:
+      - name: subscriptionName
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The subscription name from the GET /v1.0/clouds command'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Register template. This is a asynchronous command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncOperationStatus'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterTemplateRequestBO'
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Template information'
+        required: true
+  /v1.0/clouds/{subscriptionName}/templates/vmClasses:
+    get:
+      tags:
+      - APIs
+      summary: Returns information about VM Classes required to create Templates
+      description: 'Returns information of VM Classes. This is a synchronous command.
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core'
+      operationId: getTemplateVmClassesUsingGET
+      parameters:
+      - name: subscriptionName
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The subscription name from the GET /v1.0/clouds command'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns information of Template VM Classes. This is a synchronous command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateVmClasses'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/clouds/{subscriptionName}/templates/{templateName}:
+    get:
+      tags:
+      - APIs
+      summary: Returns information about templates
+      description: 'Supported Clouds: Azure, GCP, Amazon WorkSpaces Core, Akamai'
+      operationId: getTemplateUsingGET
+      parameters:
+      - name: subscriptionName
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The subscription name from the GET /v1.0/clouds command'
+        required: true
+        schema:
+          type: string
+      - name: templateName
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Name of the template'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns template information in a cloud subscription
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIGetTemplatesResponseBO'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+    delete:
+      tags:
+      - APIs
+      summary: Deletes template from cloud subscription
+      description: 'Supported Clouds: Azure, GCP, Amazon WorkSpaces Core, Akamai'
+      operationId: deleteTemplateUsingDELETE
+      parameters:
+      - name: subscriptionName
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The subscription name from the GET /v1.0/clouds command'
+        required: true
+        schema:
+          type: string
+      - name: templateName
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Name of the template'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns status of the request (Succeeded, or Failed). If failed, provides error information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiStatusResponse'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/clouds/{subscriptionName}/templates/{templateName}/clone:
+    post:
+      tags:
+      - APIs
+      summary: Clones a new template from an existing template
+      description: 'Supported Clouds: GCP, Amazon WorkSpaces Core'
+      operationId: cloneTemplateUsingPOST
+      parameters:
+      - name: subscriptionName
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The subscription name from the GET /v1.0/clouds command'
+        required: true
+        schema:
+          type: string
+      - name: templateName
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The Template name'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Clone a template. This is a asynchronous command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncOperationStatus'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiCloneTemplateRequest'
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Template information'
+        required: true
+  /v1.0/clouds/{subscriptionName}/templates/{templateName}/draft:
+    post:
+      tags:
+      - APIs
+      summary: Draft the template
+      description: 'Supported Clouds: Azure, GCP, Amazon WorkSpaces Core'
+      operationId: draftTemplateUsingPOST
+      parameters:
+      - name: subscriptionName
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The subscription name from the GET /v1.0/clouds command'
+        required: true
+        schema:
+          type: string
+      - name: templateName
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The Template name'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Draft the template. This is a asynchronous command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncOperationStatus'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/clouds/{subscriptionName}/templates/{templateName}/preview:
+    post:
+      tags:
+      - APIs
+      summary: Preview the template
+      description: 'Supported Clouds: Azure, GCP, Amazon WorkSpaces Core'
+      operationId: previewTemplateUsingPOST
+      parameters:
+      - name: subscriptionName
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The subscription name from the GET /v1.0/clouds command'
+        required: true
+        schema:
+          type: string
+      - name: templateName
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The Template name'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Preview the template. This is a asynchronous command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncOperationStatus'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/clouds/{subscriptionName}/templates/{templateName}/publish:
+    post:
+      tags:
+      - APIs
+      summary: Publish the template
+      description: 'Supported Clouds: Azure, GCP, Amazon WorkSpaces Core'
+      operationId: publishTemplateUsingPOST
+      parameters:
+      - name: subscriptionName
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The subscription name from the GET /v1.0/clouds command'
+        required: true
+        schema:
+          type: string
+      - name: templateName
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The Template name'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Publish the template. This is a asynchronous command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncOperationStatus'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/desktops/{desktopId}/cancelUpgradeDesktop:
+    post:
+      tags:
+      - APIs
+      summary: Cancels a upgrade desktop operation
+      description: 'Cancels a upgrade desktop operation and reboots the source desktop in its source pool. Use this command after a upgrade desktop operation fails. Otherwise, the desktop will remain unavailable. This is an asynchronous command.
+
+
+        Supported Clouds: Azure'
+      operationId: cancelUpgradeDesktopUsingPOST
+      parameters:
+      - name: desktopId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The desktopId'
+        required: true
+        schema:
+          type: string
+      responses:
+        '202':
+          description: Request accepted. Returns a statusURL for polling, which is an instance of the GET /v1.0/operation/{operationId} command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncOperationStatus'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/desktops/{desktopId}/retainDesktop:
+    post:
+      tags:
+      - APIs
+      summary: Sets the retention period for a desktop on suspension
+      description: The desktop will be deleted once the retention period is complete. For already suspended desktops the start of retention period will begin from the API call time. For assigned desktops the retention period will start from the suspension time. Retention period should be a non-negative integer (like 0,1,2,3,.. ). This is a synchronised command.
+      operationId: retainDesktopUsingPOST
+      parameters:
+      - name: desktopId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The unique ID string for the desktop. This is obtained through the GET /v1.0/pools/{poolId}/desktops command and others.'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success. Returns updated desktop details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VMRetentionDetails'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VMRetentionPeriod'
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Number of days (positive integer) after which the desktop is deleted. For “0” desktop will be retained for indefinite period. '
+        required: true
+  /v1.0/desktops/{desktopId}/upgradeDesktop:
+    post:
+      tags:
+      - APIs
+      summary: Upgrades a persistent desktop to the specified pool
+      description: 'Upgrades a persistent desktop from its current pool to the destination pool. Ownership of the desktop is preserved and the owner will launch it from its new region/pool as usual from the client interface. This is an asynchronous command.
+
+
+        Supported Clouds: Azure'
+      operationId: upgradeDesktopUsingPOST
+      parameters:
+      - name: desktopId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The desktopId to upgrade'
+        required: true
+        schema:
+          type: string
+      responses:
+        '202':
+          description: Request accepted. Returns a statusURL for polling, which is an instance of the GET /v1.0/operation/{operationId} command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncOperationStatus'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpgradeDesktopRequest'
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The targetPool along with domain join details(if you do not want retain the source name). If AAD only account just provide targetPool and retainName or computerName.'
+        required: true
+  /v1.0/globalDesktops:
+    get:
+      tags:
+      - APIs
+      summary: Returns information on available Global Desktop Applications
+      description: 'Returns details about all the global desktop applications for a company. This is a synchronous command.
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core'
+      operationId: globalDesktopsUsingGET
+      responses:
+        '200':
+          description: Details about the global desktop applications.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalDesktopListBO'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/globalDesktops/{globalDesktopId}:
+    get:
+      tags:
+      - APIs
+      summary: Return details of Global Desktop
+      description: 'Returns information on available Global Desktops including pool, order of precedence and assigned group ID. This is a synchronous command.
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core'
+      operationId: globalDesktopUsingGET
+      parameters:
+      - name: globalDesktopId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Id of the global desktop'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Detail of group
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalDesktopBO'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/globalDesktops/{globalDesktopId}/pools:
+    post:
+      tags:
+      - APIs
+      summary: Assign pools to global desktop application
+      description: 'Assign the pools with order of precedence to global desktop application. This is an asynchronous command.
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core'
+      operationId: setGlobalDesktopGroupPoolsUsingPOST
+      parameters:
+      - name: globalDesktopId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Global Desktop Application Id to assign pools'
+        required: true
+        schema:
+          type: string
+      responses:
+        '202':
+          description: Request accepted. Returns a statusURL for polling, which is an instance of the GET /v1.0/operation/{operationId} command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncOperationStatus'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VDIPoolDetails'
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Pool IDs and precedence to be assigned. Order of precedence is a positive integer, with 1 being the highest precedence. Precedence must be given with no gaps (1, 2, 3; not 1, 4, 9).'
+        required: true
+  /v1.0/groups:
+    get:
+      tags:
+      - APIs
+      summary: Returns a list of all groups
+      description: Returns a list of all group names and ids. This is a synchronous command.
+      operationId: groupsUsingGET
+      responses:
+        '200':
+          description: List of groups
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupsList'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/groups/{groupId}/bundle:
+    post:
+      tags:
+      - APIs
+      summary: Assigns an application bundle to a user group
+      description: Assigns the specified application bundle to a user group.
+      operationId: assignBundleUsingPOST
+      parameters:
+      - name: groupId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Group Id '
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success. Bundle assigned to group.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCreateBundleResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignBundle'
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Bundle information.'
+        required: true
+  /v1.0/groups/{groupId}/globalDesktops:
+    get:
+      tags:
+      - APIs
+      summary: Returns information on global desktops assigned to a group
+      description: 'Returns information on global desktops assigned to a group. This is a synchronous command.
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core'
+      operationId: groupGlobalDesktopDetailsUsingGET
+      parameters:
+      - name: groupId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Id of the group'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Detail of group
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalDesktopsList'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+    post:
+      tags:
+      - APIs
+      summary: Assign a global desktop application to a group
+      description: 'Assigns a global desktop application to a group. This is an asynchronous command.
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core'
+      operationId: setGlobalDesktopToGroupUsingPOST
+      parameters:
+      - name: groupId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Group Id to which global desktop application is to be assigned'
+        required: true
+        schema:
+          type: string
+      responses:
+        '202':
+          description: Request accepted. Returns a statusURL for polling, which is an instance of the GET /v1.0/operation/{operationId} command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncOperationStatus'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GlobalDesktopId'
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Global Desktop Application Id to be assigned to group'
+        required: true
+  /v1.0/groups/{groupId}/globalDesktops/{globalDesktopId}:
+    delete:
+      tags:
+      - APIs
+      summary: Unassign a global desktop application from a group
+      description: 'Revokes group’s assignment to a global desktop application. This is an asynchronous command.
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core'
+      operationId: unassignGlobalDesktopToGroupUsingDELETE
+      parameters:
+      - name: globalDesktopId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Global Desktop Application Id to be revoked from group'
+        required: true
+        schema:
+          type: string
+      - name: groupId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Group Id to which global desktop application is to be revoked from'
+        required: true
+        schema:
+          type: string
+      responses:
+        '202':
+          description: Request accepted. Returns a statusURL for polling, which is an instance of the GET /v1.0/operation/{operationId} command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncOperationStatus'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/licenses:
+    get:
+      tags:
+      - APIs
+      summary: Returns a list of Workspot licenses for each VM type purchased
+      description: For each license type, return information including the total number of licenses purchased and the number of licenses available (unassigned). In addition to desktop licenses, associated licenses such as backup licenses and disaster recovery licenses are listed. This is a synchronous command.
+      operationId: getLicensesUsingGET
+      responses:
+        '200':
+          description: Information about all active licenses
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/License'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/operation/{operationId}:
+    get:
+      tags:
+      - APIs
+      summary: Returns status of an asynchronous operation
+      description: Asynchronous operations return a StatusURL that is an instance of this command with the correct operationID. This command returns the asynchronous operation’s status (plus additional information). This is a synchronous command.
+      operationId: statusCheckUsingGET
+      parameters:
+      - name: operationId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">operationId'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns status of the operation (inProgress, Succeeded, or Failed). Provides success details or error info once finished (Succeeded or Failed).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/policies:
+    get:
+      tags:
+      - APIs
+      summary: Get List of Policies
+      description: Get list of policies based on the type. This is a synchronous command.
+      operationId: getPoliciesUsingGET
+      parameters:
+      - name: type
+        in: query
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Policy Type. Allowed types are ''MediaRedirection'', ''Gateway'', ''Protocol'', ''TimeLimits'', ''Maintenance'', ''Warmup'''
+        required: true
+        allowEmptyValue: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns list of policies of the provided type.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPoliciesResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/pools:
+    get:
+      tags:
+      - APIs
+      summary: Returns a list of all desktop pools
+      description: 'Returns a list of all desktop pools, along with information about each pool, including its name, its pool id, and other information. The pool id is used by many other commands to specify which pool to use. This is a synchronous command.
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core, Akamai'
+      operationId: poolsUsingGET
+      responses:
+        '200':
+          description: List of pools
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pool'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+    post:
+      tags:
+      - APIs
+      summary: Creates Desktop Pool
+      description: 'Creates desktop pool by taking reference from another desktop pool. This is a synchronous command.
+
+
+        Supported Clouds: GCP'
+      operationId: createDesktopPoolUsingPOST
+      responses:
+        '200':
+          description: Returns status of Desktop Pool creation.If status is success, then use /pool/{poolId}/status API to check pool and desktop status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateDesktopPoolResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDesktopPoolRequest'
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">This is desktop pool create request.'
+        required: true
+  /v1.0/pools/loginOptions:
+    get:
+      tags:
+      - APIs
+      summary: Get login options for desktop pool
+      description: Get list of possible login options for pool. This is a synchronous command.
+      operationId: getLoginOptionsUsingGET
+      responses:
+        '200':
+          description: Returns list of possible pool login options.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetLoginOptionsResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/pools/{poolId}:
+    get:
+      tags:
+      - APIs
+      summary: Returns the details for a single pool
+      description: 'Using the poolId, return the details about the specified pool. This is a synchronous command.
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core, Akamai'
+      operationId: poolInfoUsingGET
+      parameters:
+      - name: poolId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The ID string for the pool. This is obtained through the GET /v1.0/pools command and others.'
+        required: true
+        x-example: f81eed06-c7a0-46b1-a3bf-50cc8880310b
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Details about the pool
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DesktopPoolDetails'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/pools/{poolId}/agentToken:
+    get:
+      tags:
+      - APIs
+      summary: Returns Agent token for the pool
+      description: Returns a valid, unexpired Agent Token for the specified pool, which can be used to register desktop in the pool. This is a synchronous command.
+      operationId: poolAgentTokenUsingGET
+      parameters:
+      - name: poolId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The ID string for the pool. This is obtained through the GET /v1.0/pools command and others.'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Agent Token Details for the specified pool
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PoolAgentTokenDetails'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/pools/{poolId}/customdesktop:
+    post:
+      tags:
+      - APIs
+      summary: Creates a desktop in custom cloud pool
+      description: Adds an existing VM to a Custom Cloud Pool. This is a synchronous command.
+      operationId: createCustomDesktopUsingPOST
+      parameters:
+      - name: poolId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The ID string for the pool. This is obtained through the GET /v1.0/pools command and others.'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success. Desktop added successfully to the pool
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCustomDesktopCreateResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCustomDesktop'
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Except for the Computer Name, these are existing parameters of the desktop VM. Computer Name is a unique string used by Control to display information about this VM. It should be no more than fifteen characters long and consist of only alphanumeric and dash characters. You must specify at least a Computer Name and either a BIOS GUID or both a MAC Address and an FQDN.'
+        required: true
+  /v1.0/pools/{poolId}/desktops:
+    get:
+      tags:
+      - APIs
+      summary: Returns a list of desktops in a pool
+      description: 'Returns information about every desktop in the specified pool, including their desktop ids, which are used for commands that operate on a specified desktop. This is a synchronous command.
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core, Akamai'
+      operationId: getpoolDesktopsUsingGET
+      parameters:
+      - name: poolId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The ID string for the pool. This is obtained through the GET /v1.0/pools command and others.'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: List of desktops in pool
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DesktopList'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+    post:
+      tags:
+      - APIs
+      summary: Creates a desktop
+      description: 'Creates a desktop in the specified pool. Optionally, the computerName can be specified. Otherwise it is assigned based on the pool''s Desktop Name and an unused number (for example, mypool-004). The computerName must consist only of alphanumeric characters and hyphens, and cannot start with a numeral or hyphen. Optionally, the snapshot from which the disk of the desktop is created can be specified. Otherwise, it is created with empty disk. The snapshotId should be the unique identifier of the snapshot on cloud.This is an asynchronous command.
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core, Akamai'
+      operationId: createDesktopUsingPOST
+      parameters:
+      - name: poolId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The ID string for the pool. This is obtained through the GET /v1.0/pools command and others.'
+        required: true
+        schema:
+          type: string
+      responses:
+        '202':
+          description: Request accepted. Returns a statusURL for polling, which is an instance of the GET /v1.0/operation/{operationId} command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncOperationStatus'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDesktop'
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Optional parameters. The currently defined parameters are computerName and snapshotId along with domain join details (if desktop is being created with specified snapshot).'
+  /v1.0/pools/{poolId}/desktops/{desktopId}:
+    get:
+      tags:
+      - APIs
+      summary: Returns details for a single desktop
+      description: 'Returns the details for a single, specified desktop in a specified pool. This is a synchronous command.
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core, Akamai'
+      operationId: desktopDetailsUsingGET
+      parameters:
+      - name: desktopId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The ID string for the desktop. This is obtained through the GET /v1.0/pools/{poolId}/desktops command and others.'
+        required: true
+        schema:
+          type: string
+      - name: poolId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The ID string for the pool. This is obtained through the GET /v1.0/pools command and others.'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Details for the specified desktop
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Desktop'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+    delete:
+      tags:
+      - APIs
+      summary: Deletes a desktop
+      description: 'Deletes the specified desktop. If the pool uses the "Auto Create on Delete Desktop" option, the desktop will be recreated from the pool template. Otherwise, is will be be deleted and the size of the pool will be reduced by one. This is a synchronous command.
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core, Akamai'
+      operationId: deleteDesktopUsingDELETE
+      parameters:
+      - name: desktopId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The ID string for the desktop. This is obtained through the GET /v1.0/pools/{poolId}/desktops command and others.'
+        required: true
+        schema:
+          type: string
+      - name: poolId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The ID string for the pool. This is obtained through the GET /v1.0/pools command and others.'
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No content (success)
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/pools/{poolId}/desktops/{desktopId}/attachSnapshot:
+    post:
+      tags:
+      - APIs
+      summary: Attaches a snapshot to a desktop
+      description: 'Attaches the specified snapshot to the desktop. This is an asynchronous command.
+
+
+        Supported Clouds: Amazon WorkSpaces Core'
+      operationId: attachSnapshotUsingPOST
+      parameters:
+      - name: desktopId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The ID string for the desktop. This is obtained through the GET /v1.0/pools/{poolId}/desktops command and others.'
+        required: true
+        schema:
+          type: string
+      - name: poolId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The ID string for the pool. This is obtained through the GET /v1.0/pools command and others.'
+        required: true
+        schema:
+          type: string
+      responses:
+        '202':
+          description: Request accepted. Returns a statusURL for polling, which is an instance of the GET /v1.0/operation/{operationId} command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncOperationStatus'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AttachSnapshot'
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The snapshot detail along with domain join details. If AAD only account just provide the snapshot to be restored on the desktop.'
+        required: true
+  /v1.0/pools/{poolId}/desktops/{desktopId}/cancelMoveDesktop:
+    post:
+      tags:
+      - APIs
+      summary: Cancels a move desktop operation
+      description: 'Cancels a move desktop operation and reboots the source desktop in its original pool. Use this command after a move desktop operation fails. Otherwise, the desktop will remain unavailable. This is an asynchronous command.
+
+
+        Supported Clouds: Azure'
+      operationId: cancelMoveDesktopUsingPOST
+      parameters:
+      - name: desktopId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The source desktopId'
+        required: true
+        schema:
+          type: string
+      - name: poolId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The source poolId'
+        required: true
+        schema:
+          type: string
+      responses:
+        '202':
+          description: Request accepted. Returns a statusURL for polling, which is an instance of the GET /v1.0/operation/{operationId} command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncOperationStatus'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/pools/{poolId}/desktops/{desktopId}/moveDesktop:
+    post:
+      tags:
+      - APIs
+      summary: Moves a persistent desktop to the specified pool
+      description: 'Moves a persistent desktop from its current pool to the destination pool. Ownership of the desktop is preserved and the owner will launch it in its new location as if nothing has happened. This is an asynchronous command.
+
+
+        Supported Clouds: Azure'
+      operationId: moveDesktopUsingPOST
+      parameters:
+      - name: desktopId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The desktopId to move'
+        required: true
+        schema:
+          type: string
+      - name: poolId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The source poolId'
+        required: true
+        schema:
+          type: string
+      responses:
+        '202':
+          description: Request accepted. Returns a statusURL for polling, which is an instance of the GET /v1.0/operation/{operationId} command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncOperationStatus'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MoveDesktopRequest'
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The user''s email address and targetPool Id to which desktop need to be moved.'
+        required: true
+  /v1.0/pools/{poolId}/desktops/{desktopId}/pause:
+    post:
+      tags:
+      - APIs
+      summary: Pauses a desktop
+      description: 'Pauses a desktop. Valid for persistent desktops only. This is an asynchronous command.
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core'
+      operationId: pauseDesktopUsingPOST
+      parameters:
+      - name: desktopId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The ID string for the desktop. This is obtained through the GET /v1.0/pools/{poolId}/desktops command and others.'
+        required: true
+        schema:
+          type: string
+      - name: poolId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The ID string for the pool. This is obtained through the GET /v1.0/pools command and others.'
+        required: true
+        schema:
+          type: string
+      responses:
+        '202':
+          description: Request accepted. Returns a statusURL for polling, which is an instance of the GET /v1.0/operation/{operationId} command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncOperationStatus'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/pools/{poolId}/desktops/{desktopId}/reboot:
+    post:
+      tags:
+      - APIs
+      summary: Reboots a desktop
+      description: 'Reboots a desktop. Valid for persistent desktops only. This is an asynchronous command.
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core, Akamai'
+      operationId: rebootDesktopUsingPOST
+      parameters:
+      - name: desktopId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The ID string for the desktop. This is obtained through the GET /v1.0/pools/{poolId}/desktops command and others.'
+        required: true
+        schema:
+          type: string
+      - name: poolId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The ID string for the pool. This is obtained through the GET /v1.0/pools command and others.'
+        required: true
+        schema:
+          type: string
+      responses:
+        '202':
+          description: Request accepted. Returns a statusURL for polling, which is an instance of the GET /v1.0/operation/{operationId} command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncOperationStatus'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/pools/{poolId}/desktops/{desktopId}/redeploy:
+    post:
+      tags:
+      - APIs
+      summary: Redeploys a desktop
+      description: 'Replace a desktop with a fresh one built from the current pool template. This is an asynchronous command.
+
+
+        Supported Clouds: Azure'
+      operationId: redeployDesktopUsingPOST
+      parameters:
+      - name: desktopId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The ID string for the desktop. This is obtained through the GET /v1.0/pools/{poolId}/desktops command and others.'
+        required: true
+        schema:
+          type: string
+      - name: poolId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The ID string for the pool. This is obtained through the GET /v1.0/pools command and others.'
+        required: true
+        schema:
+          type: string
+      responses:
+        '202':
+          description: Request accepted. Returns a statusURL for polling, which is an instance of the GET /v1.0/operation/{operationId} command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncOperationStatus'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/pools/{poolId}/desktops/{desktopId}/resume:
+    post:
+      tags:
+      - APIs
+      summary: Resumes a desktop
+      description: 'Resumes a desktop. Valid for persistent desktops only. This is an asynchronous command. If duration is included, pausing the desktop is not allowed for specified duration. Otherwise, it is a simple resume request to get the desktops running.
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core'
+      operationId: resumeDesktopUsingPOST
+      parameters:
+      - name: desktopId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The ID string for the desktop. This is obtained through the GET /v1.0/pools/{poolId}/desktops command and others.'
+        required: true
+        schema:
+          type: string
+      - name: poolId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The ID string for the pool. This is obtained through the GET /v1.0/pools command and others.'
+        required: true
+        schema:
+          type: string
+      responses:
+        '202':
+          description: Request accepted. Returns a statusURL for polling, which is an instance of the GET /v1.0/operation/{operationId} command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncOperationStatus'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HydrateDuration'
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Optional parameter (in minutes). Desktop pausing not allowed till this duration.'
+  /v1.0/pools/{poolId}/desktops/{desktopId}/screenshotDesktop:
+    post:
+      tags:
+      - APIs
+      summary: Takes a screen shot of the desktop
+      description: 'Capture the display on the desktop to debug boot and login issues. If a user is logged on, this feature is unavailable. A link to the screen shot image is returned in the body of the operation command (statusURL) after the screenShotDesktop command succeeds. The image expires after 15 minutes. This is an asynchronous command.
+
+
+        Supported Clouds: Azure'
+      operationId: screenshotDesktopUsingPOST
+      parameters:
+      - name: desktopId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The ID string for the desktop. This is obtained through the GET /v1.0/pools/{poolId}/desktops command and others.'
+        required: true
+        schema:
+          type: string
+      - name: poolId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The ID string for the pool. This is obtained through the GET /v1.0/pools command and others.'
+        required: true
+        schema:
+          type: string
+      responses:
+        '202':
+          description: Request accepted. Returns a statusURL for polling, which is an instance of the GET /v1.0/operation/{operationId} command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncOperationStatus'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/pools/{poolId}/desktops/{desktopId}/tags:
+    post:
+      tags:
+      - APIs
+      summary: Sets tags for a desktop
+      description: 'Set customer-defined name/value pairs (tags) for a desktop. Once set, tags returned by the desktop details command (GET /v1.0/pools/{poolId}/desktops/{desktopId}). Tags are valid only for persistent desktops. This is a synchronous command. See Using Desktop Tags in the Workspot Control API for more information.
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core'
+      operationId: tagDesktopUsingPOST
+      parameters:
+      - name: desktopId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The ID string for the desktop. This is obtained through the GET /v1.0/pools/{poolId}/desktops command and others.'
+        required: true
+        schema:
+          type: string
+      - name: poolId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The ID string for the pool. This is obtained through the GET /v1.0/pools command and others.'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Tags have been set successfully
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TagDesktopRequest'
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">A series of name/value pairs (tags)'
+  /v1.0/pools/{poolName}:
+    post:
+      tags:
+      - APIs
+      summary: Updates a desktop pool
+      description: 'Updated desktop pool. This is a synchronous command.
+
+
+        Supported Clouds: GCP'
+      operationId: updateDesktopPoolUsingPOST
+      parameters:
+      - name: poolName
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The name of the desktop pool. This is obtained through the GET /v1.0/pools command and others.'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Updates the desktop pool
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateDesktopPoolResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDesktopPoolRequest'
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">This is desktop pool update request.'
+        required: true
+  /v1.0/rdgateways/authenticationOptions:
+    get:
+      tags:
+      - APIs
+      summary: Returns information about authentication options required to create gateway…
+      description: Returns information about authentication options. This is a synchronous command. See Gateway Clusters (Managed Gateways) for more information
+      operationId: getAuthenticationOptionsUsingGET
+      responses:
+        '200':
+          description: Returns details authentication options used to create  cluster (managed RD Gateway). This is a synchronous command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationOptions'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/rdgateways/clusters:
+    get:
+      tags:
+      - APIs
+      summary: Returns information about each gateway cluster (managed gateways)
+      description: 'Returns information about each gateway cluster (managed RD Gateways). Not applicable to legacy RD Gateways. This is a synchronous command. See Gateway Clusters (Managed Gateways) for more information
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core'
+      operationId: gwClustersUsingGET
+      responses:
+        '200':
+          description: Returns details about each gateway cluster (managed RD Gateway), including status information and a list of pools and apps using each cluster. Not applicable to legacy RD Gateways. This is a synchronous command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Clusters'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+    post:
+      tags:
+      - APIs
+      summary: Creates Gateway Cluster
+      description: 'Creates public cloud gateway cluster. This is an asynchronous command.npsServers field is required only if AuthOption field is NPS and gatewayPolicyName is mandatory if authOption is other than NPS.Note that gatewayPolicyName and npsServers are mutually exclusive and cannot be sent together in payload
+
+
+        Supported Clouds: GCP, Amazon WorkSpaces Core'
+      operationId: createGWClusterUsingPOST
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncOperationStatus'
+        '202':
+          description: Request accepted. Returns a statusURL for polling, which is an instance of the GET /v1.0/operation/{operationId} command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncOperationStatus'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GWCreateCluster'
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">This is Create Gateway cluster request requires,Cluster Name which is unique, region and network.'
+        required: true
+  /v1.0/rdgateways/clusters/{clusterId}/regions/{clusterRegionId}/rdgateways:
+    get:
+      tags:
+      - APIs
+      summary: Returns information about each gateway in a given cluster
+      description: 'Returns details about each gateway VM in a specified cluster (managed RD Gateway), including the number of active connections, certificate information, and status.This is a synchronous command. See Gateway Clusters (Managed Gateways) for more information
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core'
+      operationId: gwClusterHostsUsingGET
+      parameters:
+      - name: clusterId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The clusterId from the GET /v1.0/rdgateways/clusters/ command'
+        required: true
+        schema:
+          type: string
+      - name: clusterRegionId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The clusterRegionId from the GET /v1.0/rdgateways/clusters/ command'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: List of gateways in the cluster and information about each gateway.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Hosts'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/rdgateways/clusters/{clusterId}/regions/{clusterRegionId}/rdgateways/{gatewayId}/connections:
+    get:
+      tags:
+      - APIs
+      summary: Returns information about the Client connections for a gateway in the specified…
+      description: 'Returns information about the Client connections for a gateway in the specified gateway cluster, including the number of active connections and average request auth seconds.This is a synchronous command. See Gateway Clusters (Managed Gateways) for more information
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core'
+      operationId: getGWHostConnectionsUsingGET
+      parameters:
+      - name: clusterId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The clusterId from the GET /v1.0/rdgateways/clusters/ command'
+        required: true
+        schema:
+          type: string
+      - name: clusterRegionId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The clusterRegionId from the GET /v1.0/rdgateways/clusters command'
+        required: true
+        schema:
+          type: string
+      - name: gatewayId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The gatewayId from the GET /v1.0/rdgateways/clusters/{clusterId}/regions/{clusterRegionId}/rdgateways command'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Gateway connections in a specified cluster (managed RD Gateway)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GWClusterHostConnectionDetails'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/rdgateways/clusters/{clusterId}/regions/{clusterRegionId}/rdgateways/{gatewayId}/performance:
+    get:
+      tags:
+      - APIs
+      summary: Returns system performance statistics such as CPU and memory usage for a…
+      description: 'Returns system performance statistics such as CPU and memory usage for a gateway in the specified cluster, including the cpu and memory data.This is a synchronous command. See Gateway Clusters (Managed Gateways) for more information
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core'
+      operationId: getGWHostPerformanceUsingGET
+      parameters:
+      - name: clusterId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The clusterId from the GET /v1.0/rdgateways/clusters/ command'
+        required: true
+        schema:
+          type: string
+      - name: clusterRegionId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The clusterRegionId from the GET /v1.0/rdgateways/clusters command'
+        required: true
+        schema:
+          type: string
+      - name: gatewayId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The gatewayId from the GET /v1.0/rdgateways/clusters/{clusterId}/regions/{clusterRegionId}/rdgateways command'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Gateway performance data (cpu/memory) in a specified cluster (managed RD Gateway)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GWClusterHostPerformanceDetails'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/rdgateways/clusters/{clusterName}:
+    post:
+      tags:
+      - APIs
+      summary: Updates GatewayCluster
+      description: 'Gateway cluster updates currently support modifications to only the following fields: imageName, vmClassName, gatewayPolicyName, and npsServers. Note that gatewayPolicyName and npsServers are mutually exclusive and cannot be sent together in payload
+
+
+        Supported Clouds: GCP, Amazon WorkSpaces Core'
+      operationId: updateGatewayCusterUsingPOST
+      parameters:
+      - name: clusterName
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The clusterName from the GET /v1.0/rdgateways/clusters command'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns status of the request (Succeeded, or Failed). If failed, provides error information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GWUpdateClusterResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GWUpdateCluster'
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px"> modifications to only the following fields: imageName, vmClassName, gatewayPolicyName, and npsServers. Note that gatewayPolicyName and npsServers are mutually exclusive and cannot be sent together in payload'
+        required: true
+    delete:
+      tags:
+      - APIs
+      summary: Deletes GatewayCluster
+      description: 'Deletes Gateway cluster
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core'
+      operationId: deleteGatewayClusterUsingDELETE
+      parameters:
+      - name: clusterName
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The clusterName from the GET /v1.0/rdgateways/clusters command'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns status of the request (Succeeded, or Failed). If failed, provides error information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GWClusterActionResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/rdgateways/clusters/{clusterName}/gateways:
+    post:
+      tags:
+      - APIs
+      summary: Creates Gateway Host in a cluster
+      description: 'Adds public cloud gateway host in a cluster.
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core'
+      operationId: addGwHostUsingPOST
+      parameters:
+      - name: clusterName
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The clusterId from the GET /v1.0/rdgateways/clusters command'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns status of the request (Succeeded, or Failed). If failed, provides error information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncOperationStatus'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GWAddGwHost'
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Provide local admin credentials and domain join information'
+        required: true
+  /v1.0/rdgateways/clusters/{clusterName}/gateways/{gatewayName}:
+    delete:
+      tags:
+      - APIs
+      summary: Deletes Gateway Host from a cluster
+      description: 'Deletes public cloud gateway host from a cluster
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core'
+      operationId: deleteGwHostUsingDELETE
+      parameters:
+      - name: clusterName
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The clusterName from the GET /v1.0/rdgateways/clusters command'
+        required: true
+        schema:
+          type: string
+      - name: gatewayName
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The gatewayName from the GET /v1.0/rdgateways/clusters/{clusterId}/regions/{clusterRegionId}/rdgateways command'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns status of the request (Succeeded, or Failed). If failed, provides error information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiStatusResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/rdgateways/clusters/{clusterName}/gateways/{gatewayName}/enable:
+    post:
+      tags:
+      - APIs
+      summary: Enables Gateway Host from a cluster
+      description: 'Enables public cloud gateway host from a cluster
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core'
+      operationId: enableGWHostUsingPOST
+      parameters:
+      - name: clusterName
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The clusterName from the GET /v1.0/rdgateways/clusters command'
+        required: true
+        schema:
+          type: string
+      - name: gatewayName
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The gatewayName from the GET /v1.0/rdgateways/clusters/{clusterId}/regions/{clusterRegionId}/rdgateways command'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns status of the request (Succeeded, or Failed). If failed, provides error information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiStatusResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/rdgateways/clusters/{clusterName}/gateways/{gatewayName}/reboot:
+    post:
+      tags:
+      - APIs
+      summary: Reboots Gateway Host from a cluster
+      description: 'Reboots public cloud gateway host from a cluster
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core'
+      operationId: rebootGwHostUsingPOST
+      parameters:
+      - name: clusterName
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The clusterName from the GET /v1.0/rdgateways/clusters command'
+        required: true
+        schema:
+          type: string
+      - name: gatewayName
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The gatewayName from the GET /v1.0/rdgateways/clusters/{clusterId}/regions/{clusterRegionId}/rdgateways command'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns status of the request (Succeeded, or Failed). If failed, provides error information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiStatusResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/rdgateways/clusters/{clusterName}/publish:
+    post:
+      tags:
+      - APIs
+      summary: Publish GatewayCluster
+      description: 'Publishes Gateway cluster
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core'
+      operationId: publishGatewayClusterUsingPOST
+      parameters:
+      - name: clusterName
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The clusterName from the GET /v1.0/rdgateways/clusters command'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns status of the request (Succeeded, or Failed). If failed, provides error information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GWClusterActionResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/reports/generateusagereport:
+    post:
+      tags:
+      - APIs
+      summary: Generates a report of active users
+      description: Generate a report of active users covering up to thirty days. The report URL is linked in the body of the GET /v1.0/operation/{operationId} response. See Using the Workspot Control API for more information, including an example of using this command. This is an asynchronous command.
+      operationId: usageReportUsingPOST
+      responses:
+        '202':
+          description: Request accepted. Returns a statusURL for polling, which is an instance of the GET /v1.0/operation/{operationId} command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncOperationStatus'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsageReport'
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Parameters for generating the usage report, including the start and end date. The start date must be no more than 30 days in the past.'
+  /v1.0/reports/users:
+    get:
+      tags:
+      - APIs
+      summary: Generates a report of all users and their resource assignments
+      description: Generates a complete snapshot of every user in the tenant, including role, group memberships, persistent desktop assignments, NP pool entitlements, and last login timestamps. The download URL, which is a pre-signed URL, is returned in the response body of the GET /v1.0/operation/{operationId} API under details.downloadUrl when status is Succeeded. The response also includes the expiration time (in seconds) for the download URL. This is an asynchronous command.
+      operationId: generateAllUsersReportUsingGET
+      responses:
+        '202':
+          description: Request accepted. Returns a statusURL for polling, which is an instance of the GET /v1.0/operation/{operationId} command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncOperationStatus'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/staleDevices:
+    get:
+      tags:
+      - APIs
+      summary: Returns all stale devices.
+      description: 'Returns list of stale device details. Applicable for Entra-ID-Only (Azure-AD-Only) tenants. This is a synchronous command.
+
+
+        Supported Clouds: Azure'
+      operationId: staleDevicesUsingGET
+      parameters:
+      - name: endDate
+        in: query
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">End Date. Optional'
+        required: false
+        allowEmptyValue: false
+        schema:
+          type: string
+      - name: pageNumber
+        in: query
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Page Number. Optional'
+        required: false
+        allowEmptyValue: false
+        schema:
+          type: string
+          default: '1'
+      - name: startDate
+        in: query
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Start Date. Optional'
+        required: false
+        allowEmptyValue: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns list of Stale devices for  for given timelines. This is a synchronous command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaleDevices'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+    delete:
+      tags:
+      - APIs
+      summary: Deletes given list of stale devices from Control
+      description: 'Deletes the specified devices from Control. This is a synchronous command.
+
+
+        Supported Clouds: Azure'
+      operationId: deleteStaleDevicesUsingDELETE
+      responses:
+        '204':
+          description: No content (success)
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteStaleDeviceRequest'
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Please provide the deviceId (identifier for the device in Control) from the Get API response for the devices to be deleted. Multiple deviceIds can be passed.'
+  /v1.0/users:
+    post:
+      tags:
+      - APIs
+      summary: Creates a user
+      description: Creates a new end-user. If a poolId is specified, the user is assigned a desktop in that pool, if available. This is an asynchronous command
+      operationId: addUserUsingPOST
+      responses:
+        '202':
+          description: Request accepted. Returns a statusURL for polling, which is an instance of the GET /v1.0/operation/{operationId} command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncOperationStatus'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddUser'
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">User parameters. Email, firstName, lastName, and optional poolId.'
+        required: true
+  /v1.0/users/{email}/:
+    get:
+      tags:
+      - APIs
+      summary: Returns user details
+      description: Returns details about a specified user. This is a synchronous command.
+      operationId: userDetailsUsingGET
+      parameters:
+      - name: email
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">User''s email.'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: List of assigned desktops, list of assigned pools, cost center, etc.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+    delete:
+      tags:
+      - APIs
+      summary: Deletes a user
+      description: Deletes the user with the given email. Workspot Control deallocates or suspends the user's desktops and forgets the user's existence. This is a synchronous command.
+      operationId: deleteUserUsingDELETE
+      parameters:
+      - name: email
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The user''s email address'
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No content (success)
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/users/{email}/assignCostCenter:
+    post:
+      tags:
+      - APIs
+      summary: Assigns a cost center to a user
+      description: Assigns the specified cost center to the user with the specified email. This is a synchronous command. See Using the Cost Center Feature in Workspot Control.
+      operationId: assignCostCenterUsingPOST
+      parameters:
+      - name: email
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The user''s email address'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success. Returns updated user details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cost_Center_to_Assign'
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The name of the cost center to assign'
+        required: true
+  /v1.0/users/{email}/desktops:
+    post:
+      tags:
+      - APIs
+      summary: Assigns a desktop to a user
+      description: 'Assigns a specified existing desktop to the user with specified email.
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core, Akamai'
+      operationId: assignDesktopUsingPOST
+      parameters:
+      - name: email
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The user''s email address'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success. Returns updated user details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Desktop_to_Assign'
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Desktop ID of the desktop being assigned'
+        required: true
+  /v1.0/users/{email}/desktops/{desktopId}:
+    delete:
+      tags:
+      - APIs
+      summary: Unassigns a desktop from user
+      description: 'Revokes a user''s assignment to a specified desktop. The desktop will be suspended or returned to the pool, depending on pool settings. See Control: Desktop Pools for more information
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core, Akamai'
+      operationId: unassignDesktopUsingDELETE
+      parameters:
+      - name: desktopId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Desktop ID of the desktop whose assignment is being revoked'
+        required: true
+        schema:
+          type: string
+      - name: email
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The current user''s email address.'
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No content (success)
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/users/{email}/globalDesktops/{globalApplicationId}:
+    delete:
+      tags:
+      - APIs
+      summary: Unassign Global Desktop Application from a user
+      description: 'Unassign a global desktop application from a user with specified email. This is a synchronous command.
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core'
+      operationId: unAssignAppToUserUsingDELETE
+      parameters:
+      - name: email
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Email id of user'
+        required: true
+        schema:
+          type: string
+      - name: globalDesktopId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Global Desktop Application Id to be unassigned.'
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No content (success)
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/users/{email}/globalDesktops/{globalDesktopId}:
+    get:
+      tags:
+      - APIs
+      summary: Returns Global Desktop Application details for a user
+      description: 'Returns global desktop application details for a user including pool, desktop details and order of precedence. This is a synchronous command.
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core'
+      operationId: globalDesktopDetailsUsingGET
+      parameters:
+      - name: email
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Email id of user'
+        required: true
+        schema:
+          type: string
+      - name: globalDesktopId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Global Desktop Application Id'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: List of Global Desktops Application with assigned pools and desktops.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserGlobalDesktopPoolDetailsBO'
+        '400':
+          description: Error message with details
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/users/{email}/globalDesktops/{globalDesktopId}/pools:
+    post:
+      tags:
+      - APIs
+      summary: Assign pools to user’s global desktop application
+      description: 'Assign the pools with order of precedence to user’s global desktop application. This is an asynchronous command.
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core'
+      operationId: setGlobalDesktopPoolsUsingPOST
+      parameters:
+      - name: email
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Email id of user'
+        required: true
+        schema:
+          type: string
+      - name: globalDesktopId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Global Desktop Application Id for the User'
+        required: true
+        schema:
+          type: string
+      responses:
+        '202':
+          description: Request accepted. Returns a statusURL for polling, which is an instance of the GET /v1.0/operation/{operationId} command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncOperationStatus'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VDIPoolDetails'
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Pool IDs and precedence to be assigned to override predefined global desktop pools. Order of precedence is a positive integer, with 1 being the highest precedence. Precedence must be given with no gaps (1, 2, 3; not 1, 4, 9).'
+    delete:
+      tags:
+      - APIs
+      summary: Deallocate the pools from user’s global desktop application
+      description: 'Deallocate the pools from user’s global desktop application, keeping the relative precedence for rest of the pools but renumbering them starting at 1. This is a synchronous command.
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core'
+      operationId: deleteGlobalDesktopPoolsUsingDELETE
+      parameters:
+      - name: email
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Email id of user'
+        required: true
+        schema:
+          type: string
+      - name: globalDesktopId
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">Global desktop Application Id.'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Pools assigned to user’s global desktop application
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserGlobalDesktopPoolDetailsBO'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pool_to_Delete_from_GlobalDesktop'
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">PoolId to be deallocated from user’s global desktop application.'
+        required: true
+  /v1.0/users/{email}/logoff:
+    post:
+      tags:
+      - APIs
+      summary: Signs a user out of a desktop session
+      description: 'Signs the user out of Windows on the specified desktop. This is an asynchronous command.
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core'
+      operationId: logoffUserUsingPOST
+      parameters:
+      - name: email
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The user''s email address'
+        required: true
+        schema:
+          type: string
+      responses:
+        '202':
+          description: Request accepted. Returns a statusURL for polling, which is an instance of the GET /v1.0/operation/{operationId} command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncOperationStatus'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RemoteSessionDesktop'
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The desktopID and poolID of the desktop'
+        required: true
+  /v1.0/users/{email}/pools:
+    post:
+      tags:
+      - APIs
+      summary: Assigns a user to a given pool
+      description: 'Assigns a desktop from a pool to the user. If a desktop is not available, a desktop is created and assigned to the user. This is an asynchronous command.
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core, Akamai'
+      operationId: assignPoolUsingPOST
+      parameters:
+      - name: email
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The user''s email address'
+        required: true
+        schema:
+          type: string
+      responses:
+        '202':
+          description: Request accepted. Returns a statusURL for polling, which is an instance of the GET /v1.0/operation/{operationId} command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncOperationStatus'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pool_to_Assign'
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">poolID of pool to assign to the user'
+        required: true
+  /v1.0/users/{email}/refreshGroupEntitlements:
+    post:
+      tags:
+      - APIs
+      summary: Refreshes group entitlements for given user
+      description: User group entitlements will be updated when they (re)launch the Workspot client.
+      operationId: refreshGroupEntitlementsUsingPOST
+      parameters:
+      - name: email
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The user''s email address'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefreshEntitlementsResponse'
+        '204':
+          description: No content (success)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefreshEntitlementsResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /v1.0/users/{email}/remoteAssistanceInvitation:
+    post:
+      tags:
+      - APIs
+      summary: Invites a user to a remote assistance session
+      description: 'Invite the user of a specified desktop to a remote assistance session. This is an asynchronous command. See Workspot Remote Assist. for more information.
+
+
+        Supported Clouds: Azure'
+      operationId: remoteAssistUserUsingPOST
+      parameters:
+      - name: email
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The user''s email address'
+        required: true
+        schema:
+          type: string
+      responses:
+        '202':
+          description: Request accepted. Returns a statusURL for polling, which is an instance of the GET /v1.0/operation/{operationId} command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncOperationStatus'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RemoteAssistDesktop'
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">desktopId and poolId of the user''s desktop, and the remote assist password'
+        required: true
+  /v1.0/users/{email}/sendMessage:
+    post:
+      tags:
+      - APIs
+      summary: Sends a message to a user's desktop
+      description: 'Send a brief message to the specified desktop of a single user. This is typically used to warn users of impending shutdowns. This is an asynchronous command.
+
+
+        Supported Clouds: Azure, GCP, Amazon WorkSpaces Core'
+      operationId: sendMessageToUserUsingPOST
+      parameters:
+      - name: email
+        in: path
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The user''s email address'
+        required: true
+        schema:
+          type: string
+      responses:
+        '202':
+          description: Request accepted. Returns a statusURL for polling, which is an instance of the GET /v1.0/operation/{operationId} command.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncOperationStatus'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RemoteSessionDesktopMessage'
+        description: '<span style="font-family: Open Sans,sans-serif; font-size:13px">The user''s desktopId and poolId, the amount of time to display the message, and the message (1-250 characters)'
+        required: true
+components:
+  schemas:
+    VmClasses:
+      type: object
+      properties:
+        vmClasses:
+          type: array
+          items:
+            $ref: '#/components/schemas/VMClass'
+      title: VmClasses
+    UpdateCloudAppPool:
+      type: object
+      properties:
+        autoCreateOnDelete:
+          type: boolean
+          example: false
+        description:
+          type: string
+          example: Sample description
+        loadBalancingMethod:
+          type: string
+          example: Depth
+        maxSessionLimit:
+          type: integer
+          format: int32
+          example: 5
+        poolSize:
+          type: integer
+          format: int32
+          example: 2
+      title: UpdateCloudAppPool
+    CreateBundleRequestDTO:
+      type: object
+      properties:
+        appIds:
+          type: array
+          example:
+          - f9ad04bc-cbfc-47bd-aaa2-78ed27925018
+          items:
+            type: string
+        bundleName:
+          type: string
+          example: App Bundle
+      title: CreateBundleRequestDTO
+    ApiBuildTemplateRequest:
+      type: object
+      properties:
+        domainToJoin:
+          example: w11image
+          $ref: '#/components/schemas/GWDomainToJoinBO'
+        imageName:
+          type: string
+          example: w11image
+        networkId:
+          type: string
+          example: https://www.googleapis.com/compute/v1/projects/project-name/global/networks/networkName
+        notes:
+          type: string
+          example: First template
+        securityGroupId:
+          type: string
+          example: sg-01adedae730e9117b
+        setupDomainJoin:
+          type: boolean
+          example: true
+        templateName:
+          type: string
+          example: Win11-Template
+        templateOS:
+          type: string
+          example: Windows
+        templateType:
+          type: string
+          example: Cloud Desktop
+        vmType:
+          type: string
+          example: Standard VM
+        zone:
+          type: string
+          example: asia-south1-a
+      title: ApiBuildTemplateRequest
+    Pool_to_Delete_from_GlobalDesktop:
+      type: object
+      properties:
+        poolId:
+          type: string
+          example: 73dc410b-6b13-40c6-32sd-32d4c175117c
+          description: Id of pool to delete
+      title: Pool to Delete from GlobalDesktop
+    CustomDesktopDTO:
+      type: object
+      properties:
+        biosGUID:
+          type: string
+          example: 12345678-1234-5678-ABCD-1234567890AB
+        computerName:
+          type: string
+          example: Example-Dev
+        fqdn:
+          type: string
+          example: name-xyx.domain.com
+        id:
+          type: string
+          example: 63c1a03f-f5f6-4c1c-8373-f74238aa053c
+      title: CustomDesktopDTO
+    UserPool:
+      type: object
+      properties:
+        active:
+          type: boolean
+        description:
+          type: string
+          example: Technology persistent pool
+        drType:
+          type: string
+          example: RDR
+        id:
+          type: string
+          example: d8af1769-8aec-496c-9b7a-7ac6a32a8ee4
+        poolDisplayName:
+          type: string
+          example: Pool to be used by Technology people
+        poolName:
+          type: string
+          example: Pool for Technology
+        poolType:
+          type: string
+          example: Persistent
+      title: UserPool
+    PoolPrecedenceDetails:
+      type: object
+      properties:
+        poolId:
+          type: string
+          example: 1dbf8fc6-eea5-49fa-b142-90872b61c794
+        precedence:
+          type: integer
+          format: int32
+          example: 1
+      title: PoolPrecedenceDetails
+    SecurityGroups:
+      type: object
+      properties:
+        securityGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/SecurityGroup'
+      title: SecurityGroups
+    GWClusterHostConnectionDetails:
+      type: object
+      properties:
+        activeConnections:
+          type: integer
+          format: int64
+          example: 1
+        averageRequestAuthSeconds:
+          type: integer
+          format: int64
+          example: 2
+        connections:
+          type: array
+          items:
+            $ref: '#/components/schemas/GWClusterHostSessionDetails'
+      title: GWClusterHostConnectionDetails
+    DesktopList:
+      type: object
+      properties:
+        desktops:
+          type: array
+          items:
+            $ref: '#/components/schemas/Desktop'
+      title: DesktopList
+    CloudConfigSubscriptions:
+      type: object
+      properties:
+        publicClouds:
+          type: array
+          items:
+            $ref: '#/components/schemas/CloudDetails'
+      title: CloudConfigSubscriptions
+    MoveDesktopRequest:
+      type: object
+      required:
+      - assignedUser
+      - targetPoolId
+      properties:
+        assignedUser:
+          type: string
+          example: dsmith@example.com
+          description: User's email address
+        targetPoolId:
+          type: string
+          example: be95b637-b748-41f9-90ff-d3d55f4dd51d
+          description: Target poolId to which desktop need to be moved.
+      title: MoveDesktopRequest
+    Desktop:
+      type: object
+      properties:
+        email:
+          type: string
+          example: devqa@example.com
+        fqdn:
+          type: string
+          example: QASKP1-001.example.com
+        id:
+          type: string
+          example: ee614d15-d671-44c4-9a26-b10eda000018
+        ipAddress:
+          type: string
+          example: 10.76.0.14
+        name:
+          type: string
+          example: Test Desktop-001
+        poolId:
+          type: string
+          example: ba3b630e-7157-471f-8b98-fa5d9c11e031
+        poolName:
+          type: string
+          example: Persistent test pool
+        status:
+          type: string
+          example: Ready
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+      title: Desktop
+    Clusters:
+      type: object
+      properties:
+        clusters:
+          type: array
+          items:
+            $ref: '#/components/schemas/GWClusterDetails'
+      title: Clusters
+    AssignedDesktopBO:
+      type: object
+      properties:
+        desktopFqdn:
+          type: string
+          example: test-004.indevqa.ws
+        desktopId:
+          type: string
+          example: d5af7ab8-31e8-4150-94c3-0e4df20353fc
+        desktopIpAddress:
+          type: string
+          example: 10.60.0.54
+        desktopName:
+          type: string
+          example: TestPool-001
+      title: AssignedDesktopBO
+    TemplateVMClass:
+      type: object
+      properties:
+        cpu:
+          type: integer
+          format: int32
+          example: 2
+        diskSize:
+          type: integer
+          format: int32
+          example: 128
+        gpu:
+          type: boolean
+          example: false
+        memory:
+          type: integer
+          format: int64
+          example: 8
+        name:
+          type: string
+          example: Standard VM
+        vmInstances:
+          type: string
+          example: n1-standard-2
+      title: TemplateVMClass
+    Applications:
+      type: object
+      properties:
+        applications:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApplicationDetails'
+      title: Applications
+    GWUpdateCluster:
+      type: object
+      properties:
+        gatewayPolicyName:
+          type: string
+          example: gatewayPolicy Name
+        imageName:
+          type: string
+          example: Windows Server (2025)
+        npsServers:
+          type: array
+          items:
+            $ref: '#/components/schemas/NpsServerBO'
+        vmClassName:
+          type: string
+          example: Standard Gateway
+      title: GWUpdateCluster
+    Pool:
+      type: object
+      properties:
+        desktopPools:
+          type: array
+          items:
+            $ref: '#/components/schemas/DesktopPoolDetails'
+      title: Pool
+    KeyValuePairBO:
+      type: object
+      properties:
+        id:
+          type: string
+          example: e8ad04bc-cbfc-47bd-bcd2-78ed27925018
+        name:
+          type: string
+          example: Workspot
+      title: KeyValuePairBO
+    VMRetentionDetails:
+      type: object
+      properties:
+        desktopId:
+          type: string
+          example: ee614d15-d671-44c4-9a26-b10eda000018
+        desktopStatus:
+          type: string
+          example: Online
+        retentionPeriod:
+          type: string
+          example: 15
+      title: VMRetentionDetails
+    GWDomainToJoin:
+      type: object
+      properties:
+        domain:
+          type: string
+          example: Domain
+        domainName:
+          type: string
+          example: Domain to Join
+        domainOU:
+          type: string
+          example: Domain OU
+        password:
+          type: string
+          example: Password
+        userName:
+          type: string
+          example: Username
+      title: GWDomainToJoin
+    AssignedPoolDesktopDetailsBO:
+      type: object
+      properties:
+        assignedDesktop:
+          $ref: '#/components/schemas/AssignedDesktopBO'
+        poolId:
+          type: string
+          example: 2f102d72-8c58-460b-9dbf-c32d6a84f9f2
+        poolName:
+          type: string
+          example: TestPool
+        precendence:
+          type: integer
+          format: int32
+          example: 1
+      title: AssignedPoolDesktopDetailsBO
+    UpdateCloudAppRequest:
+      type: object
+      properties:
+        appIconName:
+          type: string
+          example: predefined1.png
+        appParams:
+          type: string
+          example: TBD
+        bundles:
+          type: array
+          example:
+          - f9ad04bc-cbfc-47bd-aaa2-78ed27925018
+          items:
+            type: string
+        fullPath:
+          type: string
+          example: C:\Program Files\Programs\program.exe
+        gatewayClusterId:
+          type: string
+          example: f9ad04bc-cbfc-47bd-aaa2-78ed27925018
+        loginDomain:
+          type: string
+          example: domain
+        loginOption:
+          type: string
+          example: SSO_DOMAIN_USER_PASSWD
+        name:
+          type: string
+          example: Graphics app
+        routeThroughGateway:
+          type: string
+          example: Always
+        targetPlatforms:
+          type: array
+          example:
+          - iOS
+          - Windows
+          - Android
+          - OSX
+          items:
+            type: string
+        useDefaultIcon:
+          type: boolean
+          example: false
+          description: Set to true to switch the application to the default icon. Cannot be combined with appIconName.
+        workingDir:
+          type: string
+          example: C:\Documents\My Data
+      title: UpdateCloudAppRequest
+    User:
+      type: object
+      properties:
+        assignedDesktops:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserDesktop'
+        assignedPools:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserPool'
+        costCenter:
+          type: string
+          example: 115
+        email:
+          type: string
+          example: dsmith@example.com
+        firstName:
+          type: string
+          example: David
+        id:
+          type: string
+          example: e17aa8fc-3919-4461-8345-bdd665e55fb8
+        lastName:
+          type: string
+          example: Smith
+      title: User
+    AttachSnapshot:
+      type: object
+      required:
+      - snapshotId
+      properties:
+        domainOU:
+          type: string
+          example: OU=WSVDI,DC=indevqa,DC=ws
+          description: Domain OU
+        domainPWD:
+          type: string
+          example: pswrd*
+          description: Password for Domain Join
+        domainToJoin:
+          type: string
+          example: indevqa.ws
+          description: Domain name
+        domainUser:
+          type: string
+          example: indevqa.ws\johns
+          description: Username
+        snapshotId:
+          type: string
+          example: snap-06fb57fa7342bb456
+      title: AttachSnapshot
+    APIGetTemplatesResponseBO:
+      type: object
+      properties:
+        templates:
+          type: array
+          items:
+            $ref: '#/components/schemas/APIMasterTemplateBO'
+      title: APIGetTemplatesResponseBO
+    Desktop_to_Assign:
+      type: object
+      properties:
+        desktopId:
+          type: string
+          example: 73dc410b-6b13-40c6-32sd-32d4c175117c
+          description: Id of desktop to assign
+      title: Desktop to Assign
+    GetLoginOptionsResponse:
+      type: object
+      properties:
+        loginOptions:
+          type: array
+          example:
+          - name: SSO_USER_PASSWD
+          - name: SSO_DOMAIN_USER_PASSWD
+          - name: SSO_PREFILLED_DOMAIN_USERNAME
+          items:
+            $ref: '#/components/schemas/NameResponse'
+      title: GetLoginOptionsResponse
+    GlobalDesktopId:
+      type: object
+      properties:
+        globalDesktopId:
+          type: string
+          example: 1dbf8fc6-eea5-49fa-b142-90872b61c794
+      title: GlobalDesktopId
+    CloudAppPoolDetails:
+      type: object
+      properties:
+        cloudProvider:
+          type: string
+          example: Azure Cloud
+        description:
+          type: string
+          example: CloudApp test pool
+        hostCount:
+          type: integer
+          format: int32
+          example: 25
+        id:
+          type: string
+          example: f9ad04bc-cbfc-47bd-aaa2-78ed27925018
+        name:
+          type: string
+          example: HSKUForBusiness
+        region:
+          type: string
+          example: India-Central
+        status:
+          type: string
+          example: Success
+        template:
+          type: string
+          example: TQaRDR1903-0812
+        vmType:
+          type: string
+          example: BUSINESS_VM
+        zone:
+          type: string
+          example: India-Central-A
+      title: CloudAppPoolDetails
+    CloudDetails:
+      type: object
+      properties:
+        byoc:
+          type: boolean
+          example: true
+        configType:
+          type: string
+          example: Google Cloud Platform
+        name:
+          type: string
+          example: Ent-Cloud
+        status:
+          type: string
+          example: online
+        subscriptionId:
+          type: string
+          example: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxx5e58d
+      title: CloudDetails
+    GWRegionalClusterDetails:
+      type: object
+      properties:
+        availability:
+          type: string
+          example: Highly Available
+        cloudType:
+          type: string
+          example: Azure Cloud
+        clusterRegionId:
+          type: string
+          example: 23cd6b59-2b97-44ae-b32c-b341a7bc60d7
+        pools:
+          type: array
+          items:
+            $ref: '#/components/schemas/GWPool'
+        region:
+          type: string
+          example: NORTH_EUROPE
+        securityGroupId:
+          type: string
+          example: sg-0c733xxxxx
+          description: Applicable for AWS Clusters
+        securityGroupName:
+          type: string
+          example: xxxxxxxxxxxxxx
+          description: Applicable for AWS Clusters
+        status:
+          type: string
+          example: Published
+        zone:
+          type: string
+          example: us-central1-a
+          description: Applicable for GCP Clusters
+      title: GWRegionalClusterDetails
+    GWClusterHostDetails:
+      type: object
+      properties:
+        activeConnections:
+          type: integer
+          format: int32
+          example: 205
+        agentVersion:
+          type: string
+          example: 1.5.0(548)
+        averageRequestAuthSeconds:
+          type: integer
+          format: int64
+          example: 1
+        certExpiration:
+          type: string
+          example: 07/09/2021
+        certName:
+          type: string
+          example: C=US, S=ca, L=Campbell, O="Example, Inc.", OU=Example Unit, CN=*.example.com
+        cloudType:
+          type: string
+          example: Azure Cloud
+        clusterRegionId:
+          type: string
+          example: 7731e815-099c-4b2b-82f5-2eeec2b16d6a
+        dns:
+          type: string
+          example: Dev-inc-gw01.centralindia.cloudapp.azure.com
+        fqdn:
+          type: string
+          example: Dev-inc-gw01.example.com
+        id:
+          type: string
+          example: 0438e503-a62d-4f20-9082-26dcf42237ca
+        lastRebootDate:
+          type: integer
+          format: int64
+          example: 1653395963398
+        mode:
+          type: string
+          example: Enabled
+        name:
+          type: string
+          example: Dev-inc-gw001
+        osVersion:
+          type: string
+          example: Microsoft Windows Server 2016 Datacenter 10.0.14393
+        privateIpAddress:
+          type: string
+          example: 10.60.0.54
+        publicIpAddress:
+          type: string
+          example: 52.172.133.239
+        region:
+          type: string
+          example: INDIA_CENTRAL
+        status:
+          type: string
+          example: Ready
+        statusReason:
+          type: string
+          example: Agent offline
+        uri:
+          type: string
+          example: Dev-inc-gw01-b701c8c6-d40f-492e-a6fd-b5131907466d.example.com
+      title: GWClusterHostDetails
+    StaleDevice:
+      type: object
+      properties:
+        controlDetectedDtm:
+          type: string
+          format: date-time
+          example: '2024-09-29 11:00:00.0'
+        desktopDeletedDtm:
+          type: string
+          format: date-time
+          example: '2024-09-23 11:00:00.0'
+        desktopId:
+          type: string
+          example: 22ff14b9-c4c0-494a-99a9-37a5e505d661
+        desktopName:
+          type: string
+          example: workspotVDI-001
+        deviceId:
+          type: string
+          example: 550e8400-e29b-41d4-a716-446655440087
+        deviceName:
+          type: string
+          example: workspot-device
+        entraDeviceId:
+          type: string
+          example: 550e8400-e29b-41d4-a716-446655440084
+        entraObjectId:
+          type: string
+          example: 660e8400-e29b-41d4-a716-446655440065
+        intuneDeviceId:
+          type: string
+          example: 770e8400-e29b-41d4-a716-446655440077
+        poolId:
+          type: string
+          example: bede4cc4-576c-42dd-83d0-b326d0e7029a
+        poolName:
+          type: string
+          example: workspotVDI
+      title: StaleDevice
+    ApplicationDetails:
+      type: object
+      properties:
+        applicationType:
+          type: string
+          example: Cloud Application
+        bundles:
+          type: array
+          example: f9ad04bc-cbfc-47bd-aaa2-78ed27925018
+          items:
+            type: string
+        cloudAppType:
+          type: string
+          example: Custom Application
+        fullPath:
+          type: string
+          example: C:\Program Files\Programs\program.exe
+        gatewayClusterId:
+          type: string
+          example: f9ad04bc-cbfc-47bd-aaa2-78ed27925018
+        id:
+          type: string
+          example: f9ad04bc-cbfc-47bd-aaa2-78ed27925018
+        loginOption:
+          type: string
+          example: SSO_DOMAIN_USER_PASSWD
+        name:
+          type: string
+          example: Graphics app
+        parameters:
+          type: string
+          example: -fullscreen -profile default
+        poolId:
+          type: string
+          example: d8ad04bc-cbfc-47bd-aaa2-78ed27925091
+        poolName:
+          type: string
+          example: Cloudapp Pool Name
+        routeThroughGateway:
+          type: string
+          example: Always
+        serverType:
+          type: string
+          example: Workspot Cloud App pools
+        targetPlatforms:
+          type: array
+          example:
+          - iOS
+          - Windows
+          - Android
+          - OSX
+          items:
+            type: string
+      title: ApplicationDetails
+    PoolAgentTokenDetails:
+      type: object
+      properties:
+        expireTime:
+          type: string
+          example: Mon Sep 23, 2024 12:27:58
+        poolAgentToken:
+          type: string
+          example: 84beb52f4f6ed84e97f499550d32f55c9088b12d
+      title: PoolAgentTokenDetails
+    ApiCloneTemplateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: base-win11-clone
+        networkId:
+          type: string
+          example: https://www.googleapis.com/compute/v1/projects/project-name/global/networks/networkName
+        notes:
+          type: string
+          example: Notes
+        region:
+          type: string
+          example: asia-south1
+        securityGroupId:
+          type: string
+          example: sg-1234567890
+        zone:
+          type: string
+          example: asia-south1-a
+      title: ApiCloneTemplateRequest
+    AsyncOperationStatus:
+      type: object
+      properties:
+        statusURL:
+          type: string
+          example: https://api.workspot.com/v1.0/operation/7ad1cd2f-7056-4cdf-9ce9-36e95f7db1f8
+      title: AsyncOperationStatus
+    TemplateCustomImageBO:
+      type: object
+      properties:
+        imageName:
+          type: string
+          example: base-win11
+        imageType:
+          type: string
+          example: Windows Server
+        region:
+          type: string
+          example: us-east-1
+      title: TemplateCustomImageBO
+    GWClusterHostPerformanceDetails:
+      type: object
+      properties:
+        cpu:
+          type: array
+          items:
+            $ref: '#/components/schemas/GWClusterHostPerformanceSample'
+        memory:
+          type: array
+          items:
+            $ref: '#/components/schemas/GWClusterHostPerformanceSample'
+      title: GWClusterHostPerformanceDetails
+    License:
+      type: object
+      properties:
+        licenses:
+          type: array
+          items:
+            $ref: '#/components/schemas/LicenseDetails'
+      title: License
+    GWClusterHostSessionDetails:
+      type: object
+      properties:
+        clientIPAddress:
+          type: string
+          example: xxx.xxx.xxx.xxx
+        connectedOn:
+          type: string
+          example: 05/18/2022 01:04:27
+        duration:
+          type: string
+          example: 03:53:15
+        idleTime:
+          type: string
+          example: 00:00:43
+        targetComputer:
+          type: string
+          example: xxx.xxx.xxx.xxx
+        targetPort:
+          type: integer
+          format: int64
+          example: 3389
+        transport:
+          type: string
+          example: HTTP
+        userName:
+          type: string
+          example: xxx.com\userxxx
+      title: GWClusterHostSessionDetails
+    GlobalDesktopBO:
+      type: object
+      properties:
+        assignedPools:
+          type: array
+          items:
+            $ref: '#/components/schemas/GlobalDesktopPool'
+        globalDesktopId:
+          type: string
+          example: ee614d15-d671-44c4-9a26-b10eda000018
+        globalDesktopName:
+          type: string
+          example: Global Desktop US
+        groupsAssigned:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupDetailBO'
+      title: GlobalDesktopBO
+    ApiCustomDesktopCreateResponse:
+      type: object
+      properties:
+        details:
+          $ref: '#/components/schemas/CustomDesktopDTO'
+        status:
+          type: string
+          example: Succeeded
+      title: ApiCustomDesktopCreateResponse
+    VMRetentionPeriod:
+      type: object
+      properties:
+        retentionPeriod:
+          type: string
+          example: 12
+      title: VMRetentionPeriod
+    ApiCreateCloudAppResponse:
+      type: object
+      properties:
+        details:
+          $ref: '#/components/schemas/ApplicationDetails'
+        status:
+          type: string
+          example: Succeeded
+      title: ApiCreateCloudAppResponse
+    VMClass:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Standard Gateway
+        vmInstances:
+          type: string
+          example: n2-standard-4,n1-standard-4,n4-standard-4
+      title: VMClass
+    GlobalDesktopsList:
+      type: object
+      properties:
+        globalDesktops:
+          type: array
+          items:
+            $ref: '#/components/schemas/GlobalDesktopPoolsList'
+        id:
+          type: string
+          example: ee614d15-d671-44c4-9a26-b10eda000018
+        name:
+          type: string
+          example: Domain Users
+      title: GlobalDesktopsList
+    ApiCloudNetworksListResponse:
+      type: object
+      properties:
+        cloudNetworks:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiCloudNetworksResponseBO'
+      title: ApiCloudNetworksListResponse
+    GlobalDesktopDetailsBO:
+      type: object
+      properties:
+        id:
+          type: string
+          example: ee614d15-d671-44c4-9a26-b10eda000018
+        name:
+          type: string
+          example: Test Pool Group
+      title: GlobalDesktopDetailsBO
+    Hosts:
+      type: object
+      properties:
+        rdGateways:
+          type: array
+          items:
+            $ref: '#/components/schemas/GWClusterHostDetails'
+      title: Hosts
+    UpgradeDesktopRequest:
+      type: object
+      required:
+      - domainOU
+      - domainPWD
+      - domainToJoin
+      - domainUser
+      - retainName
+      - targetPoolId
+      properties:
+        computerName:
+          type: string
+          example: Example-123
+          description: Optional, provide if you want to give a custom name to desktop in taget pool.
+        domainOU:
+          type: string
+          example: OU=WSVDI,DC=indevqa,DC=ws
+          description: Domain OU
+        domainPWD:
+          type: string
+          example: pswrd*
+          description: Password for Domain Join,
+        domainToJoin:
+          type: string
+          example: indevqa.ws
+          description: Domain name
+        domainUser:
+          type: string
+          example: indevqa.ws\johns
+          description: Username
+        retainName:
+          type: string
+          example: 'false'
+          description: Flag to determine if old computer name should be retained for upgraded desktop or replaced with that of target pool
+        targetPoolId:
+          type: string
+          example: be95b637-b748-41f9-90ff-d3d55f4dd51d
+          description: Target poolId to which desktop need to be upgraded.
+      title: UpgradeDesktopRequest
+    GroupsList:
+      type: object
+      properties:
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupDetailBO'
+      title: GroupsList
+    ApiCreateBundleResponse:
+      type: object
+      properties:
+        details:
+          $ref: '#/components/schemas/BundleDetails'
+        status:
+          type: string
+          example: Succeeded
+      title: ApiCreateBundleResponse
+    CreateDesktop:
+      type: object
+      properties:
+        computerName:
+          type: string
+          example: Example-Dev
+        domainOU:
+          type: string
+          example: OU=WSVDI,DC=indevqa,DC=ws
+          description: Domain OU
+        domainPWD:
+          type: string
+          example: pswrd*
+          description: Password for Domain Join
+        domainToJoin:
+          type: string
+          example: indevqa.ws
+          description: Domain name
+        domainUser:
+          type: string
+          example: indevqa.ws\johns
+          description: Username
+        snapshotId:
+          type: string
+          example: snap-06fb57fa7342bb456
+      title: CreateDesktop
+    GroupDetailBO:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 322408eb-7172-49a5-b2a9-da3cfd873f08
+        name:
+          type: string
+          example: Domain Users
+        type:
+          type: string
+          example: Workspot
+      title: GroupDetailBO
+    DeleteStaleDeviceRequest:
+      type: object
+      properties:
+        deviceIds:
+          type: array
+          example:
+          - 550e8400-e29b-41d4-a716-446655440003
+          - 550e8400-e29b-41d4-a716-446655440007
+          items:
+            type: string
+      title: DeleteStaleDeviceRequest
+    GWUpdateClusterResponse:
+      type: object
+      properties:
+        clusterName:
+          type: string
+          example: Cluster Name
+        errorInfo:
+          $ref: '#/components/schemas/ErrorInfo'
+        status:
+          type: string
+          example: Succeeded or Failed
+      title: GWUpdateClusterResponse
+    CreateCloudAppPool:
+      type: object
+      properties:
+        autoCreateOnDelete:
+          type: boolean
+          example: false
+        description:
+          type: string
+          example: Sample description
+        loadBalancingMethod:
+          type: string
+          example: Depth
+        maxSessionLimit:
+          type: integer
+          format: int32
+          example: 5
+        pauseOnFirstFailure:
+          type: boolean
+          example: false
+        poolName:
+          type: string
+          example: Pool1
+        poolSize:
+          type: integer
+          format: int32
+          example: 2
+        referencePool:
+          type: string
+          example: a066da91-0191-46d2-83b1-8cd25f160fcc
+        serverNamePrefix:
+          type: string
+          example: prefix
+      title: CreateCloudAppPool
+    CreateDesktopPoolRequest:
+      type: object
+      properties:
+        allowUserRebootVM:
+          type: boolean
+          example: false
+        autoCreateOnDelete:
+          type: boolean
+          example: false
+        description:
+          type: string
+          example: description
+        desktopNamePrefix:
+          type: string
+          example: eupool
+        desktopNameSuffixLength:
+          type: integer
+          format: int32
+          example: 1 or 2 or 3 or 4  (Number will be added to desktopPrefixName like eupool-001)
+        diskClass:
+          type: string
+          example: StandardSSD
+        diskSize:
+          type: integer
+          format: int32
+          example: 128 or 256 or 512 or 1024 or 2048 etc
+        displayName:
+          type: string
+          example: Pool DisplayName
+        enableSelfServiceDiagnostics:
+          type: boolean
+          example: false
+        gatewayClusterName:
+          type: string
+          example: Public cloud Gateway ClusterName
+        gatewayType:
+          type: string
+          example: GATEWAY_CLUSTER
+        isMultiZoneActive:
+          type: boolean
+          example: false
+        loginDomain:
+          type: string
+          example: domain Name if LoginType is SSO_USER_PASSWD
+        loginType:
+          type: string
+          example: SSO_AAD or  SSO_USER_PASSWD or SSO_DOMAIN_USER_PASSWD or SSO_PREFILLED_DOMAIN_USERNAME
+        maintenancePolicy:
+          type: string
+          example: maintanance Policy Name (from the GET /v1.0/policies?type=Maintenance command)
+        mediaRedirectionPolicy:
+          type: string
+          example: Media RedirectionPolicy Name (from the GET /v1.0/policies?type=MediaRedirection command)
+        numberOfDesktops:
+          type: integer
+          format: int32
+          example: 1
+        pauseOnFirstFailure:
+          type: boolean
+          example: false
+        poolName:
+          type: string
+          example: EU Desktop Pool
+        protocolPolicy:
+          type: string
+          example: Protocol Policy Name (from the GET /v1.0/policies?type=Protocol command)
+        protocolPolicyOnCompanyNetwork:
+          type: string
+          example: Protocol Policy on Company Network (from the GET /v1.0/policies?type=Protocol command)
+        referencePoolName:
+          type: string
+          example: pool name
+        routeThroughGatewayType:
+          type: string
+          example: Always OR Never
+        targetPlatforms:
+          type: array
+          example:
+          - Windows
+          - OSX
+          - Linux
+          - WebApp
+          - Android
+          - iOS
+          items:
+            type: string
+        timeLimitsPolicy:
+          type: string
+          example: TimeLimits Policy Name (from the GET /v1.0/policies?type=TimeLimits command)
+        warmupPolicy:
+          type: string
+          example: Warmup policy Name (from the GET /v1.0/policies?type=Warmup command)
+        windowsHelloEnabled:
+          type: boolean
+      title: CreateDesktopPoolRequest
+    GlobalDesktopListBO:
+      type: object
+      properties:
+        globalDesktopDetails:
+          type: array
+          items:
+            $ref: '#/components/schemas/GlobalDesktopDetailsBO'
+      title: GlobalDesktopListBO
+    GWPool:
+      type: object
+      properties:
+        appId:
+          type: string
+          example: c673e235-bff2-476a-b042-a13291c362f7
+        appName:
+          type: string
+          example: RD1908-WordPad
+        id:
+          type: string
+          example: 6f007f1b-232d-477f-9d10-02b0035734d7
+        name:
+          type: string
+          example: My persistent pool
+        poolType:
+          type: string
+          example: VDI
+      title: GWPool
+    RefreshEntitlementsResponse:
+      type: object
+      properties:
+        description:
+          type: string
+      title: RefreshEntitlementsResponse
+    NameResponse:
+      type: object
+      properties:
+        name:
+          type: string
+      title: NameResponse
+    Tag:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Engineering
+        value:
+          type: string
+          example: Development
+      title: Tag
+    ApiStatusResponse:
+      type: object
+      properties:
+        details:
+          type: object
+          example: Details about the response
+        errorInfo:
+          $ref: '#/components/schemas/ErrorInfo'
+        status:
+          type: string
+          example: Succeeded
+      title: ApiStatusResponse
+    RemoteSessionDesktopMessage:
+      type: object
+      required:
+      - desktopId
+      - displayDuration
+      - message
+      - poolId
+      properties:
+        desktopId:
+          type: string
+          example: be95b637-b748-41f9-90ff-d3d55f4dd51d
+          description: DesktopId of a desktop belonging to the user.
+        displayDuration:
+          type: integer
+          format: int32
+          example: 90
+          description: How long to display the message, in seconds.
+        message:
+          type: string
+          example: Please save your work. Your desktop will be shut down at 0320 UTC.
+          description: 'Message string to display. Valid range: 1-250 characters '
+        poolId:
+          type: string
+          example: eba2f3fa-be97-4403-8f00-4895cbc13ab3
+          description: Id of pool
+      title: RemoteSessionDesktopMessage
+    CreateDesktopPoolResponse:
+      type: object
+      properties:
+        desktopPoolId:
+          type: string
+          example: poolId
+        errorInfo:
+          $ref: '#/components/schemas/ErrorInfo'
+        name:
+          type: string
+          example: pool name
+        status:
+          type: string
+          example: Succedded or Failure
+      title: CreateDesktopPoolResponse
+    UsageReport:
+      type: object
+      properties:
+        end:
+          type: string
+          example: '2018-09-14'
+          description: in YYYY-MM-DD format
+        format:
+          type: string
+          example: JSON
+          description: Report output format in either JSON or CSV; default is JSON
+          enum:
+          - JSON
+          - CSV
+        start:
+          type: string
+          example: '2018-09-12'
+          description: in YYYY-MM-DD format
+      title: UsageReport
+    LicenseDetails:
+      type: object
+      properties:
+        concurrentUsersAvailable:
+          type: integer
+          format: int32
+          example: 50
+        concurrentUsersEntitlement:
+          type: integer
+          format: int32
+          example: 150
+        drUsersAvailable:
+          type: integer
+          format: int32
+          example: 50
+        drUsersEntitlement:
+          type: integer
+          format: int32
+          example: 90
+        namedUsersAvailable:
+          type: integer
+          format: int32
+          example: 250
+        namedUsersEntitlement:
+          type: integer
+          format: int32
+          example: 550
+        rdrUsersAvailable:
+          type: integer
+          format: int32
+          example: 50
+        rdrUsersEntitlement:
+          type: integer
+          format: int32
+          example: 100
+        service:
+          type: string
+          example: Cloud Desktop
+        vmBackupsAvailable:
+          type: integer
+          format: int32
+          example: 45
+        vmBackupsEntitlement:
+          type: integer
+          format: int32
+          example: 50
+        vmBackupsRetentionAvailable:
+          type: integer
+          format: int32
+          example: 25
+        vmBackupsRetentionEntitlement:
+          type: integer
+          format: int32
+          example: 40
+        vmType:
+          type: string
+          example: STANDARD PREMIUM 128
+      title: LicenseDetails
+    SecurityGroup:
+      type: object
+      properties:
+        id:
+          type: string
+          example: sg-xxxxxxxxxxxxxxxxx
+        name:
+          type: string
+          example: securityGroupName
+        vpcId:
+          type: string
+          example: vpc-xxxxxxxxxxxxxxxxx
+      title: SecurityGroup
+    NpsServerBO:
+      type: object
+      properties:
+        ipAddress:
+          type: string
+          example: 10.0.0.1
+        priority:
+          type: integer
+          format: int32
+          example: 1
+        sharedSecret:
+          type: string
+          example: secret key
+      title: NpsServerBO
+    AuthenticationOptions:
+      type: object
+      properties:
+        authenticationOptions:
+          type: array
+          example:
+          - AD
+          - AAD
+          - NPS
+          items:
+            type: string
+        idp:
+          type: array
+          example:
+          - dev_okta
+          - IdpTest
+          - mvp_okta
+          items:
+            type: string
+        publicDomainName:
+          type: string
+          example: test.com
+      title: AuthenticationOptions
+    TemplateVmClasses:
+      type: object
+      properties:
+        vmClasses:
+          type: array
+          items:
+            $ref: '#/components/schemas/TemplateVMClass'
+      title: TemplateVmClasses
+    GlobalDesktopPool:
+      type: object
+      properties:
+        poolDisplayName:
+          type: string
+          example: HSKU For Business
+        poolId:
+          type: string
+          example: 832f0789-e5f5-4f17-9384-3287bec1ba44
+        poolName:
+          type: string
+          example: HSKUForBusiness
+        precedence:
+          type: integer
+          format: int32
+          example: 1
+      title: GlobalDesktopPool
+    GWCreateCluster:
+      type: object
+      properties:
+        authType:
+          type: string
+          example: AAD or AD or IDP name
+        description:
+          type: string
+          example: This cluster is for accessing pools in Europe
+        domainToJoin:
+          $ref: '#/components/schemas/GWDomainToJoin'
+        gatewayPolicyName:
+          type: string
+          example: Gateway Policy (from the GET /v1.0/policies?type=Gateway command)
+        imageName:
+          type: string
+          example: Windows Server (2025) (from the GET /v1.0/clouds/rdgateways/images command)
+        localAdmin:
+          $ref: '#/components/schemas/GWHostLocalAdmin'
+        name:
+          type: string
+          example: EuropeGW
+        namePrefix:
+          type: string
+          example: gw
+        npsServers:
+          type: array
+          items:
+            $ref: '#/components/schemas/NpsServerBO'
+        numberOfHosts:
+          type: integer
+          format: int32
+          example: 3
+        overridePublicDomain:
+          type: boolean
+          example: false
+        publicDomain:
+          type: string
+          example: example.com
+        region:
+          type: string
+          example: us-east-1
+        resourceGroup:
+          type: string
+          example: Local-RG (Required for Azure Cloud, not mandatory for GCP,AWS)
+        securityGroupId:
+          type: string
+          example: sg-xxxxxxxxxx
+        subscriptionName:
+          type: string
+          example: The subscription name from the GET /v1.0/clouds command
+        virtualNetworkId:
+          type: string
+          example: https://www.googleapis.com/compute/v1/projects/project-name/global/networks/networkName
+        vmClassName:
+          type: string
+          example: Standard Gateway (from the GET /v1.0/clouds/rdgateways/vmClasses command)
+        zone:
+          type: string
+          example: asia
+      title: GWCreateCluster
+    TagDesktopRequest:
+      type: object
+      properties:
+        desktopId:
+          type: string
+          example: 1dbf8fc6-eea5-49fa-b142-90872b61c794
+        poolId:
+          type: string
+          example: eba2f3fa-be97-4403-8f00-4895cbc13ab3
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+      title: TagDesktopRequest
+    GWHostLocalAdmin:
+      type: object
+      properties:
+        password:
+          type: string
+          example: abcd
+        userName:
+          type: string
+          example: localadmin
+      title: GWHostLocalAdmin
+    GWClusterDetails:
+      type: object
+      properties:
+        authType:
+          type: string
+          example: AAD
+        clusterId:
+          type: string
+          example: df4799d5-3b46-4b24-bfb5-9f1442bfd651
+        description:
+          type: string
+          example: This cluster is for accessing pools in Europe
+        imageName:
+          type: string
+          example: Windows Server (2025)
+        name:
+          type: string
+          example: EuropePoolAccess
+        policyName:
+          type: string
+          example: Gateway Policy
+        publicDomain:
+          type: string
+          example: example.com
+        publicDomainOverriden:
+          type: boolean
+        regionalClusters:
+          type: array
+          items:
+            $ref: '#/components/schemas/GWRegionalClusterDetails'
+        subscriptionName:
+          type: string
+          example: Ent-Cloud
+        vmClassName:
+          type: string
+          example: Standard Gateway
+      title: GWClusterDetails
+    CloudImages:
+      type: object
+      properties:
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/Images'
+      title: CloudImages
+    Images:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Windows Server (2025)
+      title: Images
+    VDIPoolDetails:
+      type: object
+      properties:
+        poolPrecedence:
+          type: array
+          items:
+            $ref: '#/components/schemas/PoolPrecedenceDetails'
+      title: VDIPoolDetails
+    UserGlobalDesktopPoolDetailsBO:
+      type: object
+      properties:
+        assignedPools:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssignedPoolDesktopDetailsBO'
+        email:
+          type: string
+          example: dsmith@example.com
+        firstName:
+          type: string
+          example: David
+        globalDesktopId:
+          type: string
+          example: cc652243-a14a-47c5-834a-54343b8fd817
+        globalDesktopName:
+          type: string
+          example: Test Application
+        lastName:
+          type: string
+          example: Smith
+        userId:
+          type: string
+          example: e17aa8fc-3919-4461-8345-bdd665e55fb8
+      title: UserGlobalDesktopPoolDetailsBO
+    APIMasterTemplateBO:
+      type: object
+      properties:
+        assignedPools:
+          type: array
+          example: pool1
+          items:
+            type: string
+        cpu:
+          type: integer
+          format: int32
+          example: 2
+        fqdn:
+          type: string
+          example: DESKTOP-N4H5S59
+        lastUpdatedDate:
+          type: string
+          example: Date
+        maintenancePolicyName:
+          type: string
+          example: maintenancePolicy1
+        memory:
+          type: string
+          example: 7680 MB
+        name:
+          type: string
+          example: base-win11
+        parentTemplate:
+          type: string
+          example: Template
+        pauseResumeSupported:
+          type: boolean
+        provider:
+          type: string
+          example: Custom Image
+        region:
+          type: string
+          example: Global
+        status:
+          type: string
+          example: Published
+        storage:
+          type: string
+          example: 80 GB
+        templateOs:
+          type: string
+          example: Microsoft Windows Server 2025 Datacenter
+        templateOsType:
+          type: string
+          example: Windows
+        templateType:
+          type: string
+          example: Cloud Desktop
+      title: APIMasterTemplateBO
+    Cost_Center_to_Assign:
+      type: object
+      properties:
+        costCenter:
+          type: string
+          example: 1105
+          description: cost center to assign
+      title: Cost Center to Assign
+    AddUser:
+      type: object
+      properties:
+        email:
+          type: string
+          example: dsmith@example.com
+        firstName:
+          type: string
+          example: David
+        lastName:
+          type: string
+          example: Smith
+        poolId:
+          type: string
+          example: 8bb27ac0-b3ce-455b-8a30-3aed537fd45f
+      title: AddUser
+    ErrorInfo:
+      type: object
+      properties:
+        description:
+          type: string
+          example: 'null'
+        error:
+          type: string
+          example: 'null'
+      title: ErrorInfo
+    BundlesDTO:
+      type: object
+      properties:
+        bundlesList:
+          type: array
+          items:
+            $ref: '#/components/schemas/BundleDetails'
+      title: BundlesDTO
+    HydrateDuration:
+      type: object
+      properties:
+        duration:
+          type: string
+          example: 5/Any Integer
+      title: HydrateDuration
+    UpdateDesktopPoolRequest:
+      type: object
+      properties:
+        allowUserRebootVM:
+          type: boolean
+          example: false
+        autoCreateOnDelete:
+          type: boolean
+          example: false
+        description:
+          type: string
+          example: description
+        displayName:
+          type: string
+          example: Pool DisplayName
+        enableSelfServiceDiagnostics:
+          type: boolean
+          example: false
+        gatewayClusterName:
+          type: string
+          example: Public cloud Gateway ClusterName
+        gatewayType:
+          type: string
+          example: GATEWAY_CLUSTER
+        isMultiZoneActive:
+          type: boolean
+          example: false
+        loginDomain:
+          type: string
+          example: domain Name if LoginType is SSO_USER_PASSWD
+        loginType:
+          type: string
+          example: SSO_AAD or  SSO_USER_PASSWD or SSO_DOMAIN_USER_PASSWD or SSO_PREFILLED_DOMAIN_USERNAME
+        maintenancePolicy:
+          type: string
+          example: Maintenance Policy Name. Set to null to  remove the Maintenance Policy.
+        mediaRedirectionPolicy:
+          type: string
+          example: Media RedirectionPolicy Name. Set to null to  remove the Media redirection Policy.
+        numberOfDesktops:
+          type: integer
+          format: int32
+          example: 1
+        pauseOnFirstFailure:
+          type: boolean
+          example: false
+        protocolPolicy:
+          type: string
+          example: Protocol Policy Name. Set to null to  remove the protocol policy.
+        protocolPolicyOnCompanyNetwork:
+          type: string
+          example: Protocol Policy on Company Network. Set to null to  remove the protocol policy on company network.
+        routeThroughGatewayType:
+          type: string
+          example: Always OR Never
+        targetPlatforms:
+          type: array
+          example:
+          - Windows
+          - OSX
+          - Linux
+          - WebApp
+          - Android
+          - iOS
+          items:
+            type: string
+        timeLimitsPolicy:
+          type: string
+          example: TimeLimits Policy Name. Set to null to  remove the time limits policy.
+        warmupPolicy:
+          type: string
+          example: Warmup Policy Name. Set to null to  remove the warmup Policy.
+        windowsHelloEnabled:
+          type: boolean
+          example: false
+      title: UpdateDesktopPoolRequest
+    BundleDetails:
+      type: object
+      properties:
+        apps:
+          type: array
+          items:
+            $ref: '#/components/schemas/KeyValuePairBO'
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/KeyValuePairBO'
+        id:
+          type: string
+          example: f9ad04bc-cbfc-47bd-aaa2-78ed27925018
+        name:
+          type: string
+          example: All app bundle
+      title: BundleDetails
+    Pool_to_Assign:
+      type: object
+      properties:
+        poolId:
+          type: string
+          example: 73dc410b-6b13-40c6-32sd-32d4c175117c
+          description: Id of pool to assign
+      title: Pool to Assign
+    AssignBundle:
+      type: object
+      properties:
+        bundleId:
+          type: string
+          example: 73dc410b-6b13-40c6-32sd-32d4c175117c
+          description: Id of bundle to assign
+      title: AssignBundle
+    GWClusterHostPerformanceSample:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          example: 1653395963398
+        value:
+          type: string
+          example: 11
+      title: GWClusterHostPerformanceSample
+    GlobalDesktopPoolsList:
+      type: object
+      properties:
+        assignedPools:
+          type: array
+          items:
+            $ref: '#/components/schemas/GlobalDesktopPool'
+        id:
+          type: string
+          example: 70587aa0-8e10-42b1-b6ce-4929bca98c05
+        name:
+          type: string
+          example: Global Desktop EU
+      title: GlobalDesktopPoolsList
+    RegisterTemplateRequestBO:
+      type: object
+      properties:
+        name:
+          type: string
+          example: template1
+        region:
+          type: string
+          example: ap-south-1. Required for AWS clouds only.
+      title: RegisterTemplateRequestBO
+    RemoteAssistDesktop:
+      type: object
+      required:
+      - desktopId
+      - password
+      - poolId
+      properties:
+        desktopId:
+          type: string
+          example: be95b637-b748-41f9-90ff-d3d55f4dd51d
+          description: Id of desktop to remote assist
+        password:
+          type: string
+          example: password
+          description: Password for initiating remote assist
+        poolId:
+          type: string
+          example: 3ce45fa5-be91-4a49-a297-c4e94eaf945d
+          description: Id of pool
+      title: RemoteAssistDesktop
+    OpResponse:
+      type: object
+      properties:
+        details:
+          type: object
+          example:
+            desktopName: development-01
+            id: ab6a8038-f86b-4bc2-aad7-d19a9975f5a9
+            ipAddress: 10.60.2.74
+            fqdn: dev.example.com
+        endTime:
+          type: string
+          example: '2020-09-04T05:28:28.968Z'
+        errorInfo:
+          $ref: '#/components/schemas/ErrorInfo'
+        startTime:
+          type: string
+          example: '2020-09-04T05:24:22.113Z'
+        status:
+          type: string
+          example: Succeeded
+      title: OpResponse
+    ApiCloudNetworksResponseBO:
+      type: object
+      properties:
+        cidr:
+          type: string
+          example: 10.999.9.9/20
+        cloudRegion:
+          $ref: '#/components/schemas/ApiCloudRegionBO'
+        networkID:
+          type: string
+          example: https://www.googleapis.com/compute/v1/projects/project-name/global/networks/networkName
+        networkName:
+          type: string
+          example: networkName\asiaeast1
+        vpcId:
+          type: string
+          example: vpcId
+        zone:
+          type: string
+          example: asia-east1-a
+      title: ApiCloudNetworksResponseBO
+    GWClusterActionResponse:
+      type: object
+      properties:
+        clusterName:
+          type: string
+          example: cluster Name
+        errorInfo:
+          $ref: '#/components/schemas/ErrorInfo'
+        status:
+          type: string
+          example: Succeeded or Failed
+      title: GWClusterActionResponse
+    CloudAppServerDetails:
+      type: object
+      properties:
+        fqdn:
+          type: string
+          example: dvcrdperf09-002.indevqa.ws
+        id:
+          type: string
+          example: f9ad04bc-cbfc-47bd-aaa2-78ed27925018
+        ipAddress:
+          type: string
+          example: 10.60.0.10
+        mode:
+          type: string
+          example: Enabled
+        name:
+          type: string
+          example: HSKUForBusiness
+        status:
+          type: string
+          example: Ready
+        totalSessions:
+          type: integer
+          format: int32
+          example: 17
+      title: CloudAppServerDetails
+    UserDesktop:
+      type: object
+      properties:
+        desktopIP:
+          type: string
+          example: 10.60.0.54
+        desktopName:
+          type: string
+          example: Dev-desktop-001
+        id:
+          type: string
+          example: 2f102d72-8c58-460b-9dbf-c32d6a84f9f2
+      title: UserDesktop
+    ApiCreateCloudAppPoolResponse:
+      type: object
+      properties:
+        details:
+          $ref: '#/components/schemas/CloudAppPoolDetails'
+        status:
+          type: string
+          example: Succeeded
+      title: ApiCreateCloudAppPoolResponse
+    Regions:
+      type: object
+      properties:
+        regions:
+          type: array
+          example:
+          - us-east-1
+          - ca-central-1
+          - us-west-2
+          - eu-west-1
+          items:
+            type: string
+      title: Regions
+    CreateCustomDesktop:
+      type: object
+      properties:
+        biosGUID:
+          type: string
+          example: 12345678-1234-5678-ABCD-1234567890AB
+        computerName:
+          type: string
+          example: Example-Dev
+        fqdn:
+          type: string
+          example: name-xyx.domain.com
+        macAddress:
+          type: string
+          example: 00:1s:99:f1:d2:4f
+      title: CreateCustomDesktop
+    CustomImageResponse:
+      type: object
+      properties:
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/TemplateCustomImageBO'
+      title: CustomImageResponse
+    ApiCloudRegionBO:
+      type: object
+      properties:
+        location:
+          type: string
+          example: Changhua County, Taiwan
+        region:
+          type: string
+          example: asia-east1
+      title: ApiCloudRegionBO
+    GetPoliciesResponse:
+      type: object
+      properties:
+        policies:
+          type: array
+          items:
+            $ref: '#/components/schemas/NameResponse'
+        policyType:
+          type: string
+      title: GetPoliciesResponse
+    DesktopPoolDetails:
+      type: object
+      properties:
+        active:
+          type: boolean
+        availCount:
+          type: integer
+          format: int32
+          example: 10
+        cloud:
+          type: string
+          example: Azure Cloud
+        createDesktopOnDelete:
+          type: boolean
+        description:
+          type: string
+          example: Persistent test pool
+        diskSize:
+          type: integer
+          format: int32
+          example: 128 (in terms of GB)
+        drType:
+          type: string
+          example: RDR
+        id:
+          type: string
+          example: f9ad04bc-cbfc-47bd-aaa2-78ed27925018
+        name:
+          type: string
+          example: HSKUForBusiness
+        nodeGroupName:
+          type: string
+          example: grp-mixed-n2-1-8-me-west1-b
+        poolType:
+          type: string
+          example: Persistent
+        rdGateways:
+          type: array
+          example:
+          - rdgw1
+          - rdgw2
+          items:
+            type: string
+        region:
+          type: string
+          example: me-west1
+        routeGatewayType:
+          type: string
+          example: Always
+        routeThruVPN:
+          type: boolean
+        status:
+          type: string
+          example: Success
+        subscriptionName:
+          type: string
+          example: Ent-Cloud
+        template:
+          type: string
+          example: TQaRDR1903-0812
+        usedCount:
+          type: integer
+          format: int32
+          example: 25
+        vmType:
+          type: string
+          example: BUSINESS_VM
+        zone:
+          type: string
+          example: me-west1-a
+      title: DesktopPoolDetails
+    CloudAppServers:
+      type: object
+      properties:
+        cloudAppServers:
+          type: array
+          items:
+            $ref: '#/components/schemas/CloudAppServerDetails'
+      title: CloudAppServers
+    GWAddGwHost:
+      type: object
+      properties:
+        domainToJoin:
+          $ref: '#/components/schemas/GWDomainToJoin'
+        localAdmin:
+          $ref: '#/components/schemas/GWHostLocalAdmin'
+      title: GWAddGwHost
+    CloudAppPool:
+      type: object
+      properties:
+        cloudAppPools:
+          type: array
+          items:
+            $ref: '#/components/schemas/CloudAppPoolDetails'
+      title: CloudAppPool
+    RemoteSessionDesktop:
+      type: object
+      required:
+      - desktopId
+      - poolId
+      properties:
+        desktopId:
+          type: string
+          example: 6ca16b89-0077-447d-95d4-cf3f7e19c777
+          description: Id of desktop with user session
+        poolId:
+          type: string
+          example: 8bb27ac0-b3ce-455b-8a30-3aed537fd45f
+          description: Id of pool
+      title: RemoteSessionDesktop
+    AddCustomImageRequest:
+      type: object
+      properties:
+        imageName:
+          type: string
+          example: base-w10image (from the GET /v1.0/clouds/{subscriptionName}/customImages command)
+        imageType:
+          type: string
+          example: Windows Server
+        region:
+          type: string
+          example: us-east-1
+      title: AddCustomImageRequest
+    GWDomainToJoinBO:
+      type: object
+      properties:
+        domain:
+          type: string
+          example: domain
+        domainName:
+          type: string
+          example: domainName
+        domainOU:
+          type: string
+          example: domain OU
+        password:
+          type: string
+          example: password
+        userName:
+          type: string
+          example: admin
+      title: GWDomainToJoinBO
+    Zones:
+      type: object
+      properties:
+        zones:
+          type: array
+          example:
+          - us-east1-b
+          - us-east1-c
+          - us-east1-d
+          items:
+            type: string
+      title: Zones
+    CreateCloudAppRequest:
+      type: object
+      properties:
+        appIconName:
+          type: string
+          example: predefined1.png
+        appParams:
+          type: string
+          example: TBD
+        applicationType:
+          type: string
+          example: Cloud Application
+        bundles:
+          type: array
+          example:
+          - f9ad04bc-cbfc-47bd-aaa2-78ed27925018
+          items:
+            type: string
+        cloudAppType:
+          type: string
+          example: Custom
+        fullPath:
+          type: string
+          example: C:\Program Files\Programs\program.exe
+        gatewayClusterId:
+          type: string
+          example: f9ad04bc-cbfc-47bd-aaa2-78ed27925018
+        loginDomain:
+          type: string
+          example: domain
+        loginOption:
+          type: string
+          example: SSO_DOMAIN_USER_PASSWD
+        name:
+          type: string
+          example: Graphics app
+        poolId:
+          type: string
+          example: f9ad04bc-cbfc-47bd-aaa2-78ed27925018
+        routeThroughGateway:
+          type: string
+          example: Always
+        serverType:
+          type: string
+          example: Workspot Cloud App Pools
+        targetPlatforms:
+          type: array
+          example:
+          - iOS
+          - Windows
+          - Android
+          - OSX
+          items:
+            type: string
+        workingDir:
+          type: string
+          example: C:\Documents\My Data
+      title: CreateCloudAppRequest
+    StaleDevices:
+      type: object
+      properties:
+        currentPage:
+          type: integer
+          format: int32
+        devices:
+          type: array
+          items:
+            $ref: '#/components/schemas/StaleDevice'
+        totalCount:
+          type: integer
+          format: int32
+        totalPages:
+          type: integer
+          format: int32
+      title: StaleDevices
