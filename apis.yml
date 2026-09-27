@@ -58,7 +58,7 @@ apis:
   image: >-
     https://www.workspot.com/app/uploads/2024/10/cropped-workspot-secondary-logo-blue-192x192.png
 - aid: workspot:workspot-apis-api
-  name: Workspot AP Is API
+  name: Workspot APIs API
   description: >-
     Workspot Control REST interface for administrators. See the descriptions below and <a href="https://docs.workspot.com/v1/docs/using-the-workspot-control-api">Using
     the Workspot Control API </a>for additional information
