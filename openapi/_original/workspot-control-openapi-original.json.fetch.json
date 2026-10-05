@@ -1,0 +1,12 @@
+{
+ "url": "https://api.workspot.com/v2/api-docs",
+ "requested_url": "https://api.workspot.com/v2/api-docs",
+ "status": 200,
+ "content_type": "application/json",
+ "bytes": 165931,
+ "sha256": "ec460088b24f0ad968ebde81b8c84773a35b60ff68ff8b8495deb36e77f8ee82",
+ "fetched_at": "2026-10-04",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "byte-identical",
+ "note": "Re-fetched from the provider by verify-openapi-sources.py; the archived file is byte-identical to what the provider serves."
+}
