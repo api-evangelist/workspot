@@ -1,0 +1,11 @@
+[
+  {
+    "repo": "workspot",
+    "captured_at": "2026-10-11T195150",
+    "source_url": "https://www.workspot.com/",
+    "source_type": "Website",
+    "file": "workspot-2026-10-11T195150.png",
+    "bytes": 497659,
+    "capture": "playwright-local"
+  }
+]
