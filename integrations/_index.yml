@@ -12,7 +12,7 @@
   channel: distribution
   evidence: https://aws.amazon.com/marketplace/seller-profile?id=29bc2ef2-933c-4a98-9ba5-0c00aaacbf7c
   source: edge
-  relationship: platform-app
+  relationship: distribution-channel
   status: not-a-workflow
   arazzo: null
 - slug: workspot-microsoft-azure-marketplace
@@ -24,6 +24,6 @@
   channel: distribution
   evidence: https://azuremarketplace.microsoft.com/en-us/marketplace/apps?search=Workspot
   source: edge
-  relationship: platform-app
+  relationship: distribution-channel
   status: not-a-workflow
   arazzo: null
