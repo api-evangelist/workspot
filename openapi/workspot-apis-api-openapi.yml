@@ -3481,53 +3481,304 @@ paths:
         required: true
 components:
   schemas:
-    MoveDesktopRequest:
-      type: object
-      required:
-      - assignedUser
-      - targetPoolId
-      properties:
-        assignedUser:
-          type: string
-          example: dsmith@example.com
-          description: User's email address
-        targetPoolId:
-          type: string
-          example: be95b637-b748-41f9-90ff-d3d55f4dd51d
-          description: Target poolId to which desktop need to be moved.
-      title: MoveDesktopRequest
-    GWDomainToJoinBO:
+    BundleDetails:
       type: object
       properties:
-        domain:
-          type: string
-          example: domain
-        domainName:
-          type: string
-          example: domainName
-        domainOU:
-          type: string
-          example: domain OU
-        password:
-          type: string
-          example: password
-        userName:
-          type: string
-          example: admin
-      title: GWDomainToJoinBO
-    UserDesktop:
-      type: object
-      properties:
-        desktopIP:
-          type: string
-          example: 10.60.0.54
-        desktopName:
-          type: string
-          example: Dev-desktop-001
+        apps:
+          type: array
+          items:
+            $ref: '#/components/schemas/KeyValuePairBO'
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/KeyValuePairBO'
         id:
           type: string
-          example: 2f102d72-8c58-460b-9dbf-c32d6a84f9f2
-      title: UserDesktop
+          example: f9ad04bc-cbfc-47bd-aaa2-78ed27925018
+        name:
+          type: string
+          example: All app bundle
+      title: BundleDetails
+    UpdateCloudAppPool:
+      type: object
+      properties:
+        autoCreateOnDelete:
+          type: boolean
+          example: false
+        description:
+          type: string
+          example: Sample description
+        loadBalancingMethod:
+          type: string
+          example: Depth
+        maxSessionLimit:
+          type: integer
+          format: int32
+          example: 5
+        poolSize:
+          type: integer
+          format: int32
+          example: 2
+      title: UpdateCloudAppPool
+    GWUpdateClusterResponse:
+      type: object
+      properties:
+        clusterName:
+          type: string
+          example: Cluster Name
+        errorInfo:
+          $ref: '#/components/schemas/ErrorInfo'
+        status:
+          type: string
+          example: Succeeded or Failed
+      title: GWUpdateClusterResponse
+    ApiCloudNetworksListResponse:
+      type: object
+      properties:
+        cloudNetworks:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiCloudNetworksResponseBO'
+      title: ApiCloudNetworksListResponse
+    DesktopList:
+      type: object
+      properties:
+        desktops:
+          type: array
+          items:
+            $ref: '#/components/schemas/Desktop'
+      title: DesktopList
+    UserPool:
+      type: object
+      properties:
+        active:
+          type: boolean
+        description:
+          type: string
+          example: Technology persistent pool
+        drType:
+          type: string
+          example: RDR
+        id:
+          type: string
+          example: d8af1769-8aec-496c-9b7a-7ac6a32a8ee4
+        poolDisplayName:
+          type: string
+          example: Pool to be used by Technology people
+        poolName:
+          type: string
+          example: Pool for Technology
+        poolType:
+          type: string
+          example: Persistent
+      title: UserPool
+    GroupsList:
+      type: object
+      properties:
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupDetailBO'
+      title: GroupsList
+    VMClass:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Standard Gateway
+        vmInstances:
+          type: string
+          example: n2-standard-4,n1-standard-4,n4-standard-4
+      title: VMClass
+    Tag:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Engineering
+        value:
+          type: string
+          example: Development
+      title: Tag
+    GlobalDesktopDetailsBO:
+      type: object
+      properties:
+        id:
+          type: string
+          example: ee614d15-d671-44c4-9a26-b10eda000018
+        name:
+          type: string
+          example: Test Pool Group
+      title: GlobalDesktopDetailsBO
+    APIMasterTemplateBO:
+      type: object
+      properties:
+        assignedPools:
+          type: array
+          example: pool1
+          items:
+            type: string
+        cpu:
+          type: integer
+          format: int32
+          example: 2
+        fqdn:
+          type: string
+          example: DESKTOP-N4H5S59
+        lastUpdatedDate:
+          type: string
+          example: Date
+        maintenancePolicyName:
+          type: string
+          example: maintenancePolicy1
+        memory:
+          type: string
+          example: 7680 MB
+        name:
+          type: string
+          example: base-win11
+        parentTemplate:
+          type: string
+          example: Template
+        pauseResumeSupported:
+          type: boolean
+        provider:
+          type: string
+          example: Custom Image
+        region:
+          type: string
+          example: Global
+        status:
+          type: string
+          example: Published
+        storage:
+          type: string
+          example: 80 GB
+        templateOs:
+          type: string
+          example: Microsoft Windows Server 2025 Datacenter
+        templateOsType:
+          type: string
+          example: Windows
+        templateType:
+          type: string
+          example: Cloud Desktop
+      title: APIMasterTemplateBO
+    RemoteSessionDesktopMessage:
+      type: object
+      required:
+      - desktopId
+      - displayDuration
+      - message
+      - poolId
+      properties:
+        desktopId:
+          type: string
+          example: be95b637-b748-41f9-90ff-d3d55f4dd51d
+          description: DesktopId of a desktop belonging to the user.
+        displayDuration:
+          type: integer
+          format: int32
+          example: 90
+          description: How long to display the message, in seconds.
+        message:
+          type: string
+          example: Please save your work. Your desktop will be shut down at 0320 UTC.
+          description: 'Message string to display. Valid range: 1-250 characters '
+        poolId:
+          type: string
+          example: eba2f3fa-be97-4403-8f00-4895cbc13ab3
+          description: Id of pool
+      title: RemoteSessionDesktopMessage
+    CustomImageResponse:
+      type: object
+      properties:
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/TemplateCustomImageBO'
+      title: CustomImageResponse
+    CloudAppServerDetails:
+      type: object
+      properties:
+        fqdn:
+          type: string
+          example: dvcrdperf09-002.indevqa.ws
+        id:
+          type: string
+          example: f9ad04bc-cbfc-47bd-aaa2-78ed27925018
+        ipAddress:
+          type: string
+          example: 10.60.0.10
+        mode:
+          type: string
+          example: Enabled
+        name:
+          type: string
+          example: HSKUForBusiness
+        status:
+          type: string
+          example: Ready
+        totalSessions:
+          type: integer
+          format: int32
+          example: 17
+      title: CloudAppServerDetails
+    TagDesktopRequest:
+      type: object
+      properties:
+        desktopId:
+          type: string
+          example: 1dbf8fc6-eea5-49fa-b142-90872b61c794
+        poolId:
+          type: string
+          example: eba2f3fa-be97-4403-8f00-4895cbc13ab3
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+      title: TagDesktopRequest
+    Applications:
+      type: object
+      properties:
+        applications:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApplicationDetails'
+      title: Applications
+    CreateCloudAppPool:
+      type: object
+      properties:
+        autoCreateOnDelete:
+          type: boolean
+          example: false
+        description:
+          type: string
+          example: Sample description
+        loadBalancingMethod:
+          type: string
+          example: Depth
+        maxSessionLimit:
+          type: integer
+          format: int32
+          example: 5
+        pauseOnFirstFailure:
+          type: boolean
+          example: false
+        poolName:
+          type: string
+          example: Pool1
+        poolSize:
+          type: integer
+          format: int32
+          example: 2
+        referencePool:
+          type: string
+          example: a066da91-0191-46d2-83b1-8cd25f160fcc
+        serverNamePrefix:
+          type: string
+          example: prefix
+      title: CreateCloudAppPool
     GWRegionalClusterDetails:
       type: object
       properties:
@@ -3563,6 +3814,58 @@ components:
           example: us-central1-a
           description: Applicable for GCP Clusters
       title: GWRegionalClusterDetails
+    AssignedPoolDesktopDetailsBO:
+      type: object
+      properties:
+        assignedDesktop:
+          $ref: '#/components/schemas/AssignedDesktopBO'
+        poolId:
+          type: string
+          example: 2f102d72-8c58-460b-9dbf-c32d6a84f9f2
+        poolName:
+          type: string
+          example: TestPool
+        precendence:
+          type: integer
+          format: int32
+          example: 1
+      title: AssignedPoolDesktopDetailsBO
+    GlobalDesktopListBO:
+      type: object
+      properties:
+        globalDesktopDetails:
+          type: array
+          items:
+            $ref: '#/components/schemas/GlobalDesktopDetailsBO'
+      title: GlobalDesktopListBO
+    ApiCreateCloudAppResponse:
+      type: object
+      properties:
+        details:
+          $ref: '#/components/schemas/ApplicationDetails'
+        status:
+          type: string
+          example: Succeeded
+      title: ApiCreateCloudAppResponse
+    CloudDetails:
+      type: object
+      properties:
+        byoc:
+          type: boolean
+          example: true
+        configType:
+          type: string
+          example: Google Cloud Platform
+        name:
+          type: string
+          example: Ent-Cloud
+        status:
+          type: string
+          example: online
+        subscriptionId:
+          type: string
+          example: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxx5e58d
+      title: CloudDetails
     TemplateVMClass:
       type: object
       properties:
@@ -3588,92 +3891,159 @@ components:
           type: string
           example: n1-standard-2
       title: TemplateVMClass
-    GWAddGwHost:
+    NpsServerBO:
       type: object
       properties:
-        domainToJoin:
-          $ref: '#/components/schemas/GWDomainToJoin'
-        localAdmin:
-          $ref: '#/components/schemas/GWHostLocalAdmin'
-      title: GWAddGwHost
-    UpgradeDesktopRequest:
-      type: object
-      required:
-      - domainOU
-      - domainPWD
-      - domainToJoin
-      - domainUser
-      - retainName
-      - targetPoolId
-      properties:
-        computerName:
+        ipAddress:
           type: string
-          example: Example-123
-          description: Optional, provide if you want to give a custom name to desktop in taget pool.
-        domainOU:
-          type: string
-          example: OU=WSVDI,DC=indevqa,DC=ws
-          description: Domain OU
-        domainPWD:
-          type: string
-          example: pswrd*
-          description: Password for Domain Join,
-        domainToJoin:
-          type: string
-          example: indevqa.ws
-          description: Domain name
-        domainUser:
-          type: string
-          example: indevqa.ws\johns
-          description: Username
-        retainName:
-          type: string
-          example: 'false'
-          description: Flag to determine if old computer name should be retained for upgraded desktop or replaced with that of target pool
-        targetPoolId:
-          type: string
-          example: be95b637-b748-41f9-90ff-d3d55f4dd51d
-          description: Target poolId to which desktop need to be upgraded.
-      title: UpgradeDesktopRequest
-    PoolPrecedenceDetails:
-      type: object
-      properties:
-        poolId:
-          type: string
-          example: 1dbf8fc6-eea5-49fa-b142-90872b61c794
-        precedence:
+          example: 10.0.0.1
+        priority:
           type: integer
           format: int32
           example: 1
-      title: PoolPrecedenceDetails
-    Pool:
+        sharedSecret:
+          type: string
+          example: secret key
+      title: NpsServerBO
+    GWClusterHostConnectionDetails:
       type: object
       properties:
-        desktopPools:
+        activeConnections:
+          type: integer
+          format: int64
+          example: 1
+        averageRequestAuthSeconds:
+          type: integer
+          format: int64
+          example: 2
+        connections:
           type: array
           items:
-            $ref: '#/components/schemas/DesktopPoolDetails'
-      title: Pool
-    GWUpdateClusterResponse:
+            $ref: '#/components/schemas/GWClusterHostSessionDetails'
+      title: GWClusterHostConnectionDetails
+    AsyncOperationStatus:
       type: object
       properties:
-        clusterName:
+        statusURL:
           type: string
-          example: Cluster Name
-        errorInfo:
-          $ref: '#/components/schemas/ErrorInfo'
-        status:
-          type: string
-          example: Succeeded or Failed
-      title: GWUpdateClusterResponse
-    AssignBundle:
+          example: https://api.workspot.com/v1.0/operation/7ad1cd2f-7056-4cdf-9ce9-36e95f7db1f8
+      title: AsyncOperationStatus
+    GWClusterHostPerformanceDetails:
       type: object
       properties:
-        bundleId:
+        cpu:
+          type: array
+          items:
+            $ref: '#/components/schemas/GWClusterHostPerformanceSample'
+        memory:
+          type: array
+          items:
+            $ref: '#/components/schemas/GWClusterHostPerformanceSample'
+      title: GWClusterHostPerformanceDetails
+    Hosts:
+      type: object
+      properties:
+        rdGateways:
+          type: array
+          items:
+            $ref: '#/components/schemas/GWClusterHostDetails'
+      title: Hosts
+    RemoteSessionDesktop:
+      type: object
+      required:
+      - desktopId
+      - poolId
+      properties:
+        desktopId:
           type: string
-          example: 73dc410b-6b13-40c6-32sd-32d4c175117c
-          description: Id of bundle to assign
-      title: AssignBundle
+          example: 6ca16b89-0077-447d-95d4-cf3f7e19c777
+          description: Id of desktop with user session
+        poolId:
+          type: string
+          example: 8bb27ac0-b3ce-455b-8a30-3aed537fd45f
+          description: Id of pool
+      title: RemoteSessionDesktop
+    RemoteAssistDesktop:
+      type: object
+      required:
+      - desktopId
+      - password
+      - poolId
+      properties:
+        desktopId:
+          type: string
+          example: be95b637-b748-41f9-90ff-d3d55f4dd51d
+          description: Id of desktop to remote assist
+        password:
+          type: string
+          example: password
+          description: Password for initiating remote assist
+        poolId:
+          type: string
+          example: 3ce45fa5-be91-4a49-a297-c4e94eaf945d
+          description: Id of pool
+      title: RemoteAssistDesktop
+    GWCreateCluster:
+      type: object
+      properties:
+        authType:
+          type: string
+          example: AAD or AD or IDP name
+        description:
+          type: string
+          example: This cluster is for accessing pools in Europe
+        domainToJoin:
+          $ref: '#/components/schemas/GWDomainToJoin'
+        gatewayPolicyName:
+          type: string
+          example: Gateway Policy (from the GET /v1.0/policies?type=Gateway command)
+        imageName:
+          type: string
+          example: Windows Server (2025) (from the GET /v1.0/clouds/rdgateways/images command)
+        localAdmin:
+          $ref: '#/components/schemas/GWHostLocalAdmin'
+        name:
+          type: string
+          example: EuropeGW
+        namePrefix:
+          type: string
+          example: gw
+        npsServers:
+          type: array
+          items:
+            $ref: '#/components/schemas/NpsServerBO'
+        numberOfHosts:
+          type: integer
+          format: int32
+          example: 3
+        overridePublicDomain:
+          type: boolean
+          example: false
+        publicDomain:
+          type: string
+          example: example.com
+        region:
+          type: string
+          example: us-east-1
+        resourceGroup:
+          type: string
+          example: Local-RG (Required for Azure Cloud, not mandatory for GCP,AWS)
+        securityGroupId:
+          type: string
+          example: sg-xxxxxxxxxx
+        subscriptionName:
+          type: string
+          example: The subscription name from the GET /v1.0/clouds command
+        virtualNetworkId:
+          type: string
+          example: https://www.googleapis.com/compute/v1/projects/project-name/global/networks/networkName
+        vmClassName:
+          type: string
+          example: Standard Gateway (from the GET /v1.0/clouds/rdgateways/vmClasses command)
+        zone:
+          type: string
+          example: asia
+      title: GWCreateCluster
     VMRetentionDetails:
       type: object
       properties:
@@ -3687,6 +4057,21 @@ components:
           type: string
           example: 15
       title: VMRetentionDetails
+    VMRetentionPeriod:
+      type: object
+      properties:
+        retentionPeriod:
+          type: string
+          example: 12
+      title: VMRetentionPeriod
+    License:
+      type: object
+      properties:
+        licenses:
+          type: array
+          items:
+            $ref: '#/components/schemas/LicenseDetails'
+      title: License
     BundlesDTO:
       type: object
       properties:
@@ -3695,6 +4080,800 @@ components:
           items:
             $ref: '#/components/schemas/BundleDetails'
       title: BundlesDTO
+    UsageReport:
+      type: object
+      properties:
+        end:
+          type: string
+          example: '2018-09-14'
+          description: in YYYY-MM-DD format
+        format:
+          type: string
+          example: JSON
+          description: Report output format in either JSON or CSV; default is JSON
+          enum:
+          - JSON
+          - CSV
+        start:
+          type: string
+          example: '2018-09-12'
+          description: in YYYY-MM-DD format
+      title: UsageReport
+    AssignBundle:
+      type: object
+      properties:
+        bundleId:
+          type: string
+          example: 73dc410b-6b13-40c6-32sd-32d4c175117c
+          description: Id of bundle to assign
+      title: AssignBundle
+    TemplateVmClasses:
+      type: object
+      properties:
+        vmClasses:
+          type: array
+          items:
+            $ref: '#/components/schemas/TemplateVMClass'
+      title: TemplateVmClasses
+    ApiCreateCloudAppPoolResponse:
+      type: object
+      properties:
+        details:
+          $ref: '#/components/schemas/CloudAppPoolDetails'
+        status:
+          type: string
+          example: Succeeded
+      title: ApiCreateCloudAppPoolResponse
+    ApiCloudNetworksResponseBO:
+      type: object
+      properties:
+        cidr:
+          type: string
+          example: 10.999.9.9/20
+        cloudRegion:
+          $ref: '#/components/schemas/ApiCloudRegionBO'
+        networkID:
+          type: string
+          example: https://www.googleapis.com/compute/v1/projects/project-name/global/networks/networkName
+        networkName:
+          type: string
+          example: networkName\asiaeast1
+        vpcId:
+          type: string
+          example: vpcId
+        zone:
+          type: string
+          example: asia-east1-a
+      title: ApiCloudNetworksResponseBO
+    AddCustomImageRequest:
+      type: object
+      properties:
+        imageName:
+          type: string
+          example: base-w10image (from the GET /v1.0/clouds/{subscriptionName}/customImages command)
+        imageType:
+          type: string
+          example: Windows Server
+        region:
+          type: string
+          example: us-east-1
+      title: AddCustomImageRequest
+    ApiStatusResponse:
+      type: object
+      properties:
+        details:
+          type: object
+          example: Details about the response
+        errorInfo:
+          $ref: '#/components/schemas/ErrorInfo'
+        status:
+          type: string
+          example: Succeeded
+      title: ApiStatusResponse
+    GWDomainToJoinBO:
+      type: object
+      properties:
+        domain:
+          type: string
+          example: domain
+        domainName:
+          type: string
+          example: domainName
+        domainOU:
+          type: string
+          example: domain OU
+        password:
+          type: string
+          example: password
+        userName:
+          type: string
+          example: admin
+      title: GWDomainToJoinBO
+    Pool_to_Assign:
+      type: object
+      properties:
+        poolId:
+          type: string
+          example: 73dc410b-6b13-40c6-32sd-32d4c175117c
+          description: Id of pool to assign
+      title: Pool to Assign
+    CloudImages:
+      type: object
+      properties:
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/Images'
+      title: CloudImages
+    GlobalDesktopBO:
+      type: object
+      properties:
+        assignedPools:
+          type: array
+          items:
+            $ref: '#/components/schemas/GlobalDesktopPool'
+        globalDesktopId:
+          type: string
+          example: ee614d15-d671-44c4-9a26-b10eda000018
+        globalDesktopName:
+          type: string
+          example: Global Desktop US
+        groupsAssigned:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupDetailBO'
+      title: GlobalDesktopBO
+    Desktop_to_Assign:
+      type: object
+      properties:
+        desktopId:
+          type: string
+          example: 73dc410b-6b13-40c6-32sd-32d4c175117c
+          description: Id of desktop to assign
+      title: Desktop to Assign
+    GWClusterHostDetails:
+      type: object
+      properties:
+        activeConnections:
+          type: integer
+          format: int32
+          example: 205
+        agentVersion:
+          type: string
+          example: 1.5.0(548)
+        averageRequestAuthSeconds:
+          type: integer
+          format: int64
+          example: 1
+        certExpiration:
+          type: string
+          example: 07/09/2021
+        certName:
+          type: string
+          example: C=US, S=ca, L=Campbell, O="Example, Inc.", OU=Example Unit, CN=*.example.com
+        cloudType:
+          type: string
+          example: Azure Cloud
+        clusterRegionId:
+          type: string
+          example: 7731e815-099c-4b2b-82f5-2eeec2b16d6a
+        dns:
+          type: string
+          example: Dev-inc-gw01.centralindia.cloudapp.azure.com
+        fqdn:
+          type: string
+          example: Dev-inc-gw01.example.com
+        id:
+          type: string
+          example: 0438e503-a62d-4f20-9082-26dcf42237ca
+        lastRebootDate:
+          type: integer
+          format: int64
+          example: 1653395963398
+        mode:
+          type: string
+          example: Enabled
+        name:
+          type: string
+          example: Dev-inc-gw001
+        osVersion:
+          type: string
+          example: Microsoft Windows Server 2016 Datacenter 10.0.14393
+        privateIpAddress:
+          type: string
+          example: 10.60.0.54
+        publicIpAddress:
+          type: string
+          example: 52.172.133.239
+        region:
+          type: string
+          example: INDIA_CENTRAL
+        status:
+          type: string
+          example: Ready
+        statusReason:
+          type: string
+          example: Agent offline
+        uri:
+          type: string
+          example: Dev-inc-gw01-b701c8c6-d40f-492e-a6fd-b5131907466d.example.com
+      title: GWClusterHostDetails
+    Regions:
+      type: object
+      properties:
+        regions:
+          type: array
+          example:
+          - us-east-1
+          - ca-central-1
+          - us-west-2
+          - eu-west-1
+          items:
+            type: string
+      title: Regions
+    GlobalDesktopPoolsList:
+      type: object
+      properties:
+        assignedPools:
+          type: array
+          items:
+            $ref: '#/components/schemas/GlobalDesktopPool'
+        id:
+          type: string
+          example: 70587aa0-8e10-42b1-b6ce-4929bca98c05
+        name:
+          type: string
+          example: Global Desktop EU
+      title: GlobalDesktopPoolsList
+    GetPoliciesResponse:
+      type: object
+      properties:
+        policies:
+          type: array
+          items:
+            $ref: '#/components/schemas/NameResponse'
+        policyType:
+          type: string
+      title: GetPoliciesResponse
+    CreateBundleRequestDTO:
+      type: object
+      properties:
+        appIds:
+          type: array
+          example:
+          - f9ad04bc-cbfc-47bd-aaa2-78ed27925018
+          items:
+            type: string
+        bundleName:
+          type: string
+          example: App Bundle
+      title: CreateBundleRequestDTO
+    SecurityGroup:
+      type: object
+      properties:
+        id:
+          type: string
+          example: sg-xxxxxxxxxxxxxxxxx
+        name:
+          type: string
+          example: securityGroupName
+        vpcId:
+          type: string
+          example: vpc-xxxxxxxxxxxxxxxxx
+      title: SecurityGroup
+    CustomDesktopDTO:
+      type: object
+      properties:
+        biosGUID:
+          type: string
+          example: 12345678-1234-5678-ABCD-1234567890AB
+        computerName:
+          type: string
+          example: Example-Dev
+        fqdn:
+          type: string
+          example: name-xyx.domain.com
+        id:
+          type: string
+          example: 63c1a03f-f5f6-4c1c-8373-f74238aa053c
+      title: CustomDesktopDTO
+    GlobalDesktopPool:
+      type: object
+      properties:
+        poolDisplayName:
+          type: string
+          example: HSKU For Business
+        poolId:
+          type: string
+          example: 832f0789-e5f5-4f17-9384-3287bec1ba44
+        poolName:
+          type: string
+          example: HSKUForBusiness
+        precedence:
+          type: integer
+          format: int32
+          example: 1
+      title: GlobalDesktopPool
+    PoolPrecedenceDetails:
+      type: object
+      properties:
+        poolId:
+          type: string
+          example: 1dbf8fc6-eea5-49fa-b142-90872b61c794
+        precedence:
+          type: integer
+          format: int32
+          example: 1
+      title: PoolPrecedenceDetails
+    APIGetTemplatesResponseBO:
+      type: object
+      properties:
+        templates:
+          type: array
+          items:
+            $ref: '#/components/schemas/APIMasterTemplateBO'
+      title: APIGetTemplatesResponseBO
+    RefreshEntitlementsResponse:
+      type: object
+      properties:
+        description:
+          type: string
+      title: RefreshEntitlementsResponse
+    StaleDevice:
+      type: object
+      properties:
+        controlDetectedDtm:
+          type: string
+          format: date-time
+          example: '2024-09-29 11:00:00.0'
+        desktopDeletedDtm:
+          type: string
+          format: date-time
+          example: '2024-09-23 11:00:00.0'
+        desktopId:
+          type: string
+          example: 22ff14b9-c4c0-494a-99a9-37a5e505d661
+        desktopName:
+          type: string
+          example: workspotVDI-001
+        deviceId:
+          type: string
+          example: 550e8400-e29b-41d4-a716-446655440087
+        deviceName:
+          type: string
+          example: workspot-device
+        entraDeviceId:
+          type: string
+          example: 550e8400-e29b-41d4-a716-446655440084
+        entraObjectId:
+          type: string
+          example: 660e8400-e29b-41d4-a716-446655440065
+        intuneDeviceId:
+          type: string
+          example: 770e8400-e29b-41d4-a716-446655440077
+        poolId:
+          type: string
+          example: bede4cc4-576c-42dd-83d0-b326d0e7029a
+        poolName:
+          type: string
+          example: workspotVDI
+      title: StaleDevice
+    GWClusterHostPerformanceSample:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          example: 1653395963398
+        value:
+          type: string
+          example: 11
+      title: GWClusterHostPerformanceSample
+    HydrateDuration:
+      type: object
+      properties:
+        duration:
+          type: string
+          example: 5/Any Integer
+      title: HydrateDuration
+    GWHostLocalAdmin:
+      type: object
+      properties:
+        password:
+          type: string
+          example: abcd
+        userName:
+          type: string
+          example: localadmin
+      title: GWHostLocalAdmin
+    DesktopPoolDetails:
+      type: object
+      properties:
+        active:
+          type: boolean
+        availCount:
+          type: integer
+          format: int32
+          example: 10
+        cloud:
+          type: string
+          example: Azure Cloud
+        createDesktopOnDelete:
+          type: boolean
+        description:
+          type: string
+          example: Persistent test pool
+        diskSize:
+          type: integer
+          format: int32
+          example: 128 (in terms of GB)
+        drType:
+          type: string
+          example: RDR
+        id:
+          type: string
+          example: f9ad04bc-cbfc-47bd-aaa2-78ed27925018
+        name:
+          type: string
+          example: HSKUForBusiness
+        nodeGroupName:
+          type: string
+          example: grp-mixed-n2-1-8-me-west1-b
+        poolType:
+          type: string
+          example: Persistent
+        rdGateways:
+          type: array
+          example:
+          - rdgw1
+          - rdgw2
+          items:
+            type: string
+        region:
+          type: string
+          example: me-west1
+        routeGatewayType:
+          type: string
+          example: Always
+        routeThruVPN:
+          type: boolean
+        status:
+          type: string
+          example: Success
+        subscriptionName:
+          type: string
+          example: Ent-Cloud
+        template:
+          type: string
+          example: TQaRDR1903-0812
+        usedCount:
+          type: integer
+          format: int32
+          example: 25
+        vmType:
+          type: string
+          example: BUSINESS_VM
+        zone:
+          type: string
+          example: me-west1-a
+      title: DesktopPoolDetails
+    PoolAgentTokenDetails:
+      type: object
+      properties:
+        expireTime:
+          type: string
+          example: Mon Sep 23, 2024 12:27:58
+        poolAgentToken:
+          type: string
+          example: 84beb52f4f6ed84e97f499550d32f55c9088b12d
+      title: PoolAgentTokenDetails
+    UserDesktop:
+      type: object
+      properties:
+        desktopIP:
+          type: string
+          example: 10.60.0.54
+        desktopName:
+          type: string
+          example: Dev-desktop-001
+        id:
+          type: string
+          example: 2f102d72-8c58-460b-9dbf-c32d6a84f9f2
+      title: UserDesktop
+    CloudAppPool:
+      type: object
+      properties:
+        cloudAppPools:
+          type: array
+          items:
+            $ref: '#/components/schemas/CloudAppPoolDetails'
+      title: CloudAppPool
+    DeleteStaleDeviceRequest:
+      type: object
+      properties:
+        deviceIds:
+          type: array
+          example:
+          - 550e8400-e29b-41d4-a716-446655440003
+          - 550e8400-e29b-41d4-a716-446655440007
+          items:
+            type: string
+      title: DeleteStaleDeviceRequest
+    AuthenticationOptions:
+      type: object
+      properties:
+        authenticationOptions:
+          type: array
+          example:
+          - AD
+          - AAD
+          - NPS
+          items:
+            type: string
+        idp:
+          type: array
+          example:
+          - dev_okta
+          - IdpTest
+          - mvp_okta
+          items:
+            type: string
+        publicDomainName:
+          type: string
+          example: test.com
+      title: AuthenticationOptions
+    GlobalDesktopsList:
+      type: object
+      properties:
+        globalDesktops:
+          type: array
+          items:
+            $ref: '#/components/schemas/GlobalDesktopPoolsList'
+        id:
+          type: string
+          example: ee614d15-d671-44c4-9a26-b10eda000018
+        name:
+          type: string
+          example: Domain Users
+      title: GlobalDesktopsList
+    GWDomainToJoin:
+      type: object
+      properties:
+        domain:
+          type: string
+          example: Domain
+        domainName:
+          type: string
+          example: Domain to Join
+        domainOU:
+          type: string
+          example: Domain OU
+        password:
+          type: string
+          example: Password
+        userName:
+          type: string
+          example: Username
+      title: GWDomainToJoin
+    GWClusterHostSessionDetails:
+      type: object
+      properties:
+        clientIPAddress:
+          type: string
+          example: xxx.xxx.xxx.xxx
+        connectedOn:
+          type: string
+          example: 05/18/2022 01:04:27
+        duration:
+          type: string
+          example: 03:53:15
+        idleTime:
+          type: string
+          example: 00:00:43
+        targetComputer:
+          type: string
+          example: xxx.xxx.xxx.xxx
+        targetPort:
+          type: integer
+          format: int64
+          example: 3389
+        transport:
+          type: string
+          example: HTTP
+        userName:
+          type: string
+          example: xxx.com\userxxx
+      title: GWClusterHostSessionDetails
+    GWAddGwHost:
+      type: object
+      properties:
+        domainToJoin:
+          $ref: '#/components/schemas/GWDomainToJoin'
+        localAdmin:
+          $ref: '#/components/schemas/GWHostLocalAdmin'
+      title: GWAddGwHost
+    UserGlobalDesktopPoolDetailsBO:
+      type: object
+      properties:
+        assignedPools:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssignedPoolDesktopDetailsBO'
+        email:
+          type: string
+          example: dsmith@example.com
+        firstName:
+          type: string
+          example: David
+        globalDesktopId:
+          type: string
+          example: cc652243-a14a-47c5-834a-54343b8fd817
+        globalDesktopName:
+          type: string
+          example: Test Application
+        lastName:
+          type: string
+          example: Smith
+        userId:
+          type: string
+          example: e17aa8fc-3919-4461-8345-bdd665e55fb8
+      title: UserGlobalDesktopPoolDetailsBO
+    AssignedDesktopBO:
+      type: object
+      properties:
+        desktopFqdn:
+          type: string
+          example: test-004.indevqa.ws
+        desktopId:
+          type: string
+          example: d5af7ab8-31e8-4150-94c3-0e4df20353fc
+        desktopIpAddress:
+          type: string
+          example: 10.60.0.54
+        desktopName:
+          type: string
+          example: TestPool-001
+      title: AssignedDesktopBO
+    UpdateCloudAppRequest:
+      type: object
+      properties:
+        appIconName:
+          type: string
+          example: predefined1.png
+        appParams:
+          type: string
+          example: TBD
+        bundles:
+          type: array
+          example:
+          - f9ad04bc-cbfc-47bd-aaa2-78ed27925018
+          items:
+            type: string
+        fullPath:
+          type: string
+          example: C:\Program Files\Programs\program.exe
+        gatewayClusterId:
+          type: string
+          example: f9ad04bc-cbfc-47bd-aaa2-78ed27925018
+        loginDomain:
+          type: string
+          example: domain
+        loginOption:
+          type: string
+          example: SSO_DOMAIN_USER_PASSWD
+        name:
+          type: string
+          example: Graphics app
+        routeThroughGateway:
+          type: string
+          example: Always
+        targetPlatforms:
+          type: array
+          example:
+          - iOS
+          - Windows
+          - Android
+          - OSX
+          items:
+            type: string
+        useDefaultIcon:
+          type: boolean
+          example: false
+          description: Set to true to switch the application to the default icon. Cannot be combined with appIconName.
+        workingDir:
+          type: string
+          example: C:\Documents\My Data
+      title: UpdateCloudAppRequest
+    ApiCustomDesktopCreateResponse:
+      type: object
+      properties:
+        details:
+          $ref: '#/components/schemas/CustomDesktopDTO'
+        status:
+          type: string
+          example: Succeeded
+      title: ApiCustomDesktopCreateResponse
+    GWClusterDetails:
+      type: object
+      properties:
+        authType:
+          type: string
+          example: AAD
+        clusterId:
+          type: string
+          example: df4799d5-3b46-4b24-bfb5-9f1442bfd651
+        description:
+          type: string
+          example: This cluster is for accessing pools in Europe
+        imageName:
+          type: string
+          example: Windows Server (2025)
+        name:
+          type: string
+          example: EuropePoolAccess
+        policyName:
+          type: string
+          example: Gateway Policy
+        publicDomain:
+          type: string
+          example: example.com
+        publicDomainOverriden:
+          type: boolean
+        regionalClusters:
+          type: array
+          items:
+            $ref: '#/components/schemas/GWRegionalClusterDetails'
+        subscriptionName:
+          type: string
+          example: Ent-Cloud
+        vmClassName:
+          type: string
+          example: Standard Gateway
+      title: GWClusterDetails
+    MoveDesktopRequest:
+      type: object
+      required:
+      - assignedUser
+      - targetPoolId
+      properties:
+        assignedUser:
+          type: string
+          example: dsmith@example.com
+          description: User's email address
+        targetPoolId:
+          type: string
+          example: be95b637-b748-41f9-90ff-d3d55f4dd51d
+          description: Target poolId to which desktop need to be moved.
+      title: MoveDesktopRequest
+    OpResponse:
+      type: object
+      properties:
+        details:
+          type: object
+          example:
+            desktopName: development-01
+            id: ab6a8038-f86b-4bc2-aad7-d19a9975f5a9
+            ipAddress: 10.60.2.74
+            fqdn: dev.example.com
+        endTime:
+          type: string
+          example: '2020-09-04T05:28:28.968Z'
+        errorInfo:
+          $ref: '#/components/schemas/ErrorInfo'
+        startTime:
+          type: string
+          example: '2020-09-04T05:24:22.113Z'
+        status:
+          type: string
+          example: Succeeded
+      title: OpResponse
+    CloudAppServers:
+      type: object
+      properties:
+        cloudAppServers:
+          type: array
+          items:
+            $ref: '#/components/schemas/CloudAppServerDetails'
+      title: CloudAppServers
     CreateDesktopPoolRequest:
       type: object
       properties:
@@ -3790,76 +4969,82 @@ components:
         windowsHelloEnabled:
           type: boolean
       title: CreateDesktopPoolRequest
-    VMClass:
+    Pool_to_Delete_from_GlobalDesktop:
       type: object
       properties:
-        name:
+        poolId:
           type: string
-          example: Standard Gateway
-        vmInstances:
-          type: string
-          example: n2-standard-4,n1-standard-4,n4-standard-4
-      title: VMClass
-    PoolAgentTokenDetails:
+          example: 73dc410b-6b13-40c6-32sd-32d4c175117c
+          description: Id of pool to delete
+      title: Pool to Delete from GlobalDesktop
+    CreateDesktop:
       type: object
       properties:
-        expireTime:
+        computerName:
           type: string
-          example: Mon Sep 23, 2024 12:27:58
-        poolAgentToken:
+          example: Example-Dev
+        domainOU:
           type: string
-          example: 84beb52f4f6ed84e97f499550d32f55c9088b12d
-      title: PoolAgentTokenDetails
-    ApiCustomDesktopCreateResponse:
+          example: OU=WSVDI,DC=indevqa,DC=ws
+          description: Domain OU
+        domainPWD:
+          type: string
+          example: pswrd*
+          description: Password for Domain Join
+        domainToJoin:
+          type: string
+          example: indevqa.ws
+          description: Domain name
+        domainUser:
+          type: string
+          example: indevqa.ws\johns
+          description: Username
+        snapshotId:
+          type: string
+          example: snap-06fb57fa7342bb456
+      title: CreateDesktop
+    GWUpdateCluster:
       type: object
       properties:
-        details:
-          $ref: '#/components/schemas/CustomDesktopDTO'
-        status:
+        gatewayPolicyName:
           type: string
-          example: Succeeded
-      title: ApiCustomDesktopCreateResponse
-    GWPool:
-      type: object
-      properties:
-        appId:
-          type: string
-          example: c673e235-bff2-476a-b042-a13291c362f7
-        appName:
-          type: string
-          example: RD1908-WordPad
-        id:
-          type: string
-          example: 6f007f1b-232d-477f-9d10-02b0035734d7
-        name:
-          type: string
-          example: My persistent pool
-        poolType:
-          type: string
-          example: VDI
-      title: GWPool
-    AddCustomImageRequest:
-      type: object
-      properties:
+          example: gatewayPolicy Name
         imageName:
           type: string
-          example: base-w10image (from the GET /v1.0/clouds/{subscriptionName}/customImages command)
-        imageType:
+          example: Windows Server (2025)
+        npsServers:
+          type: array
+          items:
+            $ref: '#/components/schemas/NpsServerBO'
+        vmClassName:
           type: string
-          example: Windows Server
-        region:
-          type: string
-          example: us-east-1
-      title: AddCustomImageRequest
-    ApiCreateCloudAppPoolResponse:
+          example: Standard Gateway
+      title: GWUpdateCluster
+    CreateDesktopPoolResponse:
       type: object
       properties:
-        details:
-          $ref: '#/components/schemas/CloudAppPoolDetails'
+        desktopPoolId:
+          type: string
+          example: poolId
+        errorInfo:
+          $ref: '#/components/schemas/ErrorInfo'
+        name:
+          type: string
+          example: pool name
         status:
           type: string
-          example: Succeeded
-      title: ApiCreateCloudAppPoolResponse
+          example: Succedded or Failure
+      title: CreateDesktopPoolResponse
+    ApiCloudRegionBO:
+      type: object
+      properties:
+        location:
+          type: string
+          example: Changhua County, Taiwan
+        region:
+          type: string
+          example: asia-east1
+      title: ApiCloudRegionBO
     ApiCloneTemplateRequest:
       type: object
       properties:
@@ -3882,6 +5067,269 @@ components:
           type: string
           example: asia-south1-a
       title: ApiCloneTemplateRequest
+    Images:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Windows Server (2025)
+      title: Images
+    NameResponse:
+      type: object
+      properties:
+        name:
+          type: string
+      title: NameResponse
+    AddUser:
+      type: object
+      properties:
+        email:
+          type: string
+          example: dsmith@example.com
+        firstName:
+          type: string
+          example: David
+        lastName:
+          type: string
+          example: Smith
+        poolId:
+          type: string
+          example: 8bb27ac0-b3ce-455b-8a30-3aed537fd45f
+      title: AddUser
+    CloudConfigSubscriptions:
+      type: object
+      properties:
+        publicClouds:
+          type: array
+          items:
+            $ref: '#/components/schemas/CloudDetails'
+      title: CloudConfigSubscriptions
+    CreateCustomDesktop:
+      type: object
+      properties:
+        biosGUID:
+          type: string
+          example: 12345678-1234-5678-ABCD-1234567890AB
+        computerName:
+          type: string
+          example: Example-Dev
+        fqdn:
+          type: string
+          example: name-xyx.domain.com
+        macAddress:
+          type: string
+          example: 00:1s:99:f1:d2:4f
+      title: CreateCustomDesktop
+    AttachSnapshot:
+      type: object
+      required:
+      - snapshotId
+      properties:
+        domainOU:
+          type: string
+          example: OU=WSVDI,DC=indevqa,DC=ws
+          description: Domain OU
+        domainPWD:
+          type: string
+          example: pswrd*
+          description: Password for Domain Join
+        domainToJoin:
+          type: string
+          example: indevqa.ws
+          description: Domain name
+        domainUser:
+          type: string
+          example: indevqa.ws\johns
+          description: Username
+        snapshotId:
+          type: string
+          example: snap-06fb57fa7342bb456
+      title: AttachSnapshot
+    KeyValuePairBO:
+      type: object
+      properties:
+        id:
+          type: string
+          example: e8ad04bc-cbfc-47bd-bcd2-78ed27925018
+        name:
+          type: string
+          example: Workspot
+      title: KeyValuePairBO
+    Zones:
+      type: object
+      properties:
+        zones:
+          type: array
+          example:
+          - us-east1-b
+          - us-east1-c
+          - us-east1-d
+          items:
+            type: string
+      title: Zones
+    Clusters:
+      type: object
+      properties:
+        clusters:
+          type: array
+          items:
+            $ref: '#/components/schemas/GWClusterDetails'
+      title: Clusters
+    UpgradeDesktopRequest:
+      type: object
+      required:
+      - domainOU
+      - domainPWD
+      - domainToJoin
+      - domainUser
+      - retainName
+      - targetPoolId
+      properties:
+        computerName:
+          type: string
+          example: Example-123
+          description: Optional, provide if you want to give a custom name to desktop in taget pool.
+        domainOU:
+          type: string
+          example: OU=WSVDI,DC=indevqa,DC=ws
+          description: Domain OU
+        domainPWD:
+          type: string
+          example: pswrd*
+          description: Password for Domain Join,
+        domainToJoin:
+          type: string
+          example: indevqa.ws
+          description: Domain name
+        domainUser:
+          type: string
+          example: indevqa.ws\johns
+          description: Username
+        retainName:
+          type: string
+          example: 'false'
+          description: Flag to determine if old computer name should be retained for upgraded desktop or replaced with that of target pool
+        targetPoolId:
+          type: string
+          example: be95b637-b748-41f9-90ff-d3d55f4dd51d
+          description: Target poolId to which desktop need to be upgraded.
+      title: UpgradeDesktopRequest
+    GlobalDesktopId:
+      type: object
+      properties:
+        globalDesktopId:
+          type: string
+          example: 1dbf8fc6-eea5-49fa-b142-90872b61c794
+      title: GlobalDesktopId
+    Cost_Center_to_Assign:
+      type: object
+      properties:
+        costCenter:
+          type: string
+          example: 1105
+          description: cost center to assign
+      title: Cost Center to Assign
+    ErrorInfo:
+      type: object
+      properties:
+        description:
+          type: string
+          example: 'null'
+        error:
+          type: string
+          example: 'null'
+      title: ErrorInfo
+    User:
+      type: object
+      properties:
+        assignedDesktops:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserDesktop'
+        assignedPools:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserPool'
+        costCenter:
+          type: string
+          example: 115
+        email:
+          type: string
+          example: dsmith@example.com
+        firstName:
+          type: string
+          example: David
+        id:
+          type: string
+          example: e17aa8fc-3919-4461-8345-bdd665e55fb8
+        lastName:
+          type: string
+          example: Smith
+      title: User
+    ApplicationDetails:
+      type: object
+      properties:
+        applicationType:
+          type: string
+          example: Cloud Application
+        bundles:
+          type: array
+          example: f9ad04bc-cbfc-47bd-aaa2-78ed27925018
+          items:
+            type: string
+        cloudAppType:
+          type: string
+          example: Custom Application
+        fullPath:
+          type: string
+          example: C:\Program Files\Programs\program.exe
+        gatewayClusterId:
+          type: string
+          example: f9ad04bc-cbfc-47bd-aaa2-78ed27925018
+        id:
+          type: string
+          example: f9ad04bc-cbfc-47bd-aaa2-78ed27925018
+        loginOption:
+          type: string
+          example: SSO_DOMAIN_USER_PASSWD
+        name:
+          type: string
+          example: Graphics app
+        parameters:
+          type: string
+          example: -fullscreen -profile default
+        poolId:
+          type: string
+          example: d8ad04bc-cbfc-47bd-aaa2-78ed27925091
+        poolName:
+          type: string
+          example: Cloudapp Pool Name
+        routeThroughGateway:
+          type: string
+          example: Always
+        serverType:
+          type: string
+          example: Workspot Cloud App pools
+        targetPlatforms:
+          type: array
+          example:
+          - iOS
+          - Windows
+          - Android
+          - OSX
+          items:
+            type: string
+      title: ApplicationDetails
+    RegisterTemplateRequestBO:
+      type: object
+      properties:
+        name:
+          type: string
+          example: template1
+        region:
+          type: string
+          example: ap-south-1. Required for AWS clouds only.
+      title: RegisterTemplateRequestBO
     UpdateDesktopPoolRequest:
       type: object
       properties:
@@ -3958,27 +5406,93 @@ components:
           type: boolean
           example: false
       title: UpdateDesktopPoolRequest
-    GroupDetailBO:
+    CloudAppPoolDetails:
       type: object
       properties:
+        cloudProvider:
+          type: string
+          example: Azure Cloud
+        description:
+          type: string
+          example: CloudApp test pool
+        hostCount:
+          type: integer
+          format: int32
+          example: 25
         id:
           type: string
-          example: 322408eb-7172-49a5-b2a9-da3cfd873f08
+          example: f9ad04bc-cbfc-47bd-aaa2-78ed27925018
         name:
           type: string
-          example: Domain Users
-        type:
+          example: HSKUForBusiness
+        region:
           type: string
-          example: Workspot
-      title: GroupDetailBO
-    TemplateVmClasses:
+          example: India-Central
+        status:
+          type: string
+          example: Success
+        template:
+          type: string
+          example: TQaRDR1903-0812
+        vmType:
+          type: string
+          example: BUSINESS_VM
+        zone:
+          type: string
+          example: India-Central-A
+      title: CloudAppPoolDetails
+    GWClusterActionResponse:
       type: object
       properties:
-        vmClasses:
+        clusterName:
+          type: string
+          example: cluster Name
+        errorInfo:
+          $ref: '#/components/schemas/ErrorInfo'
+        status:
+          type: string
+          example: Succeeded or Failed
+      title: GWClusterActionResponse
+    Desktop:
+      type: object
+      properties:
+        email:
+          type: string
+          example: devqa@example.com
+        fqdn:
+          type: string
+          example: QASKP1-001.example.com
+        id:
+          type: string
+          example: ee614d15-d671-44c4-9a26-b10eda000018
+        ipAddress:
+          type: string
+          example: 10.76.0.14
+        name:
+          type: string
+          example: Test Desktop-001
+        poolId:
+          type: string
+          example: ba3b630e-7157-471f-8b98-fa5d9c11e031
+        poolName:
+          type: string
+          example: Persistent test pool
+        status:
+          type: string
+          example: Ready
+        tags:
           type: array
           items:
-            $ref: '#/components/schemas/TemplateVMClass'
-      title: TemplateVmClasses
+            $ref: '#/components/schemas/Tag'
+      title: Desktop
+    VDIPoolDetails:
+      type: object
+      properties:
+        poolPrecedence:
+          type: array
+          items:
+            $ref: '#/components/schemas/PoolPrecedenceDetails'
+      title: VDIPoolDetails
     StaleDevices:
       type: object
       properties:
@@ -3996,438 +5510,14 @@ components:
           type: integer
           format: int32
       title: StaleDevices
-    AssignedDesktopBO:
+    VmClasses:
       type: object
       properties:
-        desktopFqdn:
-          type: string
-          example: test-004.indevqa.ws
-        desktopId:
-          type: string
-          example: d5af7ab8-31e8-4150-94c3-0e4df20353fc
-        desktopIpAddress:
-          type: string
-          example: 10.60.0.54
-        desktopName:
-          type: string
-          example: TestPool-001
-      title: AssignedDesktopBO
-    ApiCreateBundleResponse:
-      type: object
-      properties:
-        details:
-          $ref: '#/components/schemas/BundleDetails'
-        status:
-          type: string
-          example: Succeeded
-      title: ApiCreateBundleResponse
-    GWClusterActionResponse:
-      type: object
-      properties:
-        clusterName:
-          type: string
-          example: cluster Name
-        errorInfo:
-          $ref: '#/components/schemas/ErrorInfo'
-        status:
-          type: string
-          example: Succeeded or Failed
-      title: GWClusterActionResponse
-    AttachSnapshot:
-      type: object
-      required:
-      - snapshotId
-      properties:
-        domainOU:
-          type: string
-          example: OU=WSVDI,DC=indevqa,DC=ws
-          description: Domain OU
-        domainPWD:
-          type: string
-          example: pswrd*
-          description: Password for Domain Join
-        domainToJoin:
-          type: string
-          example: indevqa.ws
-          description: Domain name
-        domainUser:
-          type: string
-          example: indevqa.ws\johns
-          description: Username
-        snapshotId:
-          type: string
-          example: snap-06fb57fa7342bb456
-      title: AttachSnapshot
-    GWHostLocalAdmin:
-      type: object
-      properties:
-        password:
-          type: string
-          example: abcd
-        userName:
-          type: string
-          example: localadmin
-      title: GWHostLocalAdmin
-    Hosts:
-      type: object
-      properties:
-        rdGateways:
+        vmClasses:
           type: array
           items:
-            $ref: '#/components/schemas/GWClusterHostDetails'
-      title: Hosts
-    CreateCustomDesktop:
-      type: object
-      properties:
-        biosGUID:
-          type: string
-          example: 12345678-1234-5678-ABCD-1234567890AB
-        computerName:
-          type: string
-          example: Example-Dev
-        fqdn:
-          type: string
-          example: name-xyx.domain.com
-        macAddress:
-          type: string
-          example: 00:1s:99:f1:d2:4f
-      title: CreateCustomDesktop
-    GlobalDesktopPoolsList:
-      type: object
-      properties:
-        assignedPools:
-          type: array
-          items:
-            $ref: '#/components/schemas/GlobalDesktopPool'
-        id:
-          type: string
-          example: 70587aa0-8e10-42b1-b6ce-4929bca98c05
-        name:
-          type: string
-          example: Global Desktop EU
-      title: GlobalDesktopPoolsList
-    Regions:
-      type: object
-      properties:
-        regions:
-          type: array
-          example:
-          - us-east-1
-          - ca-central-1
-          - us-west-2
-          - eu-west-1
-          items:
-            type: string
-      title: Regions
-    GWClusterHostSessionDetails:
-      type: object
-      properties:
-        clientIPAddress:
-          type: string
-          example: xxx.xxx.xxx.xxx
-        connectedOn:
-          type: string
-          example: 05/18/2022 01:04:27
-        duration:
-          type: string
-          example: 03:53:15
-        idleTime:
-          type: string
-          example: 00:00:43
-        targetComputer:
-          type: string
-          example: xxx.xxx.xxx.xxx
-        targetPort:
-          type: integer
-          format: int64
-          example: 3389
-        transport:
-          type: string
-          example: HTTP
-        userName:
-          type: string
-          example: xxx.com\userxxx
-      title: GWClusterHostSessionDetails
-    GWCreateCluster:
-      type: object
-      properties:
-        authType:
-          type: string
-          example: AAD or AD or IDP name
-        description:
-          type: string
-          example: This cluster is for accessing pools in Europe
-        domainToJoin:
-          $ref: '#/components/schemas/GWDomainToJoin'
-        gatewayPolicyName:
-          type: string
-          example: Gateway Policy (from the GET /v1.0/policies?type=Gateway command)
-        imageName:
-          type: string
-          example: Windows Server (2025) (from the GET /v1.0/clouds/rdgateways/images command)
-        localAdmin:
-          $ref: '#/components/schemas/GWHostLocalAdmin'
-        name:
-          type: string
-          example: EuropeGW
-        namePrefix:
-          type: string
-          example: gw
-        npsServers:
-          type: array
-          items:
-            $ref: '#/components/schemas/NpsServerBO'
-        numberOfHosts:
-          type: integer
-          format: int32
-          example: 3
-        overridePublicDomain:
-          type: boolean
-          example: false
-        publicDomain:
-          type: string
-          example: example.com
-        region:
-          type: string
-          example: us-east-1
-        resourceGroup:
-          type: string
-          example: Local-RG (Required for Azure Cloud, not mandatory for GCP,AWS)
-        securityGroupId:
-          type: string
-          example: sg-xxxxxxxxxx
-        subscriptionName:
-          type: string
-          example: The subscription name from the GET /v1.0/clouds command
-        virtualNetworkId:
-          type: string
-          example: https://www.googleapis.com/compute/v1/projects/project-name/global/networks/networkName
-        vmClassName:
-          type: string
-          example: Standard Gateway (from the GET /v1.0/clouds/rdgateways/vmClasses command)
-        zone:
-          type: string
-          example: asia
-      title: GWCreateCluster
-    VDIPoolDetails:
-      type: object
-      properties:
-        poolPrecedence:
-          type: array
-          items:
-            $ref: '#/components/schemas/PoolPrecedenceDetails'
-      title: VDIPoolDetails
-    UserPool:
-      type: object
-      properties:
-        active:
-          type: boolean
-        description:
-          type: string
-          example: Technology persistent pool
-        drType:
-          type: string
-          example: RDR
-        id:
-          type: string
-          example: d8af1769-8aec-496c-9b7a-7ac6a32a8ee4
-        poolDisplayName:
-          type: string
-          example: Pool to be used by Technology people
-        poolName:
-          type: string
-          example: Pool for Technology
-        poolType:
-          type: string
-          example: Persistent
-      title: UserPool
-    CloudAppPool:
-      type: object
-      properties:
-        cloudAppPools:
-          type: array
-          items:
-            $ref: '#/components/schemas/CloudAppPoolDetails'
-      title: CloudAppPool
-    GetLoginOptionsResponse:
-      type: object
-      properties:
-        loginOptions:
-          type: array
-          example:
-          - name: SSO_USER_PASSWD
-          - name: SSO_DOMAIN_USER_PASSWD
-          - name: SSO_PREFILLED_DOMAIN_USERNAME
-          items:
-            $ref: '#/components/schemas/NameResponse'
-      title: GetLoginOptionsResponse
-    GlobalDesktopId:
-      type: object
-      properties:
-        globalDesktopId:
-          type: string
-          example: 1dbf8fc6-eea5-49fa-b142-90872b61c794
-      title: GlobalDesktopId
-    HydrateDuration:
-      type: object
-      properties:
-        duration:
-          type: string
-          example: 5/Any Integer
-      title: HydrateDuration
-    CustomImageResponse:
-      type: object
-      properties:
-        images:
-          type: array
-          items:
-            $ref: '#/components/schemas/TemplateCustomImageBO'
-      title: CustomImageResponse
-    GlobalDesktopListBO:
-      type: object
-      properties:
-        globalDesktopDetails:
-          type: array
-          items:
-            $ref: '#/components/schemas/GlobalDesktopDetailsBO'
-      title: GlobalDesktopListBO
-    Images:
-      type: object
-      properties:
-        name:
-          type: string
-          example: Windows Server (2025)
-      title: Images
-    SecurityGroup:
-      type: object
-      properties:
-        id:
-          type: string
-          example: sg-xxxxxxxxxxxxxxxxx
-        name:
-          type: string
-          example: securityGroupName
-        vpcId:
-          type: string
-          example: vpc-xxxxxxxxxxxxxxxxx
-      title: SecurityGroup
-    CreateCloudAppRequest:
-      type: object
-      properties:
-        appIconName:
-          type: string
-          example: predefined1.png
-        appParams:
-          type: string
-          example: TBD
-        applicationType:
-          type: string
-          example: Cloud Application
-        bundles:
-          type: array
-          example:
-          - f9ad04bc-cbfc-47bd-aaa2-78ed27925018
-          items:
-            type: string
-        cloudAppType:
-          type: string
-          example: Custom
-        fullPath:
-          type: string
-          example: C:\Program Files\Programs\program.exe
-        gatewayClusterId:
-          type: string
-          example: f9ad04bc-cbfc-47bd-aaa2-78ed27925018
-        loginDomain:
-          type: string
-          example: domain
-        loginOption:
-          type: string
-          example: SSO_DOMAIN_USER_PASSWD
-        name:
-          type: string
-          example: Graphics app
-        poolId:
-          type: string
-          example: f9ad04bc-cbfc-47bd-aaa2-78ed27925018
-        routeThroughGateway:
-          type: string
-          example: Always
-        serverType:
-          type: string
-          example: Workspot Cloud App Pools
-        targetPlatforms:
-          type: array
-          example:
-          - iOS
-          - Windows
-          - Android
-          - OSX
-          items:
-            type: string
-        workingDir:
-          type: string
-          example: C:\Documents\My Data
-      title: CreateCloudAppRequest
-    ApiCreateCloudAppResponse:
-      type: object
-      properties:
-        details:
-          $ref: '#/components/schemas/ApplicationDetails'
-        status:
-          type: string
-          example: Succeeded
-      title: ApiCreateCloudAppResponse
-    UpdateCloudAppRequest:
-      type: object
-      properties:
-        appIconName:
-          type: string
-          example: predefined1.png
-        appParams:
-          type: string
-          example: TBD
-        bundles:
-          type: array
-          example:
-          - f9ad04bc-cbfc-47bd-aaa2-78ed27925018
-          items:
-            type: string
-        fullPath:
-          type: string
-          example: C:\Program Files\Programs\program.exe
-        gatewayClusterId:
-          type: string
-          example: f9ad04bc-cbfc-47bd-aaa2-78ed27925018
-        loginDomain:
-          type: string
-          example: domain
-        loginOption:
-          type: string
-          example: SSO_DOMAIN_USER_PASSWD
-        name:
-          type: string
-          example: Graphics app
-        routeThroughGateway:
-          type: string
-          example: Always
-        targetPlatforms:
-          type: array
-          example:
-          - iOS
-          - Windows
-          - Android
-          - OSX
-          items:
-            type: string
-        useDefaultIcon:
-          type: boolean
-          example: false
-          description: Set to true to switch the application to the default icon. Cannot be combined with appIconName.
-        workingDir:
-          type: string
-          example: C:\Documents\My Data
-      title: UpdateCloudAppRequest
+            $ref: '#/components/schemas/VMClass'
+      title: VmClasses
     LicenseDetails:
       type: object
       properties:
@@ -4486,398 +5576,14 @@ components:
           type: string
           example: STANDARD PREMIUM 128
       title: LicenseDetails
-    ApiCloudRegionBO:
+    Pool:
       type: object
       properties:
-        location:
-          type: string
-          example: Changhua County, Taiwan
-        region:
-          type: string
-          example: asia-east1
-      title: ApiCloudRegionBO
-    AuthenticationOptions:
-      type: object
-      properties:
-        authenticationOptions:
-          type: array
-          example:
-          - AD
-          - AAD
-          - NPS
-          items:
-            type: string
-        idp:
-          type: array
-          example:
-          - dev_okta
-          - IdpTest
-          - mvp_okta
-          items:
-            type: string
-        publicDomainName:
-          type: string
-          example: test.com
-      title: AuthenticationOptions
-    CustomDesktopDTO:
-      type: object
-      properties:
-        biosGUID:
-          type: string
-          example: 12345678-1234-5678-ABCD-1234567890AB
-        computerName:
-          type: string
-          example: Example-Dev
-        fqdn:
-          type: string
-          example: name-xyx.domain.com
-        id:
-          type: string
-          example: 63c1a03f-f5f6-4c1c-8373-f74238aa053c
-      title: CustomDesktopDTO
-    CreateBundleRequestDTO:
-      type: object
-      properties:
-        appIds:
-          type: array
-          example:
-          - f9ad04bc-cbfc-47bd-aaa2-78ed27925018
-          items:
-            type: string
-        bundleName:
-          type: string
-          example: App Bundle
-      title: CreateBundleRequestDTO
-    GWUpdateCluster:
-      type: object
-      properties:
-        gatewayPolicyName:
-          type: string
-          example: gatewayPolicy Name
-        imageName:
-          type: string
-          example: Windows Server (2025)
-        npsServers:
+        desktopPools:
           type: array
           items:
-            $ref: '#/components/schemas/NpsServerBO'
-        vmClassName:
-          type: string
-          example: Standard Gateway
-      title: GWUpdateCluster
-    User:
-      type: object
-      properties:
-        assignedDesktops:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserDesktop'
-        assignedPools:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserPool'
-        costCenter:
-          type: string
-          example: 115
-        email:
-          type: string
-          example: dsmith@example.com
-        firstName:
-          type: string
-          example: David
-        id:
-          type: string
-          example: e17aa8fc-3919-4461-8345-bdd665e55fb8
-        lastName:
-          type: string
-          example: Smith
-      title: User
-    CreateCloudAppPool:
-      type: object
-      properties:
-        autoCreateOnDelete:
-          type: boolean
-          example: false
-        description:
-          type: string
-          example: Sample description
-        loadBalancingMethod:
-          type: string
-          example: Depth
-        maxSessionLimit:
-          type: integer
-          format: int32
-          example: 5
-        pauseOnFirstFailure:
-          type: boolean
-          example: false
-        poolName:
-          type: string
-          example: Pool1
-        poolSize:
-          type: integer
-          format: int32
-          example: 2
-        referencePool:
-          type: string
-          example: a066da91-0191-46d2-83b1-8cd25f160fcc
-        serverNamePrefix:
-          type: string
-          example: prefix
-      title: CreateCloudAppPool
-    ApiCloudNetworksResponseBO:
-      type: object
-      properties:
-        cidr:
-          type: string
-          example: 10.999.9.9/20
-        cloudRegion:
-          $ref: '#/components/schemas/ApiCloudRegionBO'
-        networkID:
-          type: string
-          example: https://www.googleapis.com/compute/v1/projects/project-name/global/networks/networkName
-        networkName:
-          type: string
-          example: networkName\asiaeast1
-        vpcId:
-          type: string
-          example: vpcId
-        zone:
-          type: string
-          example: asia-east1-a
-      title: ApiCloudNetworksResponseBO
-    Clusters:
-      type: object
-      properties:
-        clusters:
-          type: array
-          items:
-            $ref: '#/components/schemas/GWClusterDetails'
-      title: Clusters
-    CreateDesktop:
-      type: object
-      properties:
-        computerName:
-          type: string
-          example: Example-Dev
-        domainOU:
-          type: string
-          example: OU=WSVDI,DC=indevqa,DC=ws
-          description: Domain OU
-        domainPWD:
-          type: string
-          example: pswrd*
-          description: Password for Domain Join
-        domainToJoin:
-          type: string
-          example: indevqa.ws
-          description: Domain name
-        domainUser:
-          type: string
-          example: indevqa.ws\johns
-          description: Username
-        snapshotId:
-          type: string
-          example: snap-06fb57fa7342bb456
-      title: CreateDesktop
-    CloudAppServerDetails:
-      type: object
-      properties:
-        fqdn:
-          type: string
-          example: dvcrdperf09-002.indevqa.ws
-        id:
-          type: string
-          example: f9ad04bc-cbfc-47bd-aaa2-78ed27925018
-        ipAddress:
-          type: string
-          example: 10.60.0.10
-        mode:
-          type: string
-          example: Enabled
-        name:
-          type: string
-          example: HSKUForBusiness
-        status:
-          type: string
-          example: Ready
-        totalSessions:
-          type: integer
-          format: int32
-          example: 17
-      title: CloudAppServerDetails
-    ErrorInfo:
-      type: object
-      properties:
-        description:
-          type: string
-          example: 'null'
-        error:
-          type: string
-          example: 'null'
-      title: ErrorInfo
-    CloudImages:
-      type: object
-      properties:
-        images:
-          type: array
-          items:
-            $ref: '#/components/schemas/Images'
-      title: CloudImages
-    GroupsList:
-      type: object
-      properties:
-        groups:
-          type: array
-          items:
-            $ref: '#/components/schemas/GroupDetailBO'
-      title: GroupsList
-    RemoteSessionDesktop:
-      type: object
-      required:
-      - desktopId
-      - poolId
-      properties:
-        desktopId:
-          type: string
-          example: 6ca16b89-0077-447d-95d4-cf3f7e19c777
-          description: Id of desktop with user session
-        poolId:
-          type: string
-          example: 8bb27ac0-b3ce-455b-8a30-3aed537fd45f
-          description: Id of pool
-      title: RemoteSessionDesktop
-    VMRetentionPeriod:
-      type: object
-      properties:
-        retentionPeriod:
-          type: string
-          example: 12
-      title: VMRetentionPeriod
-    CloudAppServers:
-      type: object
-      properties:
-        cloudAppServers:
-          type: array
-          items:
-            $ref: '#/components/schemas/CloudAppServerDetails'
-      title: CloudAppServers
-    GlobalDesktopPool:
-      type: object
-      properties:
-        poolDisplayName:
-          type: string
-          example: HSKU For Business
-        poolId:
-          type: string
-          example: 832f0789-e5f5-4f17-9384-3287bec1ba44
-        poolName:
-          type: string
-          example: HSKUForBusiness
-        precedence:
-          type: integer
-          format: int32
-          example: 1
-      title: GlobalDesktopPool
-    AsyncOperationStatus:
-      type: object
-      properties:
-        statusURL:
-          type: string
-          example: https://api.workspot.com/v1.0/operation/7ad1cd2f-7056-4cdf-9ce9-36e95f7db1f8
-      title: AsyncOperationStatus
-    CloudDetails:
-      type: object
-      properties:
-        byoc:
-          type: boolean
-          example: true
-        configType:
-          type: string
-          example: Google Cloud Platform
-        name:
-          type: string
-          example: Ent-Cloud
-        status:
-          type: string
-          example: online
-        subscriptionId:
-          type: string
-          example: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxx5e58d
-      title: CloudDetails
-    Desktop_to_Assign:
-      type: object
-      properties:
-        desktopId:
-          type: string
-          example: 73dc410b-6b13-40c6-32sd-32d4c175117c
-          description: Id of desktop to assign
-      title: Desktop to Assign
-    ApiStatusResponse:
-      type: object
-      properties:
-        details:
-          type: object
-          example: Details about the response
-        errorInfo:
-          $ref: '#/components/schemas/ErrorInfo'
-        status:
-          type: string
-          example: Succeeded
-      title: ApiStatusResponse
-    KeyValuePairBO:
-      type: object
-      properties:
-        id:
-          type: string
-          example: e8ad04bc-cbfc-47bd-bcd2-78ed27925018
-        name:
-          type: string
-          example: Workspot
-      title: KeyValuePairBO
-    DeleteStaleDeviceRequest:
-      type: object
-      properties:
-        deviceIds:
-          type: array
-          example:
-          - 550e8400-e29b-41d4-a716-446655440003
-          - 550e8400-e29b-41d4-a716-446655440007
-          items:
-            type: string
-      title: DeleteStaleDeviceRequest
-    GWClusterHostConnectionDetails:
-      type: object
-      properties:
-        activeConnections:
-          type: integer
-          format: int64
-          example: 1
-        averageRequestAuthSeconds:
-          type: integer
-          format: int64
-          example: 2
-        connections:
-          type: array
-          items:
-            $ref: '#/components/schemas/GWClusterHostSessionDetails'
-      title: GWClusterHostConnectionDetails
-    AssignedPoolDesktopDetailsBO:
-      type: object
-      properties:
-        assignedDesktop:
-          $ref: '#/components/schemas/AssignedDesktopBO'
-        poolId:
-          type: string
-          example: 2f102d72-8c58-460b-9dbf-c32d6a84f9f2
-        poolName:
-          type: string
-          example: TestPool
-        precendence:
-          type: integer
-          format: int32
-          example: 1
-      title: AssignedPoolDesktopDetailsBO
+            $ref: '#/components/schemas/DesktopPoolDetails'
+      title: Pool
     ApiBuildTemplateRequest:
       type: object
       properties:
@@ -4915,250 +5621,19 @@ components:
           type: string
           example: asia-south1-a
       title: ApiBuildTemplateRequest
-    GlobalDesktopsList:
+    GroupDetailBO:
       type: object
       properties:
-        globalDesktops:
-          type: array
-          items:
-            $ref: '#/components/schemas/GlobalDesktopPoolsList'
         id:
           type: string
-          example: ee614d15-d671-44c4-9a26-b10eda000018
+          example: 322408eb-7172-49a5-b2a9-da3cfd873f08
         name:
           type: string
           example: Domain Users
-      title: GlobalDesktopsList
-    GWClusterDetails:
-      type: object
-      properties:
-        authType:
+        type:
           type: string
-          example: AAD
-        clusterId:
-          type: string
-          example: df4799d5-3b46-4b24-bfb5-9f1442bfd651
-        description:
-          type: string
-          example: This cluster is for accessing pools in Europe
-        imageName:
-          type: string
-          example: Windows Server (2025)
-        name:
-          type: string
-          example: EuropePoolAccess
-        policyName:
-          type: string
-          example: Gateway Policy
-        publicDomain:
-          type: string
-          example: example.com
-        publicDomainOverriden:
-          type: boolean
-        regionalClusters:
-          type: array
-          items:
-            $ref: '#/components/schemas/GWRegionalClusterDetails'
-        subscriptionName:
-          type: string
-          example: Ent-Cloud
-        vmClassName:
-          type: string
-          example: Standard Gateway
-      title: GWClusterDetails
-    CloudAppPoolDetails:
-      type: object
-      properties:
-        cloudProvider:
-          type: string
-          example: Azure Cloud
-        description:
-          type: string
-          example: CloudApp test pool
-        hostCount:
-          type: integer
-          format: int32
-          example: 25
-        id:
-          type: string
-          example: f9ad04bc-cbfc-47bd-aaa2-78ed27925018
-        name:
-          type: string
-          example: HSKUForBusiness
-        region:
-          type: string
-          example: India-Central
-        status:
-          type: string
-          example: Success
-        template:
-          type: string
-          example: TQaRDR1903-0812
-        vmType:
-          type: string
-          example: BUSINESS_VM
-        zone:
-          type: string
-          example: India-Central-A
-      title: CloudAppPoolDetails
-    Applications:
-      type: object
-      properties:
-        applications:
-          type: array
-          items:
-            $ref: '#/components/schemas/ApplicationDetails'
-      title: Applications
-    GWClusterHostDetails:
-      type: object
-      properties:
-        activeConnections:
-          type: integer
-          format: int32
-          example: 205
-        agentVersion:
-          type: string
-          example: 1.5.0(548)
-        averageRequestAuthSeconds:
-          type: integer
-          format: int64
-          example: 1
-        certExpiration:
-          type: string
-          example: 07/09/2021
-        certName:
-          type: string
-          example: C=US, S=ca, L=Campbell, O="Example, Inc.", OU=Example Unit, CN=*.example.com
-        cloudType:
-          type: string
-          example: Azure Cloud
-        clusterRegionId:
-          type: string
-          example: 7731e815-099c-4b2b-82f5-2eeec2b16d6a
-        dns:
-          type: string
-          example: Dev-inc-gw01.centralindia.cloudapp.azure.com
-        fqdn:
-          type: string
-          example: Dev-inc-gw01.example.com
-        id:
-          type: string
-          example: 0438e503-a62d-4f20-9082-26dcf42237ca
-        lastRebootDate:
-          type: integer
-          format: int64
-          example: 1653395963398
-        mode:
-          type: string
-          example: Enabled
-        name:
-          type: string
-          example: Dev-inc-gw001
-        osVersion:
-          type: string
-          example: Microsoft Windows Server 2016 Datacenter 10.0.14393
-        privateIpAddress:
-          type: string
-          example: 10.60.0.54
-        publicIpAddress:
-          type: string
-          example: 52.172.133.239
-        region:
-          type: string
-          example: INDIA_CENTRAL
-        status:
-          type: string
-          example: Ready
-        statusReason:
-          type: string
-          example: Agent offline
-        uri:
-          type: string
-          example: Dev-inc-gw01-b701c8c6-d40f-492e-a6fd-b5131907466d.example.com
-      title: GWClusterHostDetails
-    OpResponse:
-      type: object
-      properties:
-        details:
-          type: object
-          example:
-            desktopName: development-01
-            id: ab6a8038-f86b-4bc2-aad7-d19a9975f5a9
-            ipAddress: 10.60.2.74
-            fqdn: dev.example.com
-        endTime:
-          type: string
-          example: '2020-09-04T05:28:28.968Z'
-        errorInfo:
-          $ref: '#/components/schemas/ErrorInfo'
-        startTime:
-          type: string
-          example: '2020-09-04T05:24:22.113Z'
-        status:
-          type: string
-          example: Succeeded
-      title: OpResponse
-    NpsServerBO:
-      type: object
-      properties:
-        ipAddress:
-          type: string
-          example: 10.0.0.1
-        priority:
-          type: integer
-          format: int32
-          example: 1
-        sharedSecret:
-          type: string
-          example: secret key
-      title: NpsServerBO
-    Desktop:
-      type: object
-      properties:
-        email:
-          type: string
-          example: devqa@example.com
-        fqdn:
-          type: string
-          example: QASKP1-001.example.com
-        id:
-          type: string
-          example: ee614d15-d671-44c4-9a26-b10eda000018
-        ipAddress:
-          type: string
-          example: 10.76.0.14
-        name:
-          type: string
-          example: Test Desktop-001
-        poolId:
-          type: string
-          example: ba3b630e-7157-471f-8b98-fa5d9c11e031
-        poolName:
-          type: string
-          example: Persistent test pool
-        status:
-          type: string
-          example: Ready
-        tags:
-          type: array
-          items:
-            $ref: '#/components/schemas/Tag'
-      title: Desktop
-    CreateDesktopPoolResponse:
-      type: object
-      properties:
-        desktopPoolId:
-          type: string
-          example: poolId
-        errorInfo:
-          $ref: '#/components/schemas/ErrorInfo'
-        name:
-          type: string
-          example: pool name
-        status:
-          type: string
-          example: Succedded or Failure
-      title: CreateDesktopPoolResponse
+          example: Workspot
+      title: GroupDetailBO
     SecurityGroups:
       type: object
       properties:
@@ -5167,455 +5642,6 @@ components:
           items:
             $ref: '#/components/schemas/SecurityGroup'
       title: SecurityGroups
-    Cost_Center_to_Assign:
-      type: object
-      properties:
-        costCenter:
-          type: string
-          example: 1105
-          description: cost center to assign
-      title: Cost Center to Assign
-    TagDesktopRequest:
-      type: object
-      properties:
-        desktopId:
-          type: string
-          example: 1dbf8fc6-eea5-49fa-b142-90872b61c794
-        poolId:
-          type: string
-          example: eba2f3fa-be97-4403-8f00-4895cbc13ab3
-        tags:
-          type: array
-          items:
-            $ref: '#/components/schemas/Tag'
-      title: TagDesktopRequest
-    ApplicationDetails:
-      type: object
-      properties:
-        applicationType:
-          type: string
-          example: Cloud Application
-        bundles:
-          type: array
-          example: f9ad04bc-cbfc-47bd-aaa2-78ed27925018
-          items:
-            type: string
-        cloudAppType:
-          type: string
-          example: Custom Application
-        fullPath:
-          type: string
-          example: C:\Program Files\Programs\program.exe
-        gatewayClusterId:
-          type: string
-          example: f9ad04bc-cbfc-47bd-aaa2-78ed27925018
-        id:
-          type: string
-          example: f9ad04bc-cbfc-47bd-aaa2-78ed27925018
-        loginOption:
-          type: string
-          example: SSO_DOMAIN_USER_PASSWD
-        name:
-          type: string
-          example: Graphics app
-        parameters:
-          type: string
-          example: -fullscreen -profile default
-        poolId:
-          type: string
-          example: d8ad04bc-cbfc-47bd-aaa2-78ed27925091
-        poolName:
-          type: string
-          example: Cloudapp Pool Name
-        routeThroughGateway:
-          type: string
-          example: Always
-        serverType:
-          type: string
-          example: Workspot Cloud App pools
-        targetPlatforms:
-          type: array
-          example:
-          - iOS
-          - Windows
-          - Android
-          - OSX
-          items:
-            type: string
-      title: ApplicationDetails
-    APIGetTemplatesResponseBO:
-      type: object
-      properties:
-        templates:
-          type: array
-          items:
-            $ref: '#/components/schemas/APIMasterTemplateBO'
-      title: APIGetTemplatesResponseBO
-    DesktopPoolDetails:
-      type: object
-      properties:
-        active:
-          type: boolean
-        availCount:
-          type: integer
-          format: int32
-          example: 10
-        cloud:
-          type: string
-          example: Azure Cloud
-        createDesktopOnDelete:
-          type: boolean
-        description:
-          type: string
-          example: Persistent test pool
-        diskSize:
-          type: integer
-          format: int32
-          example: 128 (in terms of GB)
-        drType:
-          type: string
-          example: RDR
-        id:
-          type: string
-          example: f9ad04bc-cbfc-47bd-aaa2-78ed27925018
-        name:
-          type: string
-          example: HSKUForBusiness
-        nodeGroupName:
-          type: string
-          example: grp-mixed-n2-1-8-me-west1-b
-        poolType:
-          type: string
-          example: Persistent
-        rdGateways:
-          type: array
-          example:
-          - rdgw1
-          - rdgw2
-          items:
-            type: string
-        region:
-          type: string
-          example: me-west1
-        routeGatewayType:
-          type: string
-          example: Always
-        routeThruVPN:
-          type: boolean
-        status:
-          type: string
-          example: Success
-        subscriptionName:
-          type: string
-          example: Ent-Cloud
-        template:
-          type: string
-          example: TQaRDR1903-0812
-        usedCount:
-          type: integer
-          format: int32
-          example: 25
-        vmType:
-          type: string
-          example: BUSINESS_VM
-        zone:
-          type: string
-          example: me-west1-a
-      title: DesktopPoolDetails
-    GlobalDesktopBO:
-      type: object
-      properties:
-        assignedPools:
-          type: array
-          items:
-            $ref: '#/components/schemas/GlobalDesktopPool'
-        globalDesktopId:
-          type: string
-          example: ee614d15-d671-44c4-9a26-b10eda000018
-        globalDesktopName:
-          type: string
-          example: Global Desktop US
-        groupsAssigned:
-          type: array
-          items:
-            $ref: '#/components/schemas/GroupDetailBO'
-      title: GlobalDesktopBO
-    GWClusterHostPerformanceSample:
-      type: object
-      properties:
-        timestamp:
-          type: string
-          example: 1653395963398
-        value:
-          type: string
-          example: 11
-      title: GWClusterHostPerformanceSample
-    Tag:
-      type: object
-      properties:
-        name:
-          type: string
-          example: Engineering
-        value:
-          type: string
-          example: Development
-      title: Tag
-    NameResponse:
-      type: object
-      properties:
-        name:
-          type: string
-      title: NameResponse
-    ApiCloudNetworksListResponse:
-      type: object
-      properties:
-        cloudNetworks:
-          type: array
-          items:
-            $ref: '#/components/schemas/ApiCloudNetworksResponseBO'
-      title: ApiCloudNetworksListResponse
-    UserGlobalDesktopPoolDetailsBO:
-      type: object
-      properties:
-        assignedPools:
-          type: array
-          items:
-            $ref: '#/components/schemas/AssignedPoolDesktopDetailsBO'
-        email:
-          type: string
-          example: dsmith@example.com
-        firstName:
-          type: string
-          example: David
-        globalDesktopId:
-          type: string
-          example: cc652243-a14a-47c5-834a-54343b8fd817
-        globalDesktopName:
-          type: string
-          example: Test Application
-        lastName:
-          type: string
-          example: Smith
-        userId:
-          type: string
-          example: e17aa8fc-3919-4461-8345-bdd665e55fb8
-      title: UserGlobalDesktopPoolDetailsBO
-    UsageReport:
-      type: object
-      properties:
-        end:
-          type: string
-          example: '2018-09-14'
-          description: in YYYY-MM-DD format
-        format:
-          type: string
-          example: JSON
-          description: Report output format in either JSON or CSV; default is JSON
-          enum:
-          - JSON
-          - CSV
-        start:
-          type: string
-          example: '2018-09-12'
-          description: in YYYY-MM-DD format
-      title: UsageReport
-    RemoteAssistDesktop:
-      type: object
-      required:
-      - desktopId
-      - password
-      - poolId
-      properties:
-        desktopId:
-          type: string
-          example: be95b637-b748-41f9-90ff-d3d55f4dd51d
-          description: Id of desktop to remote assist
-        password:
-          type: string
-          example: password
-          description: Password for initiating remote assist
-        poolId:
-          type: string
-          example: 3ce45fa5-be91-4a49-a297-c4e94eaf945d
-          description: Id of pool
-      title: RemoteAssistDesktop
-    GWDomainToJoin:
-      type: object
-      properties:
-        domain:
-          type: string
-          example: Domain
-        domainName:
-          type: string
-          example: Domain to Join
-        domainOU:
-          type: string
-          example: Domain OU
-        password:
-          type: string
-          example: Password
-        userName:
-          type: string
-          example: Username
-      title: GWDomainToJoin
-    GetPoliciesResponse:
-      type: object
-      properties:
-        policies:
-          type: array
-          items:
-            $ref: '#/components/schemas/NameResponse'
-        policyType:
-          type: string
-      title: GetPoliciesResponse
-    Zones:
-      type: object
-      properties:
-        zones:
-          type: array
-          example:
-          - us-east1-b
-          - us-east1-c
-          - us-east1-d
-          items:
-            type: string
-      title: Zones
-    Pool_to_Assign:
-      type: object
-      properties:
-        poolId:
-          type: string
-          example: 73dc410b-6b13-40c6-32sd-32d4c175117c
-          description: Id of pool to assign
-      title: Pool to Assign
-    DesktopList:
-      type: object
-      properties:
-        desktops:
-          type: array
-          items:
-            $ref: '#/components/schemas/Desktop'
-      title: DesktopList
-    BundleDetails:
-      type: object
-      properties:
-        apps:
-          type: array
-          items:
-            $ref: '#/components/schemas/KeyValuePairBO'
-        groups:
-          type: array
-          items:
-            $ref: '#/components/schemas/KeyValuePairBO'
-        id:
-          type: string
-          example: f9ad04bc-cbfc-47bd-aaa2-78ed27925018
-        name:
-          type: string
-          example: All app bundle
-      title: BundleDetails
-    RefreshEntitlementsResponse:
-      type: object
-      properties:
-        description:
-          type: string
-      title: RefreshEntitlementsResponse
-    GWClusterHostPerformanceDetails:
-      type: object
-      properties:
-        cpu:
-          type: array
-          items:
-            $ref: '#/components/schemas/GWClusterHostPerformanceSample'
-        memory:
-          type: array
-          items:
-            $ref: '#/components/schemas/GWClusterHostPerformanceSample'
-      title: GWClusterHostPerformanceDetails
-    StaleDevice:
-      type: object
-      properties:
-        controlDetectedDtm:
-          type: string
-          format: date-time
-          example: '2024-09-29 11:00:00.0'
-        desktopDeletedDtm:
-          type: string
-          format: date-time
-          example: '2024-09-23 11:00:00.0'
-        desktopId:
-          type: string
-          example: 22ff14b9-c4c0-494a-99a9-37a5e505d661
-        desktopName:
-          type: string
-          example: workspotVDI-001
-        deviceId:
-          type: string
-          example: 550e8400-e29b-41d4-a716-446655440087
-        deviceName:
-          type: string
-          example: workspot-device
-        entraDeviceId:
-          type: string
-          example: 550e8400-e29b-41d4-a716-446655440084
-        entraObjectId:
-          type: string
-          example: 660e8400-e29b-41d4-a716-446655440065
-        intuneDeviceId:
-          type: string
-          example: 770e8400-e29b-41d4-a716-446655440077
-        poolId:
-          type: string
-          example: bede4cc4-576c-42dd-83d0-b326d0e7029a
-        poolName:
-          type: string
-          example: workspotVDI
-      title: StaleDevice
-    UpdateCloudAppPool:
-      type: object
-      properties:
-        autoCreateOnDelete:
-          type: boolean
-          example: false
-        description:
-          type: string
-          example: Sample description
-        loadBalancingMethod:
-          type: string
-          example: Depth
-        maxSessionLimit:
-          type: integer
-          format: int32
-          example: 5
-        poolSize:
-          type: integer
-          format: int32
-          example: 2
-      title: UpdateCloudAppPool
-    CloudConfigSubscriptions:
-      type: object
-      properties:
-        publicClouds:
-          type: array
-          items:
-            $ref: '#/components/schemas/CloudDetails'
-      title: CloudConfigSubscriptions
-    Pool_to_Delete_from_GlobalDesktop:
-      type: object
-      properties:
-        poolId:
-          type: string
-          example: 73dc410b-6b13-40c6-32sd-32d4c175117c
-          description: Id of pool to delete
-      title: Pool to Delete from GlobalDesktop
-    VmClasses:
-      type: object
-      properties:
-        vmClasses:
-          type: array
-          items:
-            $ref: '#/components/schemas/VMClass'
-      title: VmClasses
     TemplateCustomImageBO:
       type: object
       properties:
@@ -5629,127 +5655,101 @@ components:
           type: string
           example: us-east-1
       title: TemplateCustomImageBO
-    APIMasterTemplateBO:
+    GWPool:
       type: object
       properties:
-        assignedPools:
-          type: array
-          example: pool1
-          items:
-            type: string
-        cpu:
-          type: integer
-          format: int32
-          example: 2
-        fqdn:
+        appId:
           type: string
-          example: DESKTOP-N4H5S59
-        lastUpdatedDate:
+          example: c673e235-bff2-476a-b042-a13291c362f7
+        appName:
           type: string
-          example: Date
-        maintenancePolicyName:
-          type: string
-          example: maintenancePolicy1
-        memory:
-          type: string
-          example: 7680 MB
-        name:
-          type: string
-          example: base-win11
-        parentTemplate:
-          type: string
-          example: Template
-        pauseResumeSupported:
-          type: boolean
-        provider:
-          type: string
-          example: Custom Image
-        region:
-          type: string
-          example: Global
-        status:
-          type: string
-          example: Published
-        storage:
-          type: string
-          example: 80 GB
-        templateOs:
-          type: string
-          example: Microsoft Windows Server 2025 Datacenter
-        templateOsType:
-          type: string
-          example: Windows
-        templateType:
-          type: string
-          example: Cloud Desktop
-      title: APIMasterTemplateBO
-    RemoteSessionDesktopMessage:
-      type: object
-      required:
-      - desktopId
-      - displayDuration
-      - message
-      - poolId
-      properties:
-        desktopId:
-          type: string
-          example: be95b637-b748-41f9-90ff-d3d55f4dd51d
-          description: DesktopId of a desktop belonging to the user.
-        displayDuration:
-          type: integer
-          format: int32
-          example: 90
-          description: How long to display the message, in seconds.
-        message:
-          type: string
-          example: Please save your work. Your desktop will be shut down at 0320 UTC.
-          description: 'Message string to display. Valid range: 1-250 characters '
-        poolId:
-          type: string
-          example: eba2f3fa-be97-4403-8f00-4895cbc13ab3
-          description: Id of pool
-      title: RemoteSessionDesktopMessage
-    GlobalDesktopDetailsBO:
-      type: object
-      properties:
+          example: RD1908-WordPad
         id:
           type: string
-          example: ee614d15-d671-44c4-9a26-b10eda000018
+          example: 6f007f1b-232d-477f-9d10-02b0035734d7
         name:
           type: string
-          example: Test Pool Group
-      title: GlobalDesktopDetailsBO
-    RegisterTemplateRequestBO:
+          example: My persistent pool
+        poolType:
+          type: string
+          example: VDI
+      title: GWPool
+    CreateCloudAppRequest:
       type: object
       properties:
-        name:
+        appIconName:
           type: string
-          example: template1
-        region:
+          example: predefined1.png
+        appParams:
           type: string
-          example: ap-south-1. Required for AWS clouds only.
-      title: RegisterTemplateRequestBO
-    License:
-      type: object
-      properties:
-        licenses:
+          example: TBD
+        applicationType:
+          type: string
+          example: Cloud Application
+        bundles:
           type: array
+          example:
+          - f9ad04bc-cbfc-47bd-aaa2-78ed27925018
           items:
-            $ref: '#/components/schemas/LicenseDetails'
-      title: License
-    AddUser:
-      type: object
-      properties:
-        email:
+            type: string
+        cloudAppType:
           type: string
-          example: dsmith@example.com
-        firstName:
+          example: Custom
+        fullPath:
           type: string
-          example: David
-        lastName:
+          example: C:\Program Files\Programs\program.exe
+        gatewayClusterId:
           type: string
-          example: Smith
+          example: f9ad04bc-cbfc-47bd-aaa2-78ed27925018
+        loginDomain:
+          type: string
+          example: domain
+        loginOption:
+          type: string
+          example: SSO_DOMAIN_USER_PASSWD
+        name:
+          type: string
+          example: Graphics app
         poolId:
           type: string
-          example: 8bb27ac0-b3ce-455b-8a30-3aed537fd45f
-      title: AddUser
+          example: f9ad04bc-cbfc-47bd-aaa2-78ed27925018
+        routeThroughGateway:
+          type: string
+          example: Always
+        serverType:
+          type: string
+          example: Workspot Cloud App Pools
+        targetPlatforms:
+          type: array
+          example:
+          - iOS
+          - Windows
+          - Android
+          - OSX
+          items:
+            type: string
+        workingDir:
+          type: string
+          example: C:\Documents\My Data
+      title: CreateCloudAppRequest
+    ApiCreateBundleResponse:
+      type: object
+      properties:
+        details:
+          $ref: '#/components/schemas/BundleDetails'
+        status:
+          type: string
+          example: Succeeded
+      title: ApiCreateBundleResponse
+    GetLoginOptionsResponse:
+      type: object
+      properties:
+        loginOptions:
+          type: array
+          example:
+          - name: SSO_USER_PASSWD
+          - name: SSO_DOMAIN_USER_PASSWD
+          - name: SSO_PREFILLED_DOMAIN_USERNAME
+          items:
+            $ref: '#/components/schemas/NameResponse'
+      title: GetLoginOptionsResponse
