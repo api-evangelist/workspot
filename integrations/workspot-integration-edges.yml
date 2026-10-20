@@ -16,8 +16,8 @@ edges:
   evidence: https://aws.amazon.com/marketplace/seller-profile?id=29bc2ef2-933c-4a98-9ba5-0c00aaacbf7c
   listing_count: 2
   apps:
-  - Workspot Enterprise VDI Platform
   - GUIDE AI-Powered Workflow Automation
+  - Workspot Enterprise VDI Platform
   seller_name: Workspot, Inc.
   detected_by: sweep-cloud-marketplaces.py
   detected: '2026-10-13'
