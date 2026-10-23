@@ -5753,3 +5753,9 @@ components:
           items:
             $ref: '#/components/schemas/NameResponse'
       title: GetLoginOptionsResponse
+x-provenance:
+  method: harvested
+  publisher: Workspot
+  source: https://api.workspot.com/v2/api-docs
+  note: split by refine-openapis from the provider's own published document, verified by fetch (openapi/_original/*.fetch.json);
+    stamped by stamp-openapi-provenance.py (roadmap#793)
